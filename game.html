@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>⛩️ MONASTERY CLICKER — ZEN PATH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+JP:wght@300;400;700&family=Baloo+2:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d0a08">
+  <style>
+    :root {
+      --gold: #d4af37;
+      --gold2: #f5d06e;
+      --crimson: #8b0000;
+      --jade: #00a86b;
+      --jade2: #00d488;
+      --ink: #0d0a08;
+      --paper: #f4e4bc;
+      --radius: 18px;
+      --panel-bg: #120d0a;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;}
+    body{font-family:'Noto Serif JP',serif;background:var(--ink);color:var(--paper);height:100vh;overflow:hidden;}
+    
+    /* BG ANIMATED */
+    #zen-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;
+      background:radial-gradient(ellipse at 20% 30%, #1a0f05 0%, #0d0a08 60%, #080508 100%);}
+    .bg-particle{position:fixed;border-radius:50%;pointer-events:none;z-index:-1;animation:floatUp linear infinite;opacity:0;}
+    @keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0.3;}80%{opacity:0.2;}100%{transform:translateY(-10vh) scale(1.5);opacity:0;}}
+    
+    /* MAIN LAYOUT */
+    .app-wrapper{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:100vh;display:flex;flex-direction:column;padding:10px 12px 74px;gap:8px;overflow:hidden;}
+    .nav-bar-fixed{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:8px 12px 10px;background:rgba(10,6,4,0.97);border-top:1px solid rgba(212,175,55,0.2);z-index:50;}
+    
+    /* STAT CARD */
+    .stat-card{background:linear-gradient(135deg,rgba(20,12,6,0.95),rgba(30,18,10,0.9));padding:14px 18px 10px;border-radius:var(--radius);border:1px solid rgba(212,175,55,0.35);position:relative;overflow:hidden;}
+    .stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,175,55,0.04),transparent 60%);pointer-events:none;}
+    .temple-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--crimson),#6b0000);color:var(--gold);padding:3px 18px;border-radius:0 0 12px 12px;font-size:0.6rem;font-weight:700;letter-spacing:2px;border:1px solid var(--gold);border-top:none;font-family:'Cinzel Decorative',serif;}
+    #main-score{font-family:'Baloo 2',cursive;font-size:2.8rem;font-weight:800;color:var(--gold);line-height:1;text-shadow:0 0 20px rgba(212,175,55,0.4);}
+    .score-sub{display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-size:0.72rem;opacity:0.75;}
+    #ps-display{color:var(--jade2);}
+    #click-val-display{color:var(--gold2);}
+    .fever-wrap{margin-top:8px;position:relative;}
+    .fever-label{font-size:0.58rem;opacity:0.6;margin-bottom:3px;letter-spacing:1px;text-transform:uppercase;}
+    .fever-track{width:100%;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+    .fever-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),#fff);transition:width 0.15s;}
+    
+    /* QUOTE */
+    .quote-zone{text-align:center;font-size:0.7rem;font-style:italic;min-height:34px;display:flex;align-items:center;justify-content:center;padding:0 8px;}
+    #zen-quote{opacity:0.45;transition:opacity 0.8s ease;}
+    #zen-quote.fade-out{opacity:0;}
+    
+    /* MAIN BUTTON */
+    .click-zone{flex:1;display:flex;justify-content:center;align-items:center;position:relative;min-height:0;}
+    .orb-ring{position:absolute;width:230px;height:230px;border-radius:50%;border:1px solid rgba(212,175,55,0.15);animation:slowSpin 20s linear infinite;}
+    .orb-ring-2{position:absolute;width:210px;height:210px;border-radius:50%;border:1px dashed rgba(212,175,55,0.08);animation:slowSpin 30s linear infinite reverse;}
+    @keyframes slowSpin{to{transform:rotate(360deg);}}
+    .fever-halo{position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.25),transparent 70%);opacity:0;pointer-events:none;transition:opacity 0.5s;}
+    .fever-active .fever-halo{opacity:1;animation:haloPulse 1.2s infinite alternate;}
+    @keyframes haloPulse{from{transform:scale(0.9);}to{transform:scale(1.1);}}
+    .the-star{width:190px;height:190px;background:radial-gradient(circle at 40% 35%,#f0d060,#c09000 50%,#6a4a00);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:5.5rem;border:6px solid rgba(212,175,55,0.5);cursor:pointer;position:relative;z-index:10;box-shadow:0 0 40px rgba(212,175,55,0.2),inset 0 -10px 30px rgba(0,0,0,0.4);transition:transform 0.08s ease;}
+    .the-star:active{transform:scale(0.94);}
+    .bell-ring{animation:ring 0.14s ease-in-out!important;}
+    @keyframes ring{0%{transform:scale(1) rotate(0);}25%{transform:scale(0.91) rotate(-6deg);}75%{transform:scale(1.06) rotate(6deg);}100%{transform:scale(1) rotate(0);}}
+    .shockwave{position:absolute;border:3px solid var(--gold);border-radius:50%;pointer-events:none;animation:wave 0.55s ease-out forwards;}
+    .shockwave.fever-wave{border-color:#fff;box-shadow:0 0 12px #fff;}
+    @keyframes wave{0%{width:140px;height:140px;opacity:1;border-width:6px;}100%{width:420px;height:420px;opacity:0;border-width:1px;}}
+    .click-pop{position:fixed;font-weight:900;pointer-events:none;animation:popUp 0.9s ease-out forwards;z-index:9999;text-shadow:0 2px 4px black;font-family:'Baloo 2',cursive;}
+    @keyframes popUp{0%{transform:translateY(0) scale(1.2);opacity:1;}100%{transform:translateY(-70px) scale(0.8);opacity:0;}}
+    .combo-pop{position:fixed;font-size:1rem;font-weight:900;pointer-events:none;animation:comboPop 1s ease-out forwards;z-index:9999;color:#ff8c00;}
+    @keyframes comboPop{0%{transform:translateY(0) scale(1.4);opacity:1;}100%{transform:translateY(-50px) scale(1);opacity:0;}}
+    
+    /* COMBO DISPLAY */
+    #combo-display{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:0.75rem;font-weight:700;color:#ff8c00;text-shadow:0 0 8px #ff4500;opacity:0;transition:opacity 0.3s;white-space:nowrap;font-family:'Baloo 2',cursive;pointer-events:none;}
+    #combo-display.visible{opacity:1;}
+    
+    /* NAV */
+    .nav-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+    .nav-btn{display:flex;flex-direction:column;align-items:center;color:rgba(244,228,188,0.35);font-size:0.55rem;font-weight:700;cursor:pointer;transition:color 0.15s,background 0.15s;letter-spacing:0.5px;padding:4px 0;border-radius:10px;position:relative;}
+    .nav-btn.active{color:var(--gold);background:rgba(212,175,55,0.1);}
+    .nav-btn span{font-size:1.3rem;}
+    .nav-notif{position:absolute;top:2px;right:8px;width:8px;height:8px;background:#ff4444;border-radius:50%;border:1px solid #000;animation:pulse-dot 1s infinite alternate;}
+    @keyframes pulse-dot{from{transform:scale(0.8);}to{transform:scale(1.2);}}
+    
+    /* PANELS */
+    .panel{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:480px;height:85vh;background:var(--panel-bg);border-radius:28px 28px 0 0;padding:12px 16px 12px;z-index:100;transition:transform 0.32s ease;display:flex;flex-direction:column;border-top:3px solid var(--gold);}
+    .panel.open{transform:translateX(-50%) translateY(0);}
+    .panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .panel-title{font-family:'Cinzel Decorative',serif;color:var(--gold);font-size:0.95rem;}
+    .panel-close{background:rgba(255,255,255,0.08);border:none;color:var(--paper);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;}
+    .panel-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-bottom:30px;margin-bottom:0;}
+    .panel-scroll::-webkit-scrollbar{width:3px;}
+    .panel-scroll::-webkit-scrollbar-thumb{background:rgba(212,175,55,0.3);border-radius:2px;}
+    
+    /* SHOP ITEMS */
+    .item-row{background:rgba(255,255,255,0.025);padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:10px;border-left:3px solid rgba(139,0,0,0.5);transition:border-color 0.3s;}
+    .item-row.can-afford{border-left-color:var(--jade);animation:borderGlow 1.5s infinite alternate;}
+    @keyframes borderGlow{from{box-shadow:none;}to{box-shadow:inset 0 0 20px rgba(0,168,107,0.08);}}
+    .item-info{flex:1;}
+    .item-name{font-size:0.82rem;font-weight:700;}
+    .item-stats{font-size:0.62rem;opacity:0.55;margin-top:1px;line-height:1.4;}
+    .item-qty{font-size:0.68rem;color:var(--gold);}
+    .buy-btn{background:linear-gradient(135deg,var(--crimson),#600000);border:1px solid rgba(212,175,55,0.3);padding:8px 12px;border-radius:8px;color:var(--gold);font-weight:700;cursor:pointer;font-size:0.72rem;transition:all 0.15s;min-width:72px;text-align:center;}
+    .buy-btn:active{transform:scale(0.95);}
+    .buy-btn:disabled{opacity:0.25;cursor:default;transform:none;}
+    .buy-btn.can-afford{background:linear-gradient(135deg,#0a5c3a,#006040);border-color:var(--jade);}
+    
+    /* SUTRAS (ACHIEVEMENTS) */
+    .sutra-row{background:rgba(255,255,255,0.025);padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:10px;border-left:3px solid rgba(212,175,55,0.2);transition:all 0.3s;}
+    .sutra-row.completed{border-left-color:var(--jade);opacity:0.55;}
+    .sutra-row.active{border-left-color:var(--gold);}
+    .sutra-reward{font-size:0.65rem;color:var(--jade2);margin-top:3px;}
+    
+    /* SUTRA COMPLETE FLASH */
+    #sutra-flash{position:fixed;inset:0;pointer-events:none;z-index:5000;display:flex;align-items:center;justify-content:center;opacity:0;}
+    #sutra-flash.flash{animation:sutraFlash 2s ease-out forwards;}
+    @keyframes sutraFlash{0%{opacity:0;}15%{opacity:1;}70%{opacity:1;}100%{opacity:0;}}
+    .sutra-flash-inner{background:linear-gradient(135deg,rgba(0,80,40,0.95),rgba(0,50,25,0.9));border:2px solid var(--jade2);border-radius:20px;padding:20px 30px;text-align:center;transform:scale(0);animation:flashScale 2s ease-out forwards;}
+    @keyframes flashScale{0%{transform:scale(0) rotate(-10deg);}20%{transform:scale(1.1) rotate(2deg);}30%{transform:scale(0.95) rotate(0);}70%{transform:scale(1);}100%{transform:scale(0.8);}}
+    .flash-emoji{font-size:3rem;display:block;}
+    .flash-title{color:var(--jade2);font-size:1.1rem;font-weight:700;margin-top:8px;font-family:'Cinzel Decorative',serif;}
+    .flash-sub{color:var(--paper);font-size:0.8rem;margin-top:4px;opacity:0.85;}
+    
+    /* ENSO - JARDIN ZEN */
+    .enso-area{background:rgba(0,0,0,0.4);border-radius:16px;padding:16px;border:1px solid rgba(212,175,55,0.2);text-align:center;}
+    .enso-canvas-container{position:relative;display:flex;justify-content:center;margin-bottom:12px;}
+    #ensoCanvas{background:#1a1208;border-radius:50%;box-shadow:0 0 20px rgba(212,175,55,0.1);cursor:crosshair;touch-action:none;}
+    .enso-guide{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;border:2px dashed rgba(212,175,55,0.15);pointer-events:none;}
+    .enso-guide-circle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:140px;height:140px;border-radius:50%;border:1px solid rgba(212,175,55,0.1);}
+    .enso-buttons{display:flex;gap:8px;justify-content:center;margin-bottom:12px;}
+    .enso-btn{background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.3);padding:8px 16px;border-radius:10px;color:var(--gold);font-weight:700;cursor:pointer;font-size:0.7rem;}
+    .enso-btn:active{transform:scale(0.95);}
+    .score-enso{font-size:0.8rem;color:var(--jade2);margin-top:8px;}
+    .score-enso span{font-size:1.2rem;font-weight:700;color:var(--gold);}
+    
+    /* ESPRITS */
+    .summon-area{background:rgba(0,0,0,0.3);border-radius:12px;padding:12px;border:1px solid rgba(212,175,55,0.2);margin-bottom:8px;text-align:center;}
+    .pets-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .pet-card{background:rgba(0,0,0,0.4);border-radius:12px;padding:12px;text-align:center;border:1px solid rgba(212,175,55,0.2);transition:border-color 0.3s;}
+    .pet-emoji{font-size:2rem;display:block;margin-bottom:4px;}
+    .pet-name{font-size:0.68rem;font-weight:700;color:var(--gold);}
+    .pet-bonus{font-size:0.6rem;color:var(--jade2);margin-top:3px;}
+    .pet-total{font-size:0.58rem;opacity:0.7;margin-top:2px;}
+    .rarity-reveal{position:fixed;inset:0;pointer-events:none;z-index:6000;display:flex;align-items:center;justify-content:center;opacity:0;}
+    .rarity-reveal.show{animation:rarityAnim 3s ease-out forwards;}
+    @keyframes rarityAnim{0%{opacity:0;}10%{opacity:1;}80%{opacity:1;}100%{opacity:0;}}
+    .rarity-box{background:linear-gradient(135deg,#1a0d00,#2a1500);border-radius:20px;padding:24px 36px;text-align:center;border:2px solid var(--gold);transform:scale(0);animation:rarityScale 3s ease-out forwards;box-shadow:0 0 40px rgba(212,175,55,0.4);}
+    @keyframes rarityScale{0%{transform:scale(0);}15%{transform:scale(1.05);}20%{transform:scale(1);}80%{transform:scale(1);}100%{transform:scale(0.7)rotate(5deg);}}
+
+    /* MULTI-PULL OVERLAY */
+    #multi-pull-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:7000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+    #multi-pull-overlay.active{display:flex;}
+    .multi-pull-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:440px;margin-bottom:20px;}
+    .pull-card{background:rgba(255,255,255,0.04);border-radius:14px;padding:10px 4px;text-align:center;border:2px solid rgba(255,255,255,0.08);opacity:0;transform:scale(0.5) rotateY(90deg);transition:opacity 0.3s,transform 0.35s;}
+    .pull-card.revealed{opacity:1;transform:scale(1) rotateY(0);}
+    .pull-card.highlight{animation:cardGlow 1s infinite alternate;}
+    @keyframes cardGlow{from{box-shadow:0 0 8px currentColor;}to{box-shadow:0 0 22px currentColor,inset 0 0 10px rgba(255,255,255,0.05);}}
+    .pull-card-emoji{font-size:1.8rem;display:block;margin-bottom:3px;}
+    .pull-card-name{font-size:0.5rem;font-weight:700;letter-spacing:0.5px;}
+    .pull-card-rarity{font-size:0.45rem;opacity:0.6;margin-top:1px;}
+    .pull-best{text-align:center;font-size:0.75rem;color:var(--jade2);margin-bottom:12px;min-height:20px;}
+    .pull-close-btn{background:linear-gradient(135deg,var(--crimson),#600000);border:1px solid rgba(212,175,55,0.4);padding:12px 32px;border-radius:12px;color:var(--gold);font-weight:700;cursor:pointer;font-size:0.85rem;font-family:'Cinzel Decorative',serif;}
+
+    /* FUSION */
+    .fuse-btn{background:linear-gradient(135deg,#4a0080,#2a0050);border:1px solid rgba(180,100,255,0.5);padding:8px 12px;border-radius:8px;color:#cc88ff;font-weight:700;cursor:pointer;font-size:0.68rem;transition:all 0.15s;margin-top:4px;width:100%;}
+    .fuse-btn:disabled{opacity:0.2;cursor:default;}
+    .fuse-btn.ready{animation:fuseGlow 1s infinite alternate;border-color:#cc88ff;}
+    @keyframes fuseGlow{from{box-shadow:0 0 6px rgba(200,100,255,0.3);}to{box-shadow:0 0 18px rgba(200,100,255,0.7);}}
+    .fuse-flash{position:fixed;inset:0;pointer-events:none;z-index:7500;display:flex;align-items:center;justify-content:center;opacity:0;}
+    .fuse-flash.show{animation:fuseFlashAnim 2.2s ease-out forwards;}
+    @keyframes fuseFlashAnim{0%{opacity:0;}10%{opacity:1;}75%{opacity:1;}100%{opacity:0;}}
+    .fuse-inner{background:linear-gradient(135deg,#1a0030,#300050);border:2px solid #cc88ff;border-radius:20px;padding:22px 32px;text-align:center;transform:scale(0);animation:fuseScale 2.2s ease-out forwards;box-shadow:0 0 40px rgba(200,100,255,0.5);}
+    @keyframes fuseScale{0%{transform:scale(0) rotate(-15deg);}20%{transform:scale(1.08) rotate(2deg);}28%{transform:scale(0.96);}80%{transform:scale(1);}100%{transform:scale(0.75);}}
+
+    /* COLLECTION */
+    .collection-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;}
+    .coll-cell{border-radius:10px;padding:8px 4px;text-align:center;border:1px solid rgba(255,255,255,0.06);position:relative;transition:border-color 0.3s;}
+    .coll-cell.unlocked{background:rgba(255,255,255,0.04);}
+    .coll-cell.locked{background:rgba(0,0,0,0.3);opacity:0.35;filter:grayscale(1);}
+    .coll-cell-emoji{font-size:1.4rem;display:block;}
+    .coll-cell-name{font-size:0.42rem;margin-top:2px;font-weight:700;}
+    .coll-cell-mult{font-size:0.4rem;opacity:0.55;color:var(--jade2);}
+    .coll-cell.new-unlock{animation:newUnlock 0.6s ease-out;}
+    @keyframes newUnlock{0%{transform:scale(0.5);opacity:0;}60%{transform:scale(1.15);}100%{transform:scale(1);opacity:1;}}
+    .summon-btns{display:flex;gap:8px;margin-bottom:6px;}
+    .summon-btns .buy-btn{flex:1;padding:10px 6px;font-size:0.72rem;}
+    
+    /* STATS / MEDITER */
+    .stat-line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.8rem;}
+    .jade-banner{background:rgba(0,168,107,0.1);border:1px solid rgba(0,168,107,0.35);border-radius:10px;padding:10px;text-align:center;font-size:0.78rem;color:var(--jade2);margin-bottom:10px;}
+    .prestige-box{background:rgba(0,0,0,0.3);border:1px solid rgba(0,168,107,0.3);border-radius:12px;padding:14px;margin-top:10px;}
+    .progress-bar{width:100%;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin:8px 0;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--jade),var(--jade2));transition:width 0.5s;}
+    .prestige-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--jade),#006040);border:none;border-radius:12px;color:#fff;font-weight:900;cursor:pointer;font-size:0.9rem;font-family:'Cinzel Decorative',serif;letter-spacing:1px;transition:all 0.2s;margin-top:10px;}
+    .prestige-btn:disabled{opacity:0.3;cursor:default;}
+    .prestige-btn:not(:disabled){animation:prestigeGlow 2s infinite alternate;box-shadow:0 0 20px rgba(0,168,107,0.4);}
+    @keyframes prestigeGlow{from{box-shadow:0 0 10px rgba(0,168,107,0.3);}to{box-shadow:0 0 30px rgba(0,168,107,0.7);}}
+    
+    /* MODAL */
+    #custom-modal{position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
+    .modal-box{background:linear-gradient(135deg,#1a0d04,#200f06);border:2px solid var(--gold);border-radius:20px;padding:24px;text-align:center;max-width:320px;width:100%;}
+    .modal-title{font-family:'Cinzel Decorative',serif;color:var(--gold);font-size:1rem;margin-bottom:12px;}
+    .modal-actions{display:flex;gap:10px;margin-top:16px;}
+    .modal-btn{flex:1;padding:12px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;}
+    
+    /* GOLDEN SPIRIT EVENT */
+    .golden-spirit{position:fixed;font-size:2.5rem;cursor:pointer;z-index:10000;filter:drop-shadow(0 0 12px gold);animation:flyGolden 7s linear forwards;pointer-events:all;}
+    @keyframes flyGolden{0%{left:-8%;top:25%;transform:rotate(0);}30%{top:55%;}60%{top:20%;}100%{left:112%;top:40%;transform:rotate(360deg);}}
+    .spirit-lure{position:fixed;z-index:9999;background:rgba(212,175,55,0.15);border:1px solid var(--gold);border-radius:12px;padding:6px 12px;font-size:0.7rem;color:var(--gold);pointer-events:none;animation:lureFade 3s ease-out forwards;}
+    @keyframes lureFade{0%{opacity:1;transform:translateY(0);}100%{opacity:0;transform:translateY(-30px);}}
+    
+    /* LEVEL UP BANNER */
+    #levelup-banner{position:fixed;top:-100px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--crimson),#6b0000);border:2px solid var(--gold);border-radius:12px;padding:12px 24px;z-index:5000;text-align:center;transition:top 0.5s cubic-bezier(0.34,1.56,0.64,1);min-width:240px;}
+    #levelup-banner.show{top:20px;}
+    
+    /* FIRE PARTICLES */
+    .fire-ptcl{position:fixed;pointer-events:none;border-radius:50%;z-index:9998;}
+ 
+    /* ENSO ILLUMINÉ - ANIMATION DE RÉUSSITE */
+    .enso-perfect-overlay {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle, rgba(0,0,0,0.4), rgba(0,0,0,0.9));
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        animation: fadeOutOverlay 3s ease-out forwards;
+    }
+    .enso-perfect-circle {
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(212,175,55,0.8), rgba(212,175,55,0.1));
+        box-shadow: 0 0 80px 20px rgba(212,175,55,0.8), 0 0 0 4px rgba(212,175,55,0.5);
+        animation: ensoPulse 1.2s ease-in-out infinite alternate, ensoGlow 2s infinite, ensoRotate 4s linear infinite;
+        position: relative;
+    }
+    .enso-perfect-circle::before {
+        content: "○";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 12rem;
+        font-weight: 300;
+        color: rgba(255, 235, 160, 0.9);
+        text-shadow: 0 0 30px #ffd700, 0 0 60px #ffaa00;
+        font-family: 'Noto Serif JP', serif;
+        animation: ensoTextPulse 1.5s ease-in-out infinite alternate;
+    }
+    .enso-perfect-circle::after {
+        content: "✨";
+        position: absolute;
+        font-size: 2rem;
+        top: 10%;
+        right: 10%;
+        animation: starSpin 2s linear infinite;
+        text-shadow: 0 0 10px gold;
+    }
+    @keyframes ensoPulse {
+        0% { transform: scale(0.9); opacity: 0.7; }
+        100% { transform: scale(1.15); opacity: 1; }
+    }
+    @keyframes ensoGlow {
+        0% { box-shadow: 0 0 40px 10px rgba(212,175,55,0.5), inset 0 0 20px rgba(255,235,160,0.3); }
+        100% { box-shadow: 0 0 100px 30px rgba(212,175,55,0.9), inset 0 0 50px rgba(255,235,160,0.6); }
+    }
+    @keyframes ensoRotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    @keyframes ensoTextPulse {
+        0% { opacity: 0.7; text-shadow: 0 0 10px gold; }
+        100% { opacity: 1; text-shadow: 0 0 40px gold, 0 0 20px #ffaa00; }
+    }
+    @keyframes starSpin {
+        0% { transform: rotate(0deg) scale(1); }
+        100% { transform: rotate(360deg) scale(1.3); }
+    }
+    @keyframes fadeOutOverlay {
+        0% { opacity: 1; }
+        70% { opacity: 1; }
+        100% { opacity: 0; display: none; }
+    }
+    .perfect-text {
+        position: absolute;
+        bottom: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.2rem;
+        font-family: 'Cinzel Decorative', serif;
+        color: var(--gold);
+        white-space: nowrap;
+        letter-spacing: 4px;
+        animation: textFloat 2s ease-out forwards;
+    }
+    @keyframes textFloat {
+        0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        100% { opacity: 0; transform: translateX(-50%) translateY(-40px); }
+    }
+  </style>
+</head>
+<body>
+  <div id="zen-bg"></div>
+
+  <!-- SUTRA FLASH -->
+  <div id="sutra-flash"><div class="sutra-flash-inner"><span class="flash-emoji" id="flash-emoji">📜</span><div class="flash-title" id="flash-title">Sutra Accompli!</div><div class="flash-sub" id="flash-sub">+0 sagesse</div></div></div>
+
+  <!-- RARITY REVEAL -->
+  <div class="rarity-reveal" id="rarity-reveal"><div class="rarity-box"><div id="rev-emoji" style="font-size:4rem;"></div><div id="rev-rarity" style="font-size:0.8rem;letter-spacing:2px;opacity:0.6;margin-top:4px;"></div><div id="rev-name" style="color:var(--gold);font-weight:700;font-size:1.1rem;margin-top:4px;"></div><div id="rev-bonus" style="color:var(--jade2);font-size:0.8rem;margin-top:6px;"></div></div></div>
+
+  <!-- MULTI PULL OVERLAY -->
+  <div id="multi-pull-overlay">
+    <div style="font-family:'Cinzel Decorative',serif;color:var(--gold);font-size:1rem;margin-bottom:16px;letter-spacing:2px;">🌸 INVOCATION ×10</div>
+    <div class="multi-pull-grid" id="multi-pull-grid"></div>
+    <div class="pull-best" id="pull-best-text"></div>
+    <button class="pull-close-btn" onclick="closeMultiPull()">FERMER</button>
+  </div>
+
+  <!-- FUSION FLASH -->
+  <div class="fuse-flash" id="fuse-flash">
+    <div class="fuse-inner">
+      <div id="fuse-emoji" style="font-size:3.5rem;"></div>
+      <div style="color:#cc88ff;font-size:0.75rem;letter-spacing:2px;margin-top:6px;">✨ FUSION !</div>
+      <div id="fuse-name" style="color:var(--gold);font-weight:700;font-size:1rem;margin-top:6px;"></div>
+      <div id="fuse-bonus" style="color:var(--jade2);font-size:0.8rem;margin-top:4px;"></div>
+    </div>
+  </div>
+
+  <!-- LEVEL UP BANNER -->
+  <div id="levelup-banner"><div style="font-size:0.65rem;letter-spacing:2px;opacity:0.7;">TEMPLE AGRANDI</div><div id="levelup-text" style="color:var(--gold);font-weight:700;font-size:0.9rem;margin-top:2px;"></div></div>
+
+  <!-- MODAL PRESTIGE -->
+  <div id="custom-modal">
+    <div class="modal-box">
+      <div class="modal-title">🔮 Réincarnation</div>
+      <p id="modal-text" style="font-size:0.84rem;line-height:1.7;"></p>
+      <div class="modal-actions">
+        <button class="modal-btn" onclick="confirmPrestige()" style="background:var(--jade);color:#fff;">✨ S'ÉVEILLER</button>
+        <button class="modal-btn" onclick="hideModal()" style="background:var(--crimson);color:#fff;">PLUS TARD</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-wrapper">
+    <!-- SCORE CARD -->
+    <div class="stat-card">
+      <div class="temple-badge" id="temple-rank">TEMPLE NIV. 1</div>
+      <div id="main-score">0</div>
+      <div class="score-sub">
+        <span id="ps-display">⚡ 0/s</span>
+        <span id="click-val-display">👆 +1/clic</span>
+      </div>
+      <div class="fever-wrap">
+        <div class="fever-label">⚡ Transe</div>
+        <div class="fever-track"><div class="fever-fill" id="fever-bar"></div></div>
+      </div>
+    </div>
+
+    <!-- ZEN QUOTE -->
+    <div class="quote-zone"><span id="zen-quote">"Le silence est une réponse."</span></div>
+
+    <!-- MAIN CLICK ZONE -->
+    <div class="click-zone" id="star-zone">
+      <div class="orb-ring"></div>
+      <div class="orb-ring-2"></div>
+      <div class="fever-halo"></div>
+      <div id="combo-display"></div>
+      <div class="the-star" id="star-btn">🔔</div>
+    </div>
+  </div>
+
+  <!-- NAV FIXE -->
+  <div class="nav-bar-fixed">
+    <nav class="nav-bar">
+      <div class="nav-btn active" id="nav-shop" onclick="openPanel('shop',this)"><span>⛩️</span>TEMPLE</div>
+      <div class="nav-btn" id="nav-pets" onclick="openPanel('pets',this)"><span>🐉</span>ESPRITS</div>
+      <div class="nav-btn" id="nav-missions" onclick="openPanel('missions',this)"><span>📜</span>SUTRAS</div>
+      <div class="nav-btn" id="nav-enso" onclick="openPanel('enso',this)"><span>🎋</span>ENSO</div>
+      <div class="nav-btn" id="nav-stats" onclick="openPanel('stats',this)"><span>🧘</span>MÉDITER</div>
+    </nav>
+  </div>
+
+  <!-- PANELS -->
+  <div id="panel-shop" class="panel">
+    <div class="panel-header"><div class="panel-title">⛩️ Aménager le Temple</div><button class="panel-close" onclick="closePanels()">✕</button></div>
+    <div class="panel-scroll" id="shop-list"></div>
+  </div>
+
+  <div id="panel-pets" class="panel">
+    <div class="panel-header"><div class="panel-title">🐉 Esprits Gardiens</div><button class="panel-close" onclick="closePanels()">✕</button></div>
+    <div class="summon-area">
+      <div style="font-size:0.72rem;opacity:0.6;margin-bottom:8px;">Une offrande peut attirer un esprit rare…</div>
+      <div class="summon-btns">
+        <button class="buy-btn" id="summon-btn" onclick="summonPet()">🌸 ×1</button>
+        <button class="buy-btn" id="summon10-btn" onclick="summonPet10()" style="background:linear-gradient(135deg,#1a0040,#320060);border-color:rgba(180,100,255,0.5);color:#cc88ff;">🌸 ×10</button>
+      </div>
+      <div id="pity-display" style="font-size:0.62rem;opacity:0.5;margin-top:5px;"></div>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:8px;">
+      <button onclick="setPetTab('esprits')" id="tab-esprits" style="flex:1;padding:7px;border-radius:10px;border:1px solid rgba(212,175,55,0.4);background:rgba(212,175,55,0.12);color:var(--gold);font-size:0.7rem;font-weight:700;cursor:pointer;">🐉 Esprits</button>
+      <button onclick="setPetTab('collection')" id="tab-collection" style="flex:1;padding:7px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(244,228,188,0.5);font-size:0.7rem;font-weight:700;cursor:pointer;">📖 Collection</button>
+    </div>
+    <div class="panel-scroll" id="pets-tab-content"></div>
+  </div>
+
+  <div id="panel-missions" class="panel">
+    <div class="panel-header"><div class="panel-title">📜 Sutras Sacrés</div><button class="panel-close" onclick="closePanels()">✕</button></div>
+    <div style="font-size:0.68rem;opacity:0.5;margin-bottom:8px;">Chaque sutra accompli est une illumination unique.</div>
+    <div class="panel-scroll" id="mission-list"></div>
+  </div>
+
+  <div id="panel-enso" class="panel">
+    <div class="panel-header"><div class="panel-title">🎋 Cercle de l'Éveil (Enso)</div><button class="panel-close" onclick="closePanels()">✕</button></div>
+    <div class="panel-scroll">
+      <div class="enso-area">
+        <div style="font-size:0.75rem;opacity:0.7;margin-bottom:8px;">Tracez un cercle d'un seul geste</div>
+        <div class="enso-canvas-container">
+          <canvas id="ensoCanvas" width="220" height="220" style="width:220px;height:220px;border-radius:50%;background:#1a1208;touch-action:none;"></canvas>
+          <div class="enso-guide"></div>
+          <div class="enso-guide-circle"></div>
+        </div>
+        <div class="enso-buttons">
+          <button class="enso-btn" onclick="clearEnsoCanvas()">🗑️ Effacer</button>
+          <button class="enso-btn" onclick="evaluateEnso()">✨ Évaluer</button>
+        </div>
+        <div class="score-enso" id="enso-score-display">Dernier score : —</div>
+        <div style="font-size:0.65rem;opacity:0.5;margin-top:8px;">➕ Un Enso parfait offre +20% de sagesse pendant 2 min</div>
+        <div id="enso-bonus-active" style="font-size:0.7rem;color:var(--jade2);margin-top:6px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-stats" class="panel">
+    <div class="panel-header"><div class="panel-title">🧘 Méditation</div><button class="panel-close" onclick="closePanels()">✕</button></div>
+    <div class="panel-scroll" id="stats-area"></div>
+  </div>
+
+  <script>
+  // ===================== DATA =====================
+
+  const ZEN_QUOTES = [
+    "Le silence n'est pas vide — il est plein de réponses.",
+    "Lâche prise : ce qui tombe n'était pas à toi.",
+    "Respire. Ce moment est le seul vrai rendez-vous.",
+    "Observe tes pensées sans les juger. Tu n'es pas elles.",
+    "Accepte ce qui est. Lutter contre la réalité, c'est perdre deux fois.",
+    "La paix vient de l'intérieur. Ne la cherche pas à l'extérieur.",
+    "Ce que nous sommes est le résultat de ce que nous avons pensé.",
+    "Le silence n'est pas vide, il est plein de réponses.",
+    "La colère est un feu que tu allumes avec tes propres mains.",
+    "Sois ici. Vraiment. Le reste n'existe pas encore.",
+    "Le mental est un bon serviteur mais un maître tyrannique.",
+    "Chaque fin est un commencement déguisé.",
+    "Laisse les autres avoir raison. Ta paix vaut plus qu'un duel.",
+    "Tu n'as pas de problème immédiat. Seulement une pensée sur le futur.",
+    "Fais une chose à la fois. Une seule. Totalement.",
+    "La gratitude transforme ce que tu as en assez.",
+    "Ne crois pas tout ce que tu penses.",
+    "Parfois, ne rien faire est l'action la plus puissante.",
+    "Comme l'eau, sois douce et pourtant imbattable.",
+    "La peur est une vague. Reste la roche silencieuse.",
+    "Libère-toi de l'opinion des autres : ce n'est pas ta prison.",
+    "Le passé est une histoire. Le futur, un rêve. Maintenant, la vie.",
+    "Tu es le ciel. Les pensées ne sont que des nuages.",
+    "Ne cherche pas à vider l'esprit, regarde-le passer sans monter dedans.",
+    "La douleur est inévitable. La souffrance, optionnelle.",
+    "Sois reconnaissant pour ce qui casse : cela fait de la place pour du neuf.",
+    "Ta valeur ne se négocie pas. Elle est.",
+    "Ralentis. La vie se passe à cette vitesse.",
+    "Un pas après l'autre. Même le plus long chemin se termine.",
+    "Le désir dit : 'quand j'aurai...'. La paix dit : 'j'ai déjà'.",
+    "Arrête de t'expliquer. Ceux qui comprennent n'ont pas besoin.",
+    "Regarde la lune, pas le doigt qui la montre.",
+    "Tu n'es pas en colère. Tu es attaché à une idée.",
+    "La véritable discipline, c'est la douceur envers toi-même.",
+    "Quand tu marches, marche. Quand tu manges, mange. Miracle.",
+    "Ne porte pas le monde sur tes épaules. Porte juste ton souffle.",
+    "Comparer, c'est désespérer. Contempler, c'est guérir.",
+    "Ton pire ennemi ne peut pas te faire autant de mal que tes propres pensées non contrôlées.",
+    "Lâche l'histoire. Ressens le corps. Reviens au souffle.",
+    "Le bonheur n'est pas un objectif, c'est une façon de voyager.",
+    "Tout passe. Les orages, les joies, les identités. Tout.",
+    "Ne fais pas un problème de ton problème. Fais-en une rencontre.",
+    "Assis dans la difficulté, demande : 'qui souffre ici ?' et écoute le silence.",
+    "La simplicité est le luxe ultime.",
+    "Tu n'as rien à prouver. Tu as juste à être.",
+    "Si tu peux régler un problème, agis. Si tu ne peux pas, accepte.",
+    "Le moment présent est l'endroit où la vie te touche vraiment.",
+    "Méditer, c'est se rappeler qu'on n'a jamais quitté la maison.",
+    "Toute résistance est une conversation avec ce qui n'est plus ou pas encore.",
+    "Sois la paix que tu veux voir dans le monde.",
+    "Un esprit calme fabrique des doigts agiles.",
+    "Parfois, la réponse est de ne pas chercher la réponse.",
+    "Trois choses ne peuvent être longtemps cachées : le soleil, la lune et la vérité.",
+    "Ne demeure pas dans le passé, ne rêve pas du futur.",
+    "Le calme de l'esprit est la véritable richesse.",
+    "Laisse aller ce qui n'est plus, accueille ce qui est.",
+    "Chaque instant est une nouvelle porte.",
+    "Respire profondément, tout est déjà là.",
+    "Un esprit encombré ne peut voir clairement.",
+    "Ce qui est simple est souvent ce qui est vrai.",
+    "La nature ne se presse pas, pourtant tout est accompli.",
+    "Moins de contrôle, plus de confiance.",
+    "Le bonheur ne dépend pas de ce que tu as, mais de comment tu regardes.",
+    "Quand tu lâches prise, tout trouve sa place.",
+    "Marche lentement, mais ne t'arrête jamais.",
+    "Ce que tu cherches te cherche aussi.",
+    "Le moment présent est ton seul refuge.",
+    "Sois doux avec toi-même, tu es en train d'apprendre.",
+    "Il n'y a pas de chemin vers le bonheur : le bonheur est le chemin.",
+    "La racine de la souffrance est l'attachement.",
+    "Le mental est tout. Ce que tu penses, tu le deviens.",
+    "Rien n'est permanent.",
+    "La patience est la prière la plus élevée.",
+    "Celui qui sait se contenter est riche.",
+    "Quand l'élève est prêt, le maître apparaît.",
+    "Le vrai miracle est de marcher sur la terre.",
+    "Bois ton thé lentement et avec respect.",
+    "Parle seulement lorsque tes mots sont plus doux que le silence.",
+    "Le silence est une source de grande force.",
+    "Reste immobile, et le monde se révélera.",
+    "La voie n'est pas difficile pour qui ne préfère rien.",
+    "Assieds-toi, ne fais rien, le printemps vient et l'herbe pousse toute seule.",
+    "Le doigt qui montre la lune n'est pas la lune.",
+    "Laisse aller ou sois traîné.",
+    "Un moment peut changer un jour, un jour peut changer une vie.",
+    "Le chemin est sous tes pieds.",
+    "La compassion est la base de toute morale.",
+    "Le détachement mène à la liberté."
+  ];
+
+  const ITEMS = [
+    { id:'incense',  name:'Encens',         emoji:'🪔', baseCost:15,       ps:0.2,   desc:'Exhale la sagesse' },
+    { id:'monk',     name:'Moine Novice',   emoji:'🙇', baseCost:120,      ps:1,     desc:'+clic passif' },
+    { id:'statue',   name:'Statue de Jade', emoji:'🗿', baseCost:900,      ps:6,     desc:'Énergie divine' },
+    { id:'garden',   name:'Jardin Zen',     emoji:'🎋', baseCost:6000,     ps:30,    desc:'Flux naturel' },
+    { id:'pagoda',   name:'Pagode',         emoji:'🏯', baseCost:40000,    ps:120,   desc:'Rayonnement' },
+    { id:'drum',     name:'Tambour Sacré',  emoji:'🥁', baseCost:200000,   ps:500,   desc:'Vibration cosmique' },
+    { id:'pond',     name:'Étang de Lotus', emoji:'🪷', baseCost:1000000,  ps:2000,  desc:'Paix éternelle' },
+    { id:'shrine',   name:'Sanctuaire',     emoji:'⛩️', baseCost:5000000,  ps:8000,  desc:'Porte entre mondes' },
+    { id:'mountain', name:'Montagne Sacrée',emoji:'🏔️', baseCost:25000000, ps:30000, desc:'Axe du cosmos' },
+    { id:'cosmos',   name:'Cosmos Éveillé', emoji:'🌌', baseCost:150000000,ps:120000,desc:'Tout est Un' }
+  ];
+
+  const ACHIEVEMENTS = [
+    { id: 'ach_click_100',   title: 'Premier Gōng-ǎn',     desc: '100 clics',           emoji: '🔔', condition: (s) => s.totalClicks >= 100,       reward: 500 },
+    { id: 'ach_click_1000',  title: 'Diligence',           desc: '1000 clics',          emoji: '🔔', condition: (s) => s.totalClicks >= 1000,      reward: 2000 },
+    { id: 'ach_click_10000', title: 'Moine Infatigable',   desc: '10 000 clics',        emoji: '🔔', condition: (s) => s.totalClicks >= 10000,     reward: 15000 },
+    { id: 'ach_score_1k',    title: 'Graine de Bouddha',   desc: '1000 sagesse',        emoji: '🌱', condition: (s) => s.allTimeScore >= 1000,     reward: 500 },
+    { id: 'ach_score_10k',   title: 'Petite Feuille',      desc: '10 000 sagesse',      emoji: '🍃', condition: (s) => s.allTimeScore >= 10000,    reward: 3000 },
+    { id: 'ach_score_100k',  title: 'Arbre en Fleur',      desc: '100 000 sagesse',     emoji: '🌸', condition: (s) => s.allTimeScore >= 100000,   reward: 15000 },
+    { id: 'ach_score_1M',    title: 'Forêt Sacrée',        desc: '1 000 000 sagesse',   emoji: '🌳', condition: (s) => s.allTimeScore >= 1000000,  reward: 100000 },
+    { id: 'ach_incense_10',  title: 'Parfum Céleste',      desc: '10 encens',           emoji: '🪔', condition: (s) => s.items.find(i => i.id === 'incense')?.qty >= 10, reward: 1000 },
+    { id: 'ach_monk_10',     title: 'Communauté',          desc: '10 moines',           emoji: '🙇', condition: (s) => s.items.find(i => i.id === 'monk')?.qty >= 10,    reward: 5000 },
+    { id: 'ach_statue_5',    title: 'Gardiens de Jade',    desc: '5 statues',           emoji: '🗿', condition: (s) => s.items.find(i => i.id === 'statue')?.qty >= 5,   reward: 10000 },
+    { id: 'ach_pagoda_3',    title: 'Trois Pagodes',       desc: '3 pagodes',           emoji: '🏯', condition: (s) => s.items.find(i => i.id === 'pagoda')?.qty >= 3,   reward: 50000 },
+    { id: 'ach_mountain_1',  title: 'Sommet Sacré',        desc: '1 montagne',          emoji: '🏔️', condition: (s) => s.items.find(i => i.id === 'mountain')?.qty >= 1, reward: 200000 },
+    { id: 'ach_pet_10',      title: 'Compagnons',          desc: '10 esprits',          emoji: '🐉', condition: (s) => s.pets.length >= 10,       reward: 5000 },
+    { id: 'ach_pet_50',      title: 'Ménagerie Zen',       desc: '50 esprits',          emoji: '🐉', condition: (s) => s.pets.length >= 50,       reward: 25000 },
+    { id: 'ach_pet_rare_1',  title: 'Rencontre Rare',      desc: '1 esprit épique+',    emoji: '✨', condition: (s) => s.pets.some(p => p.mult >= 8), reward: 10000 },
+    { id: 'ach_pet_legend_1',title: 'Légende Vivante',     desc: '1 esprit légendaire+',emoji: '🌟', condition: (s) => s.pets.some(p => p.mult >= 20), reward: 50000 },
+    { id: 'ach_collect_10',  title: 'Connaisseur',         desc: '10 esprits découverts',emoji: '📖', condition: (s) => s.discoveredSkins.length >= 10, reward: 5000 },
+    { id: 'ach_collect_25',  title: 'Érudit',              desc: '25 esprits découverts',emoji: '📖', condition: (s) => s.discoveredSkins.length >= 25, reward: 25000 },
+    { id: 'ach_fever_10',    title: 'Extase',              desc: '10 transes',          emoji: '🔥', condition: (s) => s.feverCount >= 10,       reward: 5000 },
+    { id: 'ach_fever_50',    title: 'Illumination',        desc: '50 transes',          emoji: '🔥', condition: (s) => s.feverCount >= 50,       reward: 25000 },
+    { id: 'ach_prestige_1',  title: 'Réincarnation',       desc: '1 réincarnation',     emoji: '🔮', condition: (s) => s.prestigeCount >= 1,     reward: 50000 },
+    { id: 'ach_prestige_5',  title: 'Ancêtre',             desc: '5 réincarnations',    emoji: '🔮', condition: (s) => s.prestigeCount >= 5,     reward: 200000 },
+    { id: 'ach_enso_1',      title: 'Premier Enso Parfait',desc: '1 Enso parfait',      emoji: '🎋', condition: (s) => s.ensoPerfectCount >= 1,   reward: 10000 },
+    { id: 'ach_enso_10',     title: 'Maître du Cercle',    desc: '10 Ensos parfaits',   emoji: '🎋', condition: (s) => s.ensoPerfectCount >= 10,  reward: 100000 },
+    { id: 'ach_jade_10',     title: 'Veine de Jade',       desc: '10 reliques',         emoji: '🏮', condition: (s) => s.jadeRelics >= 10,       reward: 50000 },
+  ];
+
+  const SPIRIT_RARITIES = [
+    { name: 'Petit Galet (Ishi)', emoji: '🪨', mult: 1.02, chance: 0.18, color: '#aaaaaa' },
+    { name: 'Goutte de Rosée', emoji: '💧', mult: 1.03, chance: 0.17, color: '#b0b0b0' },
+    { name: 'Brindille de Bambou', emoji: '🎋', mult: 1.04, chance: 0.16, color: '#bbbbbb' },
+    { name: 'Souffle de Vent', emoji: '🌬️', mult: 1.04, chance: 0.15, color: '#c0c0c0' },
+    { name: 'Cloche de Bronze', emoji: '🔔', mult: 1.05, chance: 0.14, color: '#cccccc' },
+    { name: 'Feuille de Ginkgo', emoji: '🍂', mult: 1.05, chance: 0.13, color: '#d0d0d0' },
+    { name: 'Sable du Jardin', emoji: '⏳', mult: 1.06, chance: 0.12, color: '#dcdcdc' },
+    { name: 'Carpe Koï Grise', emoji: '🐟', mult: 1.07, chance: 0.11, color: '#e0e0e0' },
+    { name: 'Bâton de Kyosaku', emoji: '🪵', mult: 1.12, chance: 0.09, color: '#a8d5ba' },
+    { name: 'Fleur de Lotus Blanc', emoji: '🪷', mult: 1.15, chance: 0.08, color: '#b5e3c4' },
+    { name: 'Encens Persistant', emoji: '💨', mult: 1.17, chance: 0.07, color: '#c2f0d1' },
+    { name: 'Miroir de l\'Esprit', emoji: '🪞', mult: 1.20, chance: 0.06, color: '#d0ffe0' },
+    { name: 'Grue de Papier', emoji: '🦢', mult: 1.22, chance: 0.05, color: '#88cc88' },
+    { name: 'Moine Voyageur', emoji: '🚶', mult: 1.25, chance: 0.05, color: '#77bb77' },
+    { name: 'Esprit Kodama', emoji: '🌳', mult: 1.40, chance: 0.04, color: '#4da6ff' },
+    { name: 'Guerrier Ashura', emoji: '⚔️', mult: 1.45, chance: 0.035, color: '#5dade2' },
+    { name: 'Gardien Nio', emoji: '👹', mult: 1.50, chance: 0.03, color: '#2ecc71' },
+    { name: 'Boddhisattva de Pierre', emoji: '🗿', mult: 1.60, chance: 0.025, color: '#27ae60' },
+    { name: 'Renard Kitsune', emoji: '🦊', mult: 1.75, chance: 0.02, color: '#1abc9c' },
+    { name: 'Lune du Nirvana', emoji: '🌙', mult: 1.80, chance: 0.018, color: '#16a085' },
+    { name: 'Cercle Enso', emoji: '⭕', mult: 2.00, chance: 0.012, color: '#9b59b6' },
+    { name: 'Dragon d\'Eau Zen', emoji: '🐉', mult: 2.25, chance: 0.01, color: '#8e44ad' },
+    { name: 'Lion de Karashishi', emoji: '🦁', mult: 2.50, chance: 0.009, color: '#a569bd' },
+    { name: 'Oiseau Garuda', emoji: '🦅', mult: 2.75, chance: 0.008, color: '#bb8fce' },
+    { name: 'Sagesse de Manjusri', emoji: '🗡️', mult: 3.00, chance: 0.007, color: '#d2b4de' },
+    { name: 'Arbre de la Bodhi', emoji: '🌳', mult: 5.0, chance: 0.005, color: '#f1c40f' },
+    { name: 'Siddhartha', emoji: '🧘', mult: 6.0, chance: 0.004, color: '#f39c12' },
+    { name: 'Amitabha Rayonnant', emoji: '☀️', mult: 7.0, chance: 0.003, color: '#e67e22' },
+    { name: 'Avalokiteshvara', emoji: '👁️', mult: 8.0, chance: 0.002, color: '#d35400' },
+    { name: 'Vajra de Foudre', emoji: '⚡', mult: 10.0, chance: 0.0015, color: '#e74c3c' },
+    { name: 'Vacuité (Sunyata)', emoji: '🌌', mult: 20.0, chance: 0.0008, color: '#34495e' },
+    { name: 'Le Dharma Éternel', emoji: '🎡', mult: 30.0, chance: 0.0005, color: '#2c3e50' },
+    { name: 'Huitième Conscience', emoji: '🧠', mult: 50.0, chance: 0.0003, color: '#17202a' },
+    { name: 'Éveil Pur (Satori)', emoji: '✨', mult: 100.0, chance: 0.0001, color: '#ffffff' },
+    { name: 'Unicité du Tout', emoji: '⚛️', mult: 200.0, chance: 0.00005, color: '#ffd700' },
+    { name: 'L\'Origine du Vide', emoji: '🌀', mult: 400.0, chance: 0.00001, color: '#000000' }
+  ];
+
+  // Normalisation des chances
+  (function(){ const totalChance = SPIRIT_RARITIES.reduce((s,r)=>s+r.chance,0); 
+   SPIRIT_RARITIES.forEach(r=>r.chance/=totalChance); })();
+
+  // ===================== STATE =====================
+  let state = {
+    score:0, totalClicks:0, allTimeScore:0,
+    fever:0, isFever:false, feverCount:0,
+    items: ITEMS.map(i=>({...i,qty:0})),
+    pets:[], templeLevel:1, jadeRelics:0,
+    achievements: ACHIEVEMENTS.map(a => ({...a, completed: false})),
+    discoveredSkins:[], prestigeCount:0,
+    combo:0, lastClickTime:0,
+    pityCounter:0,
+    ensoBonusEndTime:0,
+    ensoPerfectCount:0
+  };
+  const PRESTIGE_BASE = 100000;
+
+  // ===================== VARIABLES ENSO =====================
+  let ensoDrawing = false;
+  let ensoPoints = [];
+  let ensoCtx = null;
+  let ensoCanvas = null;
+
+  // ===================== HELPERS =====================
+  function fmt(n){
+    if(n<1000) return Math.floor(n).toString();
+    if(n<1e6) return (n/1000).toFixed(1)+'K';
+    if(n<1e9) return (n/1e6).toFixed(2)+'M';
+    if(n<1e12) return (n/1e9).toFixed(2)+'B';
+    if(n<1e15) return (n/1e12).toFixed(2)+'T';
+    return (n/1e15).toFixed(2)+'Qa';
+  }
+  
+  function getEnsoBonus() {
+    return Date.now() < state.ensoBonusEndTime ? 1.2 : 1;
+  }
+
+  function getClickVal(){
+    const base = Math.max(1, 1 + getPS() * 0.02);
+    const comboM = 1 + (Math.min(state.combo, 30) * 0.01);
+    const feverM = state.isFever ? 3 : 1;
+    const ensoM = getEnsoBonus();
+    return Math.floor(base * comboM * feverM * ensoM);
+  }
+
+  function getPS(){
+    const base = state.items.reduce((a,i) => a + (i.qty * i.ps), 0);
+    const petM = Math.min(state.pets.reduce((a,p) => a * p.mult, 1), 15);
+    const jadeM = 1 + (state.jadeRelics * 0.05);
+    const comboM = 1 + (Math.min(state.combo, 30) * 0.005);
+    const feverM = state.isFever ? 2 : 1;
+    const ensoM = getEnsoBonus();
+    return base * petM * jadeM * comboM * feverM * ensoM;
+  }
+
+  function itemCost(it){ return Math.floor(it.baseCost * Math.pow(1.15, it.qty)); }
+  function summonCost(){ return Math.floor(500 * Math.pow(1.08, state.pets.length)); }
+  function summonCost10(){
+    let total = 0;
+    const savedQty = state.pets.length;
+    for(let i=0;i<10;i++) total += Math.floor(500 * Math.pow(1.08, savedQty + i));
+    return Math.floor(total * 0.9);
+  }
+  function nextPrestigeCost(){ return PRESTIGE_BASE * Math.pow(3, state.templeLevel-1); }
+  function prestigeGain(){ return Math.max(1, Math.floor(Math.pow(state.allTimeScore/50000, 0.4))); }
+  function canPrestige(){ return state.allTimeScore >= nextPrestigeCost(); }
+
+  // ===================== UI UPDATE =====================
+  function updateUI(){
+    const ps = getPS(), cv = getClickVal();
+    document.getElementById('main-score').textContent = fmt(state.score);
+    document.getElementById('ps-display').textContent = `⚡ ${fmt(ps)}/s`;
+    document.getElementById('click-val-display').textContent = `👆 +${fmt(cv)}/clic`;
+    document.getElementById('temple-rank').textContent = `TEMPLE NIV. ${state.templeLevel}`;
+    document.getElementById('fever-bar').style.width = (state.isFever ? 100 : Math.min(100, state.fever)) + '%';
+
+    const bonusDiv = document.getElementById('enso-bonus-active');
+    if(bonusDiv){
+      if(Date.now() < state.ensoBonusEndTime){
+        const remaining = Math.ceil((state.ensoBonusEndTime - Date.now()) / 1000);
+        bonusDiv.innerHTML = `✨ Enso actif : +20% sagesse (${remaining}s) ✨`;
+      } else {
+        bonusDiv.innerHTML = '';
+      }
+    }
+
+    state.items.forEach(it=>{
+      const cost = itemCost(it);
+      const btn = document.getElementById('buy-'+it.id);
+      const row = document.getElementById('row-'+it.id);
+      const qty = document.getElementById('qty-'+it.id);
+      if(btn){
+        btn.disabled = state.score < cost;
+        btn.textContent = fmt(cost);
+        if(state.score >= cost){ btn.classList.add('can-afford'); if(row) row.classList.add('can-afford'); }
+        else { btn.classList.remove('can-afford'); if(row) row.classList.remove('can-afford'); }
+      }
+      if(qty) qty.textContent = '×'+it.qty;
+    });
+
+    const sc = summonCost(), sb = document.getElementById('summon-btn');
+    if(sb){ sb.disabled = state.score < sc; sb.textContent = `🌸 ×1 — ${fmt(sc)}`; if(state.score >= sc) sb.classList.add('can-afford'); else sb.classList.remove('can-afford'); }
+    const sc10 = summonCost10(), sb10 = document.getElementById('summon10-btn');
+    if(sb10){ sb10.disabled = state.score < sc10; sb10.textContent = `🌸 ×10 — ${fmt(sc10)}`; if(state.score >= sc10) sb10.classList.add('can-afford'); else sb10.classList.remove('can-afford'); }
+    const pd = document.getElementById('pity-display');
+    if(pd) pd.textContent = `Garantie Rare dans ${Math.max(0, 50 - state.pityCounter)} offrandes`;
+
+    checkAchievements();
+    renderStats();
+  }
+
+  // ===================== SHOP =====================
+  function initShop(){
+    const l = document.getElementById('shop-list'); 
+    if(!l) return;
+    l.innerHTML = '';
+    state.items.forEach(i => {
+      const d = document.createElement('div');
+      d.className = 'item-row'; d.id = 'row-'+i.id;
+      d.innerHTML = `<span style="font-size:1.6rem">${i.emoji}</span>
+        <div class="item-info">
+          <div class="item-name">${i.name}</div>
+          <div class="item-stats">${i.desc} · +${fmt(i.ps)}/s chacun</div>
+          <div class="item-qty" id="qty-${i.id}">×0</div>
+        </div>
+        <button class="buy-btn" id="buy-${i.id}">0</button>`;
+      d.querySelector('.buy-btn').addEventListener('click', (e) => {
+        const r = e.target.getBoundingClientRect();
+        buyItem(i.id, r.left + r.width/2, r.top + r.height/2);
+      });
+      l.appendChild(d);
+    });
+  }
+
+  function buyItem(id, px, py){
+    const i = state.items.find(x => x.id === id);
+    const cost = itemCost(i);
+    if(state.score >= cost){ 
+      state.score -= cost; 
+      i.qty++; 
+      if(px && py && !isNaN(px) && !isNaN(py)) spawnBuyParticles(px, py); 
+      updateUI(); 
+      saveGame();
+    }
+  }
+
+  function spawnBuyParticles(x, y){
+    for(let i=0;i<6;i++){
+      const p = document.createElement('div');
+      p.className = 'fire-ptcl';
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 30 + Math.random() * 50;
+      const dx = Math.cos(angle) * dist, dy = Math.sin(angle) * dist;
+      p.style.cssText = `left:${x}px;top:${y}px;width:7px;height:7px;background:var(--jade2);`;
+      document.body.appendChild(p);
+      p.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${dx}px,${dy}px) scale(0)`,opacity:0}],{duration:600,easing:'ease-out'}).onfinish = () => p.remove();
+    }
+  }
+
+  // ===================== ACHIEVEMENTS =====================
+  function checkAchievements(){
+    let anyCompleted = false;
+    state.achievements.forEach(ach => {
+      if(ach.completed) return;
+      if(ach.condition(state)){
+        ach.completed = true;
+        state.score += ach.reward;
+        state.allTimeScore += ach.reward;
+        showAchievementFlash(ach.emoji, ach.title, ach.reward);
+        anyCompleted = true;
+        
+        const nav = document.getElementById('nav-missions');
+        if(nav && !nav.querySelector('.nav-notif')){
+          const dot = document.createElement('div'); 
+          dot.className = 'nav-notif'; 
+          nav.appendChild(dot);
+          setTimeout(() => dot.remove(), 4000);
+        }
+      }
+    });
+    if(anyCompleted){
+      updateUI();
+      renderAchievements();
+    }
+  }
+
+  function showAchievementFlash(emoji, title, reward){
+    const flashEmoji = document.getElementById('flash-emoji');
+    const flashTitle = document.getElementById('flash-title');
+    const flashSub = document.getElementById('flash-sub');
+    if(flashEmoji) flashEmoji.textContent = emoji;
+    if(flashTitle) flashTitle.textContent = '🏆 ' + title + ' !';
+    if(flashSub) flashSub.textContent = `+${fmt(reward)} sagesse · Succès débloqué !`;
+    const f = document.getElementById('sutra-flash');
+    if(f){
+      f.classList.remove('flash');
+      void f.offsetWidth;
+      f.classList.add('flash');
+    }
+  }
+
+  function renderAchievements(){
+    const l = document.getElementById('mission-list'); 
+    if(!l) return;
+    l.innerHTML = '';
+    
+    const completedCount = state.achievements.filter(a => a.completed).length;
+    const totalCount = state.achievements.length;
+    
+    const header = document.createElement('div');
+    header.style.cssText = 'text-align:center;padding:8px;margin-bottom:8px;border-bottom:1px solid rgba(212,175,55,0.2);';
+    header.innerHTML = `<span style="font-size:0.75rem;color:var(--gold)">🏆 ${completedCount} / ${totalCount} SUTRAS</span>`;
+    l.appendChild(header);
+    
+    state.achievements.forEach(ach => {
+      const completed = ach.completed;
+      const d = document.createElement('div');
+      d.className = 'sutra-row' + (completed ? ' completed' : ' active');
+      d.style.opacity = completed ? '0.7' : '1';
+      d.innerHTML = `<span style="font-size:1.6rem;filter:${completed ? 'none' : 'grayscale(0.5)'}">${ach.emoji}</span>
+        <div style="flex:1">
+          <b style="font-size:0.82rem;color:${completed ? 'var(--jade2)' : 'var(--gold)'}">${ach.title}</b>
+          <div style="font-size:0.62rem;opacity:0.6;margin-top:2px;">${ach.desc}</div>
+          <div class="sutra-reward" style="color:${completed ? 'var(--jade2)' : 'var(--gold)'}">
+            ${completed ? '✅ ACCOMPLI' : `🏆 +${fmt(ach.reward)} sagesse`}
+          </div>
+        </div>`;
+      l.appendChild(d);
+    });
+  }
+
+  // ===================== ESPRITS =====================
+  let currentPetTab = 'esprits';
+  function setPetTab(tab){
+    currentPetTab = tab;
+    const te = document.getElementById('tab-esprits');
+    const tc = document.getElementById('tab-collection');
+    if(tab === 'esprits'){
+      if(te){te.style.background = 'rgba(212,175,55,0.12)'; te.style.color = 'var(--gold)'; te.style.borderColor = 'rgba(212,175,55,0.4)';}
+      if(tc){tc.style.background = 'rgba(255,255,255,0.04)'; tc.style.color = 'rgba(244,228,188,0.5)'; tc.style.borderColor = 'rgba(255,255,255,0.1)';}
+    } else {
+      if(tc){tc.style.background = 'rgba(180,100,255,0.12)'; tc.style.color = '#cc88ff'; tc.style.borderColor = 'rgba(180,100,255,0.4)';}
+      if(te){te.style.background = 'rgba(255,255,255,0.04)'; te.style.color = 'rgba(244,228,188,0.5)'; te.style.borderColor = 'rgba(255,255,255,0.1)';}
+    }
+    renderPets();
+  }
+
+  function rollOne(){
+    state.pityCounter++;
+    let r = Math.random(), acc = 0, sel = SPIRIT_RARITIES[0];
+    const rarityIndex = state.pityCounter >= 50 ? 6 : -1;
+    if(rarityIndex >= 0){ sel = SPIRIT_RARITIES[rarityIndex]; state.pityCounter = 0; }
+    else {
+      for(const p of SPIRIT_RARITIES){ acc += p.chance; if(r <= acc){ sel = p; break; } }
+      if(SPIRIT_RARITIES.indexOf(sel) >= 5) state.pityCounter = 0;
+    }
+    state.pets.push({...sel});
+    if(!state.discoveredSkins.includes(sel.name)) state.discoveredSkins.push(sel.name);
+    return sel;
+  }
+
+  function summonPet(){
+    const cost = summonCost(); if(state.score < cost) return;
+    state.score -= cost;
+    const sel = rollOne();
+    showRarityReveal(sel);
+    renderPets(); updateUI(); saveGame();
+  }
+
+  function summonPet10(){
+    const cost10 = summonCost10();
+    if(state.score < cost10) return;
+    state.score -= cost10;
+    const results = [];
+    for(let i=0;i<10;i++) results.push(rollOne());
+    showMultiPull(results);
+    renderPets(); updateUI(); saveGame();
+  }
+
+  function showMultiPull(results){
+    const overlay = document.getElementById('multi-pull-overlay');
+    const grid = document.getElementById('multi-pull-grid');
+    const bestText = document.getElementById('pull-best-text');
+    if(!overlay||!grid) return;
+    grid.innerHTML = '';
+    overlay.classList.add('active');
+    let bestIdx = -1;
+    results.forEach(r => {
+      const idx = SPIRIT_RARITIES.findIndex(s => s.name === r.name);
+      if(idx > bestIdx) bestIdx = idx;
+    });
+    const best = bestIdx >= 0 ? SPIRIT_RARITIES[bestIdx] : null;
+    if(bestText) bestText.textContent = best && bestIdx >= 6 ? `✨ Meilleur : ${best.emoji} ${best.name} (×${best.mult})` : '';
+    results.forEach((r,i) => {
+      const card = document.createElement('div');
+      card.className = 'pull-card';
+      const idx = SPIRIT_RARITIES.findIndex(s => s.name === r.name);
+      if(idx >= 6) { card.classList.add('highlight'); card.style.setProperty('color', r.color||'var(--gold)'); card.style.borderColor = r.color||'var(--gold)'; }
+      card.innerHTML = `<span class="pull-card-emoji">${r.emoji}</span><div class="pull-card-name" style="color:${r.color||'var(--paper)'}">${r.name}</div><div class="pull-card-rarity">×${r.mult}</div>`;
+      grid.appendChild(card);
+      setTimeout(() => {
+        card.classList.add('revealed');
+        if(idx >= 10) createParticles(window.innerWidth/2, window.innerHeight/2, 6, r.color||'#ffd700');
+      }, 120 * i);
+    });
+  }
+
+  function closeMultiPull(){
+    const overlay = document.getElementById('multi-pull-overlay');
+    if(overlay) overlay.classList.remove('active');
+  }
+
+  function showRarityReveal(sel){
+    const revEmoji = document.getElementById('rev-emoji');
+    const revRarity = document.getElementById('rev-rarity');
+    const revName = document.getElementById('rev-name');
+    const revBonus = document.getElementById('rev-bonus');
+    if(revEmoji) revEmoji.textContent = sel.emoji;
+    if(revRarity) revRarity.textContent = sel.name.toUpperCase();
+    if(revName) revName.textContent = sel.name;
+    if(revBonus) revBonus.textContent = `×${sel.mult} sagesse`;
+    const el = document.getElementById('rarity-reveal');
+    if(el){
+      el.classList.remove('show'); 
+      void el.offsetWidth; 
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+  }
+
+  function tryFuse(rarityName){
+    const idx = SPIRIT_RARITIES.findIndex(r => r.name === rarityName);
+    if(idx < 0 || idx >= SPIRIT_RARITIES.length - 1) return;
+    const count = state.pets.filter(p => p.name === rarityName).length;
+    if(count < 3) return;
+    let removed = 0;
+    state.pets = state.pets.filter(p => {
+      if(p.name === rarityName && removed < 3){ removed++; return false; }
+      return true;
+    });
+    const next = SPIRIT_RARITIES[idx + 1];
+    state.pets.push({...next});
+    if(!state.discoveredSkins.includes(next.name)) state.discoveredSkins.push(next.name);
+    const fe = document.getElementById('fuse-emoji');
+    const fn = document.getElementById('fuse-name');
+    const fb = document.getElementById('fuse-bonus');
+    if(fe) fe.textContent = next.emoji;
+    if(fn) fn.textContent = next.name;
+    if(fb) fb.textContent = `×${next.mult} sagesse`;
+    const fl = document.getElementById('fuse-flash');
+    if(fl){ fl.classList.remove('show'); void fl.offsetWidth; fl.classList.add('show'); setTimeout(() => fl.classList.remove('show'), 2200); }
+    createParticles(window.innerWidth/2, window.innerHeight/2, 16, next.color||'#cc88ff');
+    renderPets(); updateUI(); saveGame();
+  }
+
+  function renderPets(){
+    const c = document.getElementById('pets-tab-content'); if(!c) return;
+    if(currentPetTab === 'collection'){ renderCollection(c); return; }
+    c.style.display = '';
+    c.innerHTML = '';
+    c.style.display = 'grid';
+    c.style.gridTemplateColumns = '1fr 1fr';
+    c.style.gap = '8px';
+    if(!state.pets.length){ c.innerHTML = '<div style="opacity:0.4;text-align:center;padding:20px;grid-column:span 2;">Aucun esprit invoqué.</div>'; return; }
+    const counts = {};
+    state.pets.forEach(p => { if(!counts[p.name]) counts[p.name] = {...p, n:0}; counts[p.name].n++; });
+    Object.values(counts).forEach(p => {
+      const idx = SPIRIT_RARITIES.findIndex(r => r.name === p.name);
+      const canFuse = p.n >= 3 && idx < SPIRIT_RARITIES.length - 1;
+      const total = Math.pow(p.mult, p.n).toFixed(2);
+      const card = document.createElement('div'); card.className = 'pet-card';
+      card.style.borderColor = p.color || 'rgba(212,175,55,0.2)';
+      card.innerHTML = `<span class="pet-emoji">${p.emoji}</span>
+        <div class="pet-name" style="color:${p.color||'var(--gold)'}">${p.name}</div>
+        <div class="pet-bonus">×${p.mult} chacun</div>
+        <div class="pet-total">×${p.n} · Bonus: ×${total}</div>
+        <button class="fuse-btn${canFuse?' ready':''}" ${canFuse?'':'disabled'} data-rarity="${p.name}">
+          ${canFuse?'✨ FUSIONNER (×3)':'Fusionner (×3 requis)'}
+        </button>`;
+      card.querySelector('.fuse-btn').addEventListener('click', () => tryFuse(p.name));
+      c.appendChild(card);
+    });
+  }
+
+  function renderCollection(c){
+    c.style.display = 'block';
+    const discovered = state.discoveredSkins;
+    const total = SPIRIT_RARITIES.length;
+    c.innerHTML = `<div style="font-size:0.68rem;opacity:0.6;margin-bottom:8px;text-align:center;">${discovered.length} / ${total} esprits découverts</div>
+    <div class="collection-grid">` +
+    SPIRIT_RARITIES.map(r => {
+      const found = discovered.includes(r.name);
+      return `<div class="coll-cell ${found?'unlocked':'locked'}" style="${found?'border-color:'+r.color+'44':''};background:${found?r.color+'11':''}">
+        <span class="coll-cell-emoji">${found?r.emoji:'❓'}</span>
+        <div class="coll-cell-name" style="color:${found?r.color:'rgba(255,255,255,0.3)'}">${found?r.name:'???'}</div>
+        <div class="coll-cell-mult">${found?'×'+r.mult:''}</div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  // ===================== ENSO =====================
+  function initEnsoCanvas(){
+    ensoCanvas = document.getElementById('ensoCanvas');
+    if(!ensoCanvas) return;
+    ensoCtx = ensoCanvas.getContext('2d');
+    clearEnsoCanvas();
+    
+    const startDraw = (e) => {
+      e.preventDefault();
+      ensoDrawing = true;
+      ensoPoints = [];
+      const rect = ensoCanvas.getBoundingClientRect();
+      const scaleX = ensoCanvas.width / rect.width;
+      const scaleY = ensoCanvas.height / rect.height;
+      const clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
+      const clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
+      const x = (clientX - rect.left) * scaleX;
+      const y = (clientY - rect.top) * scaleY;
+      if(x >= 0 && x <= ensoCanvas.width && y >= 0 && y <= ensoCanvas.height){
+        ensoPoints.push({x, y});
+        ensoCtx.beginPath();
+        ensoCtx.moveTo(x, y);
+        ensoCtx.lineTo(x+1, y+1);
+        ensoCtx.stroke();
+      }
+    };
+    
+    const draw = (e) => {
+      if(!ensoDrawing) return;
+      e.preventDefault();
+      const rect = ensoCanvas.getBoundingClientRect();
+      const scaleX = ensoCanvas.width / rect.width;
+      const scaleY = ensoCanvas.height / rect.height;
+      const clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
+      const clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
+      const x = (clientX - rect.left) * scaleX;
+      const y = (clientY - rect.top) * scaleY;
+      if(x >= 0 && x <= ensoCanvas.width && y >= 0 && y <= ensoCanvas.height){
+        ensoPoints.push({x, y});
+        ensoCtx.lineTo(x, y);
+        ensoCtx.strokeStyle = '#d4af37';
+        ensoCtx.lineWidth = 2.5;
+        ensoCtx.lineCap = 'round';
+        ensoCtx.lineJoin = 'round';
+        ensoCtx.stroke();
+        ensoCtx.beginPath();
+        ensoCtx.moveTo(x, y);
+      }
+    };
+    
+    const stopDraw = () => {
+      ensoDrawing = false;
+    };
+    
+    ensoCanvas.addEventListener('mousedown', startDraw);
+    ensoCanvas.addEventListener('mousemove', draw);
+    ensoCanvas.addEventListener('mouseup', stopDraw);
+    ensoCanvas.addEventListener('touchstart', startDraw);
+    ensoCanvas.addEventListener('touchmove', draw);
+    ensoCanvas.addEventListener('touchend', stopDraw);
+  }
+  
+  function clearEnsoCanvas(){
+    if(!ensoCtx || !ensoCanvas) return;
+    ensoCtx.clearRect(0, 0, ensoCanvas.width, ensoCanvas.height);
+    ensoCtx.fillStyle = '#1a1208';
+    ensoCtx.fillRect(0, 0, ensoCanvas.width, ensoCanvas.height);
+    ensoPoints = [];
+    ensoDrawing = false;
+  }
+  
+  function evaluateEnso(){
+    if(ensoPoints.length < 30){
+      showBanner("❌ Pas assez de tracé... Tracez un cercle entier !");
+      return;
+    }
+    
+    let centerX = 0, centerY = 0;
+    for(const p of ensoPoints){
+      centerX += p.x;
+      centerY += p.y;
+    }
+    centerX /= ensoPoints.length;
+    centerY /= ensoPoints.length;
+    
+    let distances = [];
+    for(const p of ensoPoints){
+      const dx = p.x - centerX;
+      const dy = p.y - centerY;
+      distances.push(Math.sqrt(dx*dx + dy*dy));
+    }
+    const avgDist = distances.reduce((a,b) => a + b, 0) / distances.length;
+    let variance = 0;
+    for(const d of distances){
+      variance += Math.pow(d - avgDist, 2);
+    }
+    variance /= distances.length;
+    const regularity = Math.max(0, Math.min(1, 1 - (variance / (avgDist * avgDist))));
+    
+    let totalDistance = 0;
+    for(let i = 1; i < ensoPoints.length; i++){
+      const dx = ensoPoints[i].x - ensoPoints[i-1].x;
+      const dy = ensoPoints[i].y - ensoPoints[i-1].y;
+      totalDistance += Math.sqrt(dx*dx + dy*dy);
+    }
+    const circumference = 2 * Math.PI * avgDist;
+    const completeness = Math.min(1, totalDistance / circumference);
+    
+    let score = Math.floor((regularity * 0.6 + completeness * 0.4) * 100);
+    score = Math.min(100, Math.max(0, score));
+    
+    const baseReward = Math.floor(getPS() * 15 + 500);
+    let multiplier = 1;
+    let message = "";
+    if(score >= 90){
+      multiplier = 3;
+      message = "🌟 Parfait ! L'Enso est pur !";
+      createParticles(ensoCanvas.getBoundingClientRect().left + 110, ensoCanvas.getBoundingClientRect().top + 110, 30, '#ffd700');
+    } else if(score >= 70){
+      multiplier = 2;
+      message = "✨ Très bel Enso !";
+    } else if(score >= 50){
+      multiplier = 1.5;
+      message = "🍃 Beau début...";
+    } else {
+      multiplier = 1;
+      message = "🪨 Continue de tracer...";
+    }
+    
+    const reward = Math.floor(baseReward * multiplier);
+    state.score += reward;
+    state.allTimeScore += reward;
+    
+    if(score >= 80){
+      state.ensoPerfectCount++;
+      state.ensoBonusEndTime = Date.now() + 120000;
+      showBanner(`🎋 Enso parfait ! +20% sagesse pendant 2 min ! +${fmt(reward)} sagesse`);
+      showPerfectEnsoAnimation();
+    } else {
+      showBanner(`🍃 ${message} +${fmt(reward)} sagesse`);
+    }
+    
+    document.getElementById('enso-score-display').innerHTML = `Dernier score : ${score}/100 — ${message}`;
+    
+    const container = document.querySelector('.enso-canvas-container');
+    if(container){
+      const flash = document.createElement('div');
+      flash.style.position = 'absolute';
+      flash.style.inset = '0';
+      flash.style.borderRadius = '50%';
+      flash.style.background = 'radial-gradient(circle, rgba(212,175,55,0.4), transparent)';
+      flash.style.pointerEvents = 'none';
+      flash.style.animation = 'lootFlash 0.8s ease-out forwards';
+      container.appendChild(flash);
+      setTimeout(() => flash.remove(), 800);
+    }
+    
+    clearEnsoCanvas();
+    updateUI();
+    saveGame();
+  }
+
+  function showPerfectEnsoAnimation() {
+    const overlay = document.createElement('div');
+    overlay.className = 'enso-perfect-overlay';
+    const circle = document.createElement('div');
+    circle.className = 'enso-perfect-circle';
+    const text = document.createElement('div');
+    text.className = 'perfect-text';
+    text.textContent = 'ENSŌ PARFAIT';
+    circle.appendChild(text);
+    overlay.appendChild(circle);
+    document.body.appendChild(overlay);
+    setTimeout(() => {
+      if(overlay && overlay.parentNode) overlay.remove();
+    }, 3000);
+  }
+
+  // ===================== CLICK HANDLER =====================
+  function handleClick(e){
+    const v = getClickVal();
+    state.score += v; state.allTimeScore += v; state.totalClicks++;
+    const starBtn = document.getElementById('star-btn');
+    if(!starBtn) return;
+    const r = starBtn.getBoundingClientRect();
+    let cx, cy;
+    if(e && e.clientX && e.clientX > 0 && e.clientY > 0){
+      cx = e.clientX;
+      cy = e.clientY;
+    } else if(e && e.touches && e.touches[0] && e.touches[0].clientX){
+      cx = e.touches[0].clientX;
+      cy = e.touches[0].clientY;
+    } else {
+      cx = r.left + r.width/2;
+      cy = r.top + r.height/2;
+    }
+    
+    const now = Date.now();
+    if(now - state.lastClickTime < 600) state.combo++; else state.combo = 1;
+    state.lastClickTime = now;
+    const cd = document.getElementById('combo-display');
+    if(state.combo > 2){ if(cd){ cd.textContent = `🔥 COMBO ×${state.combo}`; cd.classList.add('visible'); } }
+    else if(cd) cd.classList.remove('visible');
+    
+    if(state.combo >= 10 && state.combo % 10 === 0){
+      const pop = document.createElement('div'); pop.className = 'combo-pop';
+      pop.style.cssText = `left:${cx}px;top:${cy-30}px;font-size:${0.8+Math.min(state.combo/50,1)}rem;`;
+      pop.textContent = `🔥 COMBO ${state.combo}!`; document.body.appendChild(pop); setTimeout(() => pop.remove(), 1000);
+    }
+    
+    const pop = document.createElement('div'); pop.className = 'click-pop';
+    pop.style.cssText = `left:${cx}px;top:${cy}px;color:${state.isFever?'#fff':'var(--gold)'};font-size:${0.9+Math.min(state.combo,20)*0.02}rem;transform:translate(-50%,-50%);`;
+    pop.textContent = `+${fmt(v)}`; 
+    document.body.appendChild(pop); 
+    setTimeout(() => pop.remove(), 900);
+    
+    createParticles(cx, cy, 4, state.isFever ? '#fff' : '#d4af37');
+    
+    if(!state.isFever){ 
+      state.fever += 0.3;
+      if(state.fever >= 100) startFever(); 
+    } 
+    
+    starBtn.classList.remove('bell-ring'); 
+    void starBtn.offsetWidth; 
+    starBtn.classList.add('bell-ring');
+    setTimeout(() => starBtn.classList.remove('bell-ring'), 150);
+    const wave = document.createElement('div'); 
+    wave.className = 'shockwave' + (state.isFever ? ' fever-wave' : '');
+    wave.style.cssText = 'left:50%;top:50%;transform:translate(-50%,-50%);position:absolute;';
+    starBtn.appendChild(wave); 
+    setTimeout(() => wave.remove(), 560);
+    updateUI(); 
+    saveGame();
+  }
+
+  function startFever(){
+    state.isFever = true; 
+    state.feverCount++;
+    document.getElementById('star-zone').classList.add('fever-active');
+    let duration = 6;
+    let c = 100;
+    const iv = setInterval(() => {
+      c -= 100 / duration;
+      const feverBar = document.getElementById('fever-bar');
+      if(feverBar) feverBar.style.width = Math.max(0, c) + '%';
+      if(c <= 0){ 
+        clearInterval(iv); 
+        state.isFever = false; 
+        state.fever = 0; 
+        document.getElementById('star-zone').classList.remove('fever-active'); 
+        updateUI(); 
+      }
+    }, 100);
+  }
+
+  function createParticles(x, y, count, color){
+    for(let i = 0; i < count; i++){
+      const p = document.createElement('div'); 
+      p.style.position = 'fixed';
+      p.style.left = x + 'px';
+      p.style.top = y + 'px';
+      p.style.width = '5px';
+      p.style.height = '5px';
+      p.style.background = color;
+      p.style.borderRadius = '50%';
+      p.style.pointerEvents = 'none';
+      p.style.zIndex = '10000';
+      document.body.appendChild(p);
+      const dx = (Math.random() - 0.5) * 80, dy = (Math.random() - 0.5) * 80;
+      p.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${dx}px,${dy}px)`,opacity:0}],{duration:700,easing:'ease-out'}).onfinish = () => p.remove();
+    }
+  }
+
+  // ===================== PRESTIGE =====================
+  function askPrestige(){
+    if(!canPrestige()) return;
+    const gain = prestigeGain();
+    const modalText = document.getElementById('modal-text');
+    if(modalText){
+      modalText.innerHTML = `
+        <b style="color:var(--jade2)">+${gain} Reliques de Jade</b><br>
+        Bonus permanent +${(state.jadeRelics + gain) * 10}%<br>
+        <small style="opacity:0.6">Prochain seuil : ${fmt(nextPrestigeCost() * 2.5)}</small><br>
+        <small style="color:#ff8888">Réinitialise sagesse, bâtiments et esprits.</small>`;
+    }
+    document.getElementById('custom-modal').style.display = 'flex';
+  }
+
+  function confirmPrestige(){
+    if(!canPrestige()) return;
+    state.jadeRelics += prestigeGain(); 
+    state.templeLevel++; 
+    state.prestigeCount++;
+    state.score = 0; 
+    state.allTimeScore = 0; 
+    state.totalClicks = 0;
+    state.fever = 0; 
+    state.isFever = false; 
+    state.feverCount = 0;
+    state.items.forEach(i => i.qty = 0); 
+    state.pets = []; 
+    state.combo = 0; 
+    state.pityCounter = 0;
+    state.ensoBonusEndTime = 0;
+    state.achievements.forEach(a => { a.completed = false; });
+    document.getElementById('star-zone').classList.remove('fever-active');
+    hideModal(); 
+    initShop(); 
+    renderPets(); 
+    renderAchievements();
+    closePanels(); 
+    updateUI();
+    saveGame();
+    showBanner(`🏮 Réincarnation ${state.templeLevel} ! +${state.jadeRelics} Reliques !`);
+  }
+
+  function hideModal(){ document.getElementById('custom-modal').style.display = 'none'; }
+
+  // ===================== STATS =====================
+  function renderStats(){
+    const a = document.getElementById('stats-area'); if(!a) return;
+    const cost = nextPrestigeCost(), gain = prestigeGain(), canDo = canPrestige();
+    const prog = Math.min(100, (state.allTimeScore / cost) * 100).toFixed(1);
+    const petMult = state.pets.reduce((a,p) => a * p.mult, 1).toFixed(2);
+    a.innerHTML = `
+      ${state.jadeRelics > 0 ? `<div class="jade-banner">🏮 ${state.jadeRelics} Reliques de Jade · Bonus permanent +${state.jadeRelics * 10}%</div>` : ''}
+      <div class="stat-line"><span>⛩️ Niveau Temple</span><b>${state.templeLevel}</b></div>
+      <div class="stat-line"><span>👆 Clics totaux</span><b>${state.totalClicks.toLocaleString('fr-FR')}</b></div>
+      <div class="stat-line"><span>💠 Sagesse totale</span><b>${fmt(state.allTimeScore)}</b></div>
+      <div class="stat-line"><span>⚡ Production/s</span><b style="color:var(--jade2)">${fmt(getPS())}</b></div>
+      <div class="stat-line"><span>🐉 Esprits invoqués</span><b>${state.pets.length}</b></div>
+      <div class="stat-line"><span>✨ Bonus esprits</span><b>×${petMult}</b></div>
+      <div class="stat-line"><span>🎋 Concours Enso</span><b>${state.ensoBonusEndTime > Date.now() ? 'Bonus actif' : 'Inactif'}</b></div>
+      <div class="stat-line"><span>🔥 Transes sacrées</span><b>${state.feverCount}</b></div>
+      <div class="stat-line"><span>🏮 Reliques de Jade</span><b style="color:var(--jade2)">${state.jadeRelics}</b></div>
+      <div class="stat-line"><span>🔮 Réincarnations</span><b>${state.prestigeCount}</b></div>
+      <div class="prestige-box">
+        <div style="font-size:0.75rem;opacity:0.7;margin-bottom:6px;">Prochaine Réincarnation</div>
+        <div style="display:flex;justify-content:space-between;font-size:0.75rem;"><span style="color:${canDo?'var(--jade2)':'#ff6666'}">${canDo?'✅ PRÊT':'❌ '+fmt(cost-state.allTimeScore)+' manquant'}</span><span>+${gain} Jade</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
+        <div style="font-size:0.68rem;opacity:0.6;text-align:right">${prog}%</div>
+        <button class="prestige-btn" onclick="askPrestige()" ${canDo?'':'disabled'}>🔮 Se Réincarner</button>
+      </div>`;
+  }
+
+  // ===================== PANEL NAV =====================
+  function openPanel(id, btn){
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    const targetPanel = document.getElementById('panel-' + id);
+    if(targetPanel) targetPanel.classList.add('open');
+    if(btn) btn.classList.add('active');
+    if(id === 'pets'){ currentPetTab = 'esprits'; setPetTab('esprits'); }
+    if(id === 'missions') renderAchievements();
+    if(id === 'stats') renderStats();
+  }
+
+  function closePanels(){
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    const defaultNav = document.getElementById('nav-shop');
+    if(defaultNav) defaultNav.classList.add('active');
+  }
+
+  // ===================== BANNER =====================
+  function showBanner(msg){
+    const b = document.getElementById('levelup-banner');
+    const levelupText = document.getElementById('levelup-text');
+    if(levelupText) levelupText.textContent = msg;
+    if(b){
+      b.classList.add('show'); 
+      setTimeout(() => b.classList.remove('show'), 3000);
+    }
+  }
+
+  // ===================== ZEN QUOTE =====================
+  let qTimer = null;
+  function rotateQuote(){
+    const el = document.getElementById('zen-quote'); 
+    if(!el) return;
+    if(qTimer) clearTimeout(qTimer);
+    el.classList.add('fade-out');
+    setTimeout(() => { 
+      el.textContent = '"' + ZEN_QUOTES[Math.floor(Math.random() * ZEN_QUOTES.length)] + '"'; 
+      el.classList.remove('fade-out'); 
+    }, 800);
+    qTimer = setTimeout(rotateQuote, 14000);
+  }
+
+  // ===================== GOLDEN SPIRIT EVENT =====================
+  function spawnGoldenSpirit(){
+    const g = document.createElement('div'); 
+    g.className = 'golden-spirit'; 
+    g.textContent = '🌟';
+    g.style.top = (15 + Math.random() * 50) + 'vh';
+    g.style.left = '-8%';
+    document.body.appendChild(g);
+    const bonus = Math.floor(getPS() * 30 + 1000);
+    const lure = document.createElement('div'); 
+    lure.className = 'spirit-lure';
+    lure.style.cssText = `left:8%;top:calc(${g.style.top} - 20px);position:fixed;`;
+    lure.textContent = '⭐ Attrapez l\'esprit !'; 
+    document.body.appendChild(lure);
+    setTimeout(() => lure.remove(), 2500);
+    g.addEventListener('click', () => {
+      state.score += bonus; state.allTimeScore += bonus; 
+      g.remove();
+      showBanner(`🌟 Esprit Doré ! +${fmt(bonus)} sagesse !`);
+      createParticles(window.innerWidth/2, window.innerHeight/3, 20, '#ffd700');
+      updateUI();
+      saveGame();
+    });
+    setTimeout(() => {
+      if(g && g.parentNode) g.remove();
+    }, 7000);
+    setTimeout(spawnGoldenSpirit, 60000 + Math.random() * 120000);
+  }
+
+  // ===================== SAUVEGARDE =====================
+  function saveGame() {
+    const saveData = {
+      score: state.score,
+      totalClicks: state.totalClicks,
+      allTimeScore: state.allTimeScore,
+      fever: state.fever,
+      isFever: state.isFever,
+      feverCount: state.feverCount,
+      items: state.items.map(i => ({ id: i.id, qty: i.qty })),
+      pets: state.pets,
+      templeLevel: state.templeLevel,
+      jadeRelics: state.jadeRelics,
+      achievements: state.achievements.map(a => ({ id: a.id, completed: a.completed })),
+      discoveredSkins: state.discoveredSkins,
+      prestigeCount: state.prestigeCount,
+      combo: state.combo,
+      lastClickTime: state.lastClickTime,
+      pityCounter: state.pityCounter,
+      ensoBonusEndTime: state.ensoBonusEndTime,
+      ensoPerfectCount: state.ensoPerfectCount
+    };
+    localStorage.setItem('monasteryClickerSave', JSON.stringify(saveData));
+    console.log("💾 Jeu sauvegardé");
+  }
+
+  function loadGame() {
+    const saveData = localStorage.getItem('monasteryClickerSave');
+    if(!saveData) return false;
+    
+    try {
+      const data = JSON.parse(saveData);
+      
+      state.score = data.score || 0;
+      state.totalClicks = data.totalClicks || 0;
+      state.allTimeScore = data.allTimeScore || 0;
+      state.fever = data.fever || 0;
+      state.isFever = data.isFever || false;
+      state.feverCount = data.feverCount || 0;
+      state.templeLevel = data.templeLevel || 1;
+      state.jadeRelics = data.jadeRelics || 0;
+      state.discoveredSkins = data.discoveredSkins || [];
+      state.prestigeCount = data.prestigeCount || 0;
+      state.combo = data.combo || 0;
+      state.lastClickTime = data.lastClickTime || 0;
+      state.pityCounter = data.pityCounter || 0;
+      state.ensoBonusEndTime = data.ensoBonusEndTime || 0;
+      state.ensoPerfectCount = data.ensoPerfectCount || 0;
+      
+      if(data.items){
+        state.items.forEach(item => {
+          const saved = data.items.find(i => i.id === item.id);
+          if(saved) item.qty = saved.qty;
+        });
+      }
+      
+      if(data.pets) state.pets = data.pets;
+      
+      if(data.achievements){
+        state.achievements.forEach(ach => {
+          const saved = data.achievements.find(a => a.id === ach.id);
+          if(saved) ach.completed = saved.completed;
+        });
+      }
+      
+      console.log("📀 Partie chargée !");
+      return true;
+    } catch(e) {
+      console.error("Erreur de chargement:", e);
+      return false;
+    }
+  }
+
+  // ===================== BG PARTICLES =====================
+  function initBgParticles(){
+    const bg = document.getElementById('zen-bg');
+    if(!bg) return;
+    for(let i = 0; i < 12; i++){
+      const p = document.createElement('div'); 
+      p.className = 'bg-particle';
+      const size = 2 + Math.random() * 4;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.background = 'rgba(212,175,55,' + (0.1 + Math.random() * 0.2) + ')';
+      p.style.animationDuration = (8 + Math.random() * 12) + 's';
+      p.style.animationDelay = (-Math.random() * 15) + 's';
+      bg.appendChild(p);
+    }
+  }
+
+  // Sauvegarde automatique toutes les 30 secondes
+  setInterval(() => { saveGame(); }, 30000);
+
+  // ===================== PASSIVE INCOME =====================
+  setInterval(() => {
+    const tick = getPS() / 10;
+    if(tick > 0){
+      state.score += tick; 
+      state.allTimeScore += tick;
+    }
+    if(Date.now() - state.lastClickTime > 1000 && state.combo > 0){
+      state.combo = 0;
+      const cd = document.getElementById('combo-display');
+      if(cd) cd.classList.remove('visible');
+    }
+    updateUI();
+  }, 100);
+
+  // ===================== INIT =====================
+  window.onload = () => {
+    initBgParticles();
+    initShop();
+    renderPets();
+    initEnsoCanvas();
+    
+    const loaded = loadGame();
+    if(loaded) {
+      initShop();
+      renderPets();
+      renderAchievements();
+      updateUI();
+    }
+    
+    updateUI();
+    rotateQuote();
+    setTimeout(spawnGoldenSpirit, 30000 + Math.random() * 60000);
+    
+    const starBtn = document.getElementById('star-btn');
+    if(starBtn){
+      starBtn.addEventListener('click', handleClick);
+      starBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        handleClick(e);
+      });
+    }
+  };
+  </script>
+</body>
+</html>
