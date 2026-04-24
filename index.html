@@ -987,7 +987,13 @@
   }
 
   // ===================== ENSO =====================
-  function initEnsoCanvas(){
+function vibrer(dureeMs) {
+    if ('vibrate' in navigator) {
+        navigator.vibrate(dureeMs);
+    }
+}
+    
+    function initEnsoCanvas(){
     ensoCanvas = document.getElementById('ensoCanvas');
     if(!ensoCanvas) return;
     ensoCtx = ensoCanvas.getContext('2d');
@@ -1013,27 +1019,33 @@
       }
     };
     
+  
     const draw = (e) => {
-      if(!ensoDrawing) return;
-      e.preventDefault();
-      const rect = ensoCanvas.getBoundingClientRect();
-      const scaleX = ensoCanvas.width / rect.width;
-      const scaleY = ensoCanvas.height / rect.height;
-      const clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
-      const clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
-      const x = (clientX - rect.left) * scaleX;
-      const y = (clientY - rect.top) * scaleY;
-      if(x >= 0 && x <= ensoCanvas.width && y >= 0 && y <= ensoCanvas.height){
-        ensoPoints.push({x, y});
-        ensoCtx.lineTo(x, y);
-        ensoCtx.strokeStyle = '#d4af37';
-        ensoCtx.lineWidth = 2.5;
-        ensoCtx.lineCap = 'round';
-        ensoCtx.lineJoin = 'round';
-        ensoCtx.stroke();
-        ensoCtx.beginPath();
-        ensoCtx.moveTo(x, y);
-      }
+        if(!ensoDrawing) return;
+        e.preventDefault();
+        const rect = ensoCanvas.getBoundingClientRect();
+        const scaleX = ensoCanvas.width / rect.width;
+        const scaleY = ensoCanvas.height / rect.height;
+        const clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
+        const clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
+        if(x >= 0 && x <= ensoCanvas.width && y >= 0 && y <= ensoCanvas.height){
+            ensoPoints.push({x, y});
+            ensoCtx.lineTo(x, y);
+            ensoCtx.strokeStyle = '#d4af37';
+            ensoCtx.lineWidth = 2.5;
+            ensoCtx.lineCap = 'round';
+            ensoCtx.lineJoin = 'round';
+            ensoCtx.stroke();
+            ensoCtx.beginPath();
+            ensoCtx.moveTo(x, y);
+            
+            // Vibration tactile pendant le tracé
+            if('vibrate' in navigator && ensoPoints.length % 8 === 0){
+                navigator.vibrate(8);
+            }
+        }
     };
     
     const stopDraw = () => {
