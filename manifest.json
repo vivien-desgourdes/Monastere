@@ -2,7 +2,7 @@
   "name": "Monastery Clicker - Zen Path",
   "short_name": "Zen Clicker",
   "description": "Un jeu de méditation zen",
-  "start_url": "game.html",
+  "start_url": "index.html",
   "display": "standalone",
   "theme_color": "#0d0a08",
   "background_color": "#0d0a08",
