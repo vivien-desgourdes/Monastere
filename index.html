@@ -642,7 +642,7 @@
   }
 
   function itemCost(it){ return Math.floor(it.baseCost * Math.pow(1.15, it.qty)); }
-  function summonCost(){ return Math.floor(500 * Math.pow(1.08, state.pets.length)); }
+  function summonCost(){ return Math.floor(1200 * Math.pow(1.10, state.pets.length)); }
   function summonCost10(){
     let total = 0;
     const savedQty = state.pets.length;
@@ -920,7 +920,7 @@
     const idx = SPIRIT_RARITIES.findIndex(r => r.name === rarityName);
     if(idx < 0 || idx >= SPIRIT_RARITIES.length - 1) return;
     const count = state.pets.filter(p => p.name === rarityName).length;
-    if(count < 3) return;
+    if(count < 5) return;
     let removed = 0;
     state.pets = state.pets.filter(p => {
       if(p.name === rarityName && removed < 3){ removed++; return false; }
