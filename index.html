@@ -923,7 +923,7 @@
     if(count < 5) return;
     let removed = 0;
     state.pets = state.pets.filter(p => {
-      if(p.name === rarityName && removed < 3){ removed++; return false; }
+      if(p.name === rarityName && removed < 5){ removed++; return false; }
       return true;
     });
     const next = SPIRIT_RARITIES[idx + 1];
