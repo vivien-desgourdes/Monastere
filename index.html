@@ -446,38 +446,38 @@
 let audioContext = null;
 let ambianceSource = null;
 let ambianceEnabled = false;
+let audioInitialized = false;
 
 function initAmbiance() {
     if(audioContext) return;
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    console.log("🎵 AudioContext créé");
 }
 
 function startAmbiance() {
     if(ambianceEnabled) return;
     if(!audioContext) initAmbiance();
     
-    // Reprendre le contexte audio si suspendu
     if(audioContext.state === 'suspended') {
-        audioContext.resume();
+        audioContext.resume().then(() => {
+            console.log("AudioContext repris");
+        }).catch(e => console.log("Erreur reprise:", e));
     }
     
-    const now = audioContext.currentTime;
     const gain = audioContext.createGain();
-    gain.gain.value = 0.15;  // Volume doux
+    gain.gain.value = 0.15;
     gain.connect(audioContext.destination);
     
-    // Fond sonore continu (oui, c'est une note tenue)
     const oscillator = audioContext.createOscillator();
     oscillator.type = 'sine';
-    oscillator.frequency.value = 65.41;  // Do grave (2e octave)
+    oscillator.frequency.value = 65.41;
     
-    // Ajouter une légère harmonique (plus agréable)
     const harmonic = audioContext.createOscillator();
     harmonic.type = 'sine';
-    harmonic.frequency.value = 130.81;  // Une octave au-dessus
+    harmonic.frequency.value = 130.81;
     
     const harmonicGain = audioContext.createGain();
-    harmonicGain.gain.value = 0.05;  // Très discrète
+    harmonicGain.gain.value = 0.05;
     
     oscillator.connect(gain);
     harmonic.connect(harmonicGain);
@@ -486,47 +486,53 @@ function startAmbiance() {
     oscillator.start();
     harmonic.start();
     
-    // Stocker les nœuds pour pouvoir les arrêter plus tard
     ambianceSource = { oscillator, harmonic, gain };
     ambianceEnabled = true;
-    console.log("🎵 Ambiance sonore activée (bol tibétain virtuel)");
+    updateMusicButton();
+    console.log("🎵 Son activé (bol tibétain)");
 }
 
 function stopAmbiance() {
     if(!ambianceEnabled || !ambianceSource) return;
-    ambianceSource.oscillator.stop();
-    ambianceSource.harmonic.stop();
-    ambianceSource.gain.disconnect();
+    try {
+        ambianceSource.oscillator.stop();
+        ambianceSource.harmonic.stop();
+        ambianceSource.gain.disconnect();
+    } catch(e) {}
     ambianceSource = null;
     ambianceEnabled = false;
+    updateMusicButton();
+    console.log("🔇 Son désactivé");
 }
 
 function toggleAmbiance() {
-    const btn = document.getElementById('music-btn');
     if(ambianceEnabled) {
         stopAmbiance();
-        btn.textContent = '🔇 Son OFF';
     } else {
+        if(!audioContext) initAmbiance();
         startAmbiance();
-        btn.textContent = '🔊 Son ON';
+    }
+}
+
+function updateMusicButton() {
+    const btn = document.getElementById('music-btn');
+    if(btn) {
+        btn.textContent = ambianceEnabled ? '🔊 Son ON' : '🔇 Son OFF';
     }
 }
 
 function initAudioOnFirstClick() {
-    if(ambianceEnabled) return;
+    if(audioInitialized) return;
+    audioInitialized = true;
     if(!audioContext) initAmbiance();
     if(audioContext.state === 'suspended') {
-        audioContext.resume();
+        audioContext.resume().then(() => {
+            console.log("Audio démarré après interaction");
+        }).catch(e => console.log("Erreur:", e));
     }
     document.removeEventListener('click', initAudioOnFirstClick);
     document.removeEventListener('touchstart', initAudioOnFirstClick);
 }
-
-// Dans window.onload, ajouter :
-// initAmbiance();
-// document.addEventListener('click', initAudioOnFirstClick);
-// document.addEventListener('touchstart', initAudioOnFirstClick);
-    
   // ===================== DATA =====================
 
   
@@ -1646,7 +1652,8 @@ function initEnsoCanvas(){
     initAmbiance();
 document.addEventListener('click', initAudioOnFirstClick);
 document.addEventListener('touchstart', initAudioOnFirstClick);
-  
+// Le bouton est déjà dans l'HTML → on met à jour son texte
+updateMusicButton();  
     updateUI();
     rotateQuote();
     setTimeout(spawnGoldenSpirit, 30000 + Math.random() * 60000);
