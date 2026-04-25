@@ -485,7 +485,13 @@ function toggleMusic() {
 function updateMusicButton() {
     const btn = document.getElementById('music-btn');
     if(btn) {
-        btn.textContent = musicEnabled ? '🔊 Musique ON' : '🔇 Musique OFF';
+        if(musicEnabled) {
+            btn.textContent = '🔊 Musique ON';
+            btn.style.background = 'rgba(0,168,107,0.3)';
+        } else {
+            btn.textContent = '🔇 Musique OFF';
+            btn.style.background = 'rgba(139,0,0,0.3)';
+        }
     }
 }
 
