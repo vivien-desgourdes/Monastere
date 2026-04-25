@@ -465,19 +465,6 @@ function initMusic() {
     audioElement.loop = true;
     audioElement.volume = 0.25;
     console.log("🎵 Audio initialisé");
-    
-    audioElement.oncanplaythrough = () => {
-        console.log("✅ Fichier MP3 chargé");
-    };
-    
-    audioElement.onerror = () => {
-        console.error("❌ Fichier 'zen-music.mp3' introuvable !");
-        const btn = document.getElementById('music-btn');
-        if(btn) {
-            btn.textContent = '⚠️ MP3 manquant';
-            btn.style.opacity = '0.5';
-        }
-    };
 }
 
 function toggleMusic() {
@@ -486,17 +473,31 @@ function toggleMusic() {
     if(musicEnabled) {
         audioElement.pause();
         musicEnabled = false;
+        updateMusicButton();
         console.log("🔇 Musique arrêtée");
     } else {
-        audioElement.play().then(() => {
+        // Tentative de lecture
+        const playPromise = audioElement.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                musicEnabled = true;
+                updateMusicButton();
+                console.log("🎵 Musique démarrée");
+            }).catch(error => {
+                console.log("❌ Erreur lecture:", error);
+                musicEnabled = false;
+                updateMusicButton();
+                // Affiche une alerte uniquement si c'est une erreur de fichier inexistant
+                if(error.name === 'NotSupportedError') {
+                    alert("Fichier 'zen-music.mp3' introuvable. Vérifie son emplacement.");
+                }
+            });
+        } else {
+            // Fallback pour vieux navigateurs
             musicEnabled = true;
-            console.log("🎵 Musique démarrée");
-        }).catch(e => {
-            console.log("❌ Erreur lecture:", e);
-            musicEnabled = false;
-        });
+            updateMusicButton();
+        }
     }
-    updateMusicButton();
 }
 
 function updateMusicButton() {
@@ -504,12 +505,14 @@ function updateMusicButton() {
     if(btn) {
         if(musicEnabled) {
             btn.textContent = '🔊 Musique ON';
-            btn.style.background = 'rgba(0,168,107,0.3)';
-            btn.style.borderColor = 'var(--jade2)';
+            btn.style.background = 'rgba(0,168,107,0.4)';
+            btn.style.borderColor = '#00d488';
+            btn.style.color = '#ffffff';
         } else {
             btn.textContent = '🔇 Musique OFF';
-            btn.style.background = 'rgba(139,0,0,0.3)';
-            btn.style.borderColor = 'rgba(212,175,55,0.3)';
+            btn.style.background = 'rgba(139,0,0,0.4)';
+            btn.style.borderColor = '#d4af37';
+            btn.style.color = '#d4af37';
         }
     }
 }
