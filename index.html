@@ -372,6 +372,7 @@
       <div id="combo-display"></div>
       <div class="the-star" id="star-btn">🔔</div>
     </div>
+    <button class="enso-btn" id="music-btn" onclick="toggleMusic()">🔊 Musique ON</button>
   </div>
 
   <!-- NAV FIXE -->
@@ -424,8 +425,8 @@
           <div class="enso-guide"></div>
           <div class="enso-guide-circle"></div>
         </div>
-        <div class="enso-buttons">
-          <button class="enso-btn" id="music-btn" onclick="toggleMusic()">🔊 Musique ON</button>   <button class="enso-btn" onclick="clearEnsoCanvas()">🗑️ Effacer</button>
+        <div class="enso-buttons">   
+          <button class="enso-btn" onclick="clearEnsoCanvas()">🗑️ Effacer</button>
           <button class="enso-btn" onclick="evaluateEnso()">✨ Évaluer</button>
         </div>
         <div class="score-enso" id="enso-score-display">Dernier score : —</div>
@@ -441,7 +442,7 @@
   </div>
   <script>
 
-// ===================== MUSIQUE ZEN (fichier externe) =====================
+// ===================== MUSIQUE ZEN =====================
 let audioElement = null;
 let musicEnabled = false;
 
@@ -449,66 +450,28 @@ function initMusic() {
     if(audioElement) return;
     audioElement = new Audio('zen-music.mp3');
     audioElement.loop = true;
-    audioElement.volume = 0.75;  // Volume doux (25%)
-    console.log("🎵 Musique initialisée");
-}
-
-function startMusic() {
-    if(musicEnabled) return;
-    if(!audioElement) initMusic();
-    
-    audioElement.play().then(() => {
-        musicEnabled = true;
-        updateMusicButton();
-        console.log("🎵 Musique zen démarrée");
-    }).catch(e => {
-        console.log("Lecture auto bloquée, attendre interaction", e);
-    });
-}
-
-function stopMusic() {
-    if(!musicEnabled || !audioElement) return;
-    audioElement.pause();
-    musicEnabled = false;
-    updateMusicButton();
-    console.log("🔇 Musique arrêtée");
+    audioElement.volume = 0.25;
 }
 
 function toggleMusic() {
+    if(!audioElement) initMusic();
+    
     if(musicEnabled) {
-        stopMusic();
+        audioElement.pause();
+        musicEnabled = false;
     } else {
-        startMusic();
+        audioElement.play().then(() => {
+            musicEnabled = true;
+        }).catch(e => console.log("Erreur:", e));
     }
+    updateMusicButton();
 }
 
 function updateMusicButton() {
     const btn = document.getElementById('music-btn');
     if(btn) {
-        if(musicEnabled) {
-            btn.textContent = '🔊 Musique ON';
-            btn.style.background = 'rgba(0,168,107,0.3)';
-        } else {
-            btn.textContent = '🔇 Musique OFF';
-            btn.style.background = 'rgba(139,0,0,0.3)';
-        }
+        btn.textContent = musicEnabled ? '🔊 Musique ON' : '🔇 Musique OFF';
     }
-}
-function initAudioOnFirstClick() {
-    if(musicEnabled) return;
-    if(!audioElement) initMusic();
-    
-    // Démarrer directement sans passer par startMusic()
-    audioElement.play().then(() => {
-        musicEnabled = true;
-        updateMusicButton();
-        console.log("🎵 Musique démarrée au premier clic");
-    }).catch(e => {
-        console.log("Erreur démarrage auto:", e);
-    });
-    
-    document.removeEventListener('click', initAudioOnFirstClick);
-    document.removeEventListener('touchstart', initAudioOnFirstClick);
 }
   // ===================== DATA =====================
 
@@ -1627,9 +1590,7 @@ function initEnsoCanvas(){
       updateUI();
     }
     initMusic();
-document.addEventListener('click', initAudioOnFirstClick);
-document.addEventListener('touchstart', initAudioOnFirstClick);
-updateMusicButton();  
+    updateMusicButton();  
     updateUI();
     rotateQuote();
     setTimeout(spawnGoldenSpirit, 30000 + Math.random() * 60000);
