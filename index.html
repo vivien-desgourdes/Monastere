@@ -766,7 +766,7 @@ function updateMusicButton() {
     const sc10 = summonCost10(), sb10 = document.getElementById('summon10-btn');
     if(sb10){ sb10.disabled = state.score < sc10; sb10.textContent = `🌸 ×10 — ${fmt(sc10)}`; if(state.score >= sc10) sb10.classList.add('can-afford'); else sb10.classList.remove('can-afford'); }
     const pd = document.getElementById('pity-display');
-    if(pd) pd.textContent = `Garantie Rare dans ${Math.max(0, 50 - state.pityCounter)} offrandes`;
+    if(pd) pd.textContent = `✨Garantie Légendaire dans ${Math.max(0, 50 - state.pityCounter)} offrandes`;
 
     checkAchievements();
     renderStats();
@@ -907,20 +907,29 @@ function updateMusicButton() {
     }
     renderPets();
   }
-
   function rollOne(){
     state.pityCounter++;
     let r = Math.random(), acc = 0, sel = SPIRIT_RARITIES[0];
-    const rarityIndex = state.pityCounter >= 50 ? 6 : -1;
-    if(rarityIndex >= 0){ sel = SPIRIT_RARITIES[rarityIndex]; state.pityCounter = 0; }
-    else {
-      for(const p of SPIRIT_RARITIES){ acc += p.chance; if(r <= acc){ sel = p; break; } }
-      if(SPIRIT_RARITIES.indexOf(sel) >= 5) state.pityCounter = 0;
+    // Garantie légendaire après 50 tirages (index 25 = premier légendaire)
+    const rarityIndex = state.pityCounter >= 50 ? 25 : -1;
+    if(rarityIndex >= 0){ 
+        sel = SPIRIT_RARITIES[rarityIndex]; 
+        state.pityCounter = 0; 
+    } else {
+        for(const p of SPIRIT_RARITIES){ 
+            acc += p.chance; 
+            if(r <= acc){ 
+                sel = p; 
+                break; 
+            } 
+        }
+        // Réinitialiser si on a eu un légendaire naturellement
+        if(SPIRIT_RARITIES.findIndex(s => s.name === sel.name) >= 25) state.pityCounter = 0;
     }
     state.pets.push({...sel});
     if(!state.discoveredSkins.includes(sel.name)) state.discoveredSkins.push(sel.name);
     return sel;
-  }
+}
 
   function summonPet(){
     const cost = summonCost(); if(state.score < cost) return;
