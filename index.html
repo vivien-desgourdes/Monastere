@@ -8,18 +8,12 @@
   <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d0a08">
   <style>
-
 #music-btn {
-    position: fixed;
-    bottom: 75px;
-    right: 20px;
-    z-index: 200;
-    background: rgba(0,0,0,0.6);
-    border: 1px solid var(--gold);
-    border-radius: 50px;
-    padding: 8px 15px;
-    font-size: 0.7rem;
-    backdrop-filter: blur(5px);
+    transition: all 0.2s ease;
+}
+#music-btn:hover {
+    transform: scale(1.02);
+    background: rgba(0,168,107,0.3);
 }
     
     :root {
@@ -363,18 +357,23 @@
   <div class="app-wrapper">
     <!-- SCORE CARD -->
     <div class="stat-card">
-      <div class="temple-badge" id="temple-rank">TEMPLE NIV. 1</div>
-      <div id="main-score">0</div>
-      <div class="score-sub">
+    <div class="temple-badge" id="temple-rank">TEMPLE NIV. 1</div>
+    <div id="main-score">0</div>
+    <div class="score-sub">
         <span id="ps-display">⚡ 0/s</span>
         <span id="click-val-display">👆 +1/clic</span>
-      </div>
-      <div class="fever-wrap">
+    </div>
+    <div class="fever-wrap">
         <div class="fever-label">⚡ Transe</div>
         <div class="fever-track"><div class="fever-fill" id="fever-bar"></div></div>
-      </div>
     </div>
-
+    <!-- Bouton musique intégré -->
+    <div style="display: flex; justify-content: center; margin-top: 10px;">
+        <button id="music-btn" onclick="toggleMusic()" style="background: rgba(0,0,0,0.5); border: 1px solid var(--gold); border-radius: 30px; padding: 5px 14px; font-size: 0.7rem; color: var(--gold); cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(4px);">
+            🔇 Musique OFF
+        </button>
+    </div>
+</div>
     <!-- ZEN QUOTE -->
     <div class="quote-zone"><span id="zen-quote">"Le silence est une réponse."</span></div>
 
@@ -1648,7 +1647,5 @@ function initEnsoCanvas(){
     }
   };
   </script>
-    <button id="music-btn" onclick="toggleMusic()" style="background:rgba(0,0,0,0.5); border:1px solid var(--gold); border-radius:20px; padding:4px 12px; font-size:0.65rem; color:var(--gold); cursor:pointer;">🔇 Musique OFF</button>
-    
-      </body>
+  </body>
 </html>
