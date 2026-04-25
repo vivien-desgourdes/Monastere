@@ -997,7 +997,6 @@ function vibrer(dureeMs) {
 }
     
 function initEnsoCanvas(){
-function initEnsoCanvas(){
     ensoCanvas = document.getElementById('ensoCanvas');
     if(!ensoCanvas) return;
     ensoCtx = ensoCanvas.getContext('2d');
@@ -1075,10 +1074,100 @@ function initEnsoCanvas(){
   }
   
   function evaluateEnso(){
+    // Vibration au début de l'évaluation (fonctionne car c'est un clic sur bouton)
+    try { navigator.vibrate(30); } catch(e) {}
+    
     if(ensoPoints.length < 30){
-      showBanner("❌ Pas assez de tracé... Tracez un cercle entier !");
-      return;
+        showBanner("❌ Pas assez de tracé... Tracez un cercle entier !");
+        return;
     }
+    
+    let centerX = 0, centerY = 0;
+    for(const p of ensoPoints){
+        centerX += p.x;
+        centerY += p.y;
+    }
+    centerX /= ensoPoints.length;
+    centerY /= ensoPoints.length;
+    
+    let distances = [];
+    for(const p of ensoPoints){
+        const dx = p.x - centerX;
+        const dy = p.y - centerY;
+        distances.push(Math.sqrt(dx*dx + dy*dy));
+    }
+    const avgDist = distances.reduce((a,b) => a + b, 0) / distances.length;
+    let variance = 0;
+    for(const d of distances){
+        variance += Math.pow(d - avgDist, 2);
+    }
+    variance /= distances.length;
+    const regularity = Math.max(0, Math.min(1, 1 - (variance / (avgDist * avgDist))));
+    
+    let totalDistance = 0;
+    for(let i = 1; i < ensoPoints.length; i++){
+        const dx = ensoPoints[i].x - ensoPoints[i-1].x;
+        const dy = ensoPoints[i].y - ensoPoints[i-1].y;
+        totalDistance += Math.sqrt(dx*dx + dy*dy);
+    }
+    const circumference = 2 * Math.PI * avgDist;
+    const completeness = Math.min(1, totalDistance / circumference);
+    
+    let score = Math.floor((regularity * 0.6 + completeness * 0.4) * 100);
+    score = Math.min(100, Math.max(0, score));
+    
+    const baseReward = Math.floor(getPS() * 15 + 500);
+    let multiplier = 1;
+    let message = "";
+    if(score >= 90){
+        multiplier = 3;
+        message = "🌟 Parfait ! L'Enso est pur !";
+        createParticles(ensoCanvas.getBoundingClientRect().left + 110, ensoCanvas.getBoundingClientRect().top + 110, 30, '#ffd700');
+    } else if(score >= 70){
+        multiplier = 2;
+        message = "✨ Très bel Enso !";
+    } else if(score >= 50){
+        multiplier = 1.5;
+        message = "🍃 Beau début...";
+    } else {
+        multiplier = 1;
+        message = "🪨 Continue de tracer...";
+    }
+    
+    const reward = Math.floor(baseReward * multiplier);
+    state.score += reward;
+    state.allTimeScore += reward;
+    
+    if(score >= 80){
+        state.ensoPerfectCount++;
+        state.ensoBonusEndTime = Date.now() + 120000;
+        showBanner(`🎋 Enso parfait ! +20% sagesse pendant 2 min ! +${fmt(reward)} sagesse`);
+        showPerfectEnsoAnimation();
+        // Vibration spéciale pour Enso parfait
+        try { navigator.vibrate([50, 30, 50]); } catch(e) {}
+    } else {
+        showBanner(`🍃 ${message} +${fmt(reward)} sagesse`);
+    }
+    
+    document.getElementById('enso-score-display').innerHTML = `Dernier score : ${score}/100 — ${message}`;
+    
+    const container = document.querySelector('.enso-canvas-container');
+    if(container){
+        const flash = document.createElement('div');
+        flash.style.position = 'absolute';
+        flash.style.inset = '0';
+        flash.style.borderRadius = '50%';
+        flash.style.background = 'radial-gradient(circle, rgba(212,175,55,0.4), transparent)';
+        flash.style.pointerEvents = 'none';
+        flash.style.animation = 'lootFlash 0.8s ease-out forwards';
+        container.appendChild(flash);
+        setTimeout(() => flash.remove(), 800);
+    }
+    
+    clearEnsoCanvas();
+    updateUI();
+    saveGame();
+}
     
     let centerX = 0, centerY = 0;
     for(const p of ensoPoints){
