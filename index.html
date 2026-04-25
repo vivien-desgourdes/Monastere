@@ -442,94 +442,58 @@
   </div>
   <script>
 
-// ===================== AMBIANCE SONORE (bol tibétain virtuel) =====================
-let audioContext = null;
-let ambianceSource = null;
-let ambianceEnabled = false;
-let audioInitialized = false;
+// ===================== MUSIQUE ZEN (fichier externe) =====================
+let audioElement = null;
+let musicEnabled = false;
 
-function initAmbiance() {
-    if(audioContext) return;
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    console.log("🎵 AudioContext créé");
+function initMusic() {
+    if(audioElement) return;
+    audioElement = new Audio('zen-music.mp3');
+    audioElement.loop = true;
+    audioElement.volume = 0.25;  // Volume doux (25%)
+    console.log("🎵 Musique initialisée");
 }
 
-function startAmbiance() {
-    if(ambianceEnabled) return;
-    if(!audioContext) initAmbiance();
+function startMusic() {
+    if(musicEnabled) return;
+    if(!audioElement) initMusic();
     
-    if(audioContext.state === 'suspended') {
-        audioContext.resume().then(() => {
-            console.log("AudioContext repris");
-        }).catch(e => console.log("Erreur reprise:", e));
-    }
-    
-    const gain = audioContext.createGain();
-    gain.gain.value = 0.15;
-    gain.connect(audioContext.destination);
-    
-    const oscillator = audioContext.createOscillator();
-    oscillator.type = 'sine';
-    oscillator.frequency.value = 65.41;
-    
-    const harmonic = audioContext.createOscillator();
-    harmonic.type = 'sine';
-    harmonic.frequency.value = 130.81;
-    
-    const harmonicGain = audioContext.createGain();
-    harmonicGain.gain.value = 0.05;
-    
-    oscillator.connect(gain);
-    harmonic.connect(harmonicGain);
-    harmonicGain.connect(gain);
-    
-    oscillator.start();
-    harmonic.start();
-    
-    ambianceSource = { oscillator, harmonic, gain };
-    ambianceEnabled = true;
+    audioElement.play().then(() => {
+        musicEnabled = true;
+        updateMusicButton();
+        console.log("🎵 Musique zen démarrée");
+    }).catch(e => {
+        console.log("Lecture auto bloquée, attendre interaction", e);
+    });
+}
+
+function stopMusic() {
+    if(!musicEnabled || !audioElement) return;
+    audioElement.pause();
+    musicEnabled = false;
     updateMusicButton();
-    console.log("🎵 Son activé (bol tibétain)");
+    console.log("🔇 Musique arrêtée");
 }
 
-function stopAmbiance() {
-    if(!ambianceEnabled || !ambianceSource) return;
-    try {
-        ambianceSource.oscillator.stop();
-        ambianceSource.harmonic.stop();
-        ambianceSource.gain.disconnect();
-    } catch(e) {}
-    ambianceSource = null;
-    ambianceEnabled = false;
-    updateMusicButton();
-    console.log("🔇 Son désactivé");
-}
-
-function toggleAmbiance() {
-    if(ambianceEnabled) {
-        stopAmbiance();
+function toggleMusic() {
+    if(musicEnabled) {
+        stopMusic();
     } else {
-        if(!audioContext) initAmbiance();
-        startAmbiance();
+        startMusic();
     }
 }
 
 function updateMusicButton() {
     const btn = document.getElementById('music-btn');
     if(btn) {
-        btn.textContent = ambianceEnabled ? '🔊 Son ON' : '🔇 Son OFF';
+        btn.textContent = musicEnabled ? '🔊 Musique ON' : '🔇 Musique OFF';
     }
 }
 
 function initAudioOnFirstClick() {
-    if(audioInitialized) return;
-    audioInitialized = true;
-    if(!audioContext) initAmbiance();
-    if(audioContext.state === 'suspended') {
-        audioContext.resume().then(() => {
-            console.log("Audio démarré après interaction");
-        }).catch(e => console.log("Erreur:", e));
-    }
+    if(musicEnabled) return;
+    if(!audioElement) initMusic();
+    startMusic();
     document.removeEventListener('click', initAudioOnFirstClick);
     document.removeEventListener('touchstart', initAudioOnFirstClick);
 }
@@ -1649,10 +1613,9 @@ function initEnsoCanvas(){
       renderAchievements();
       updateUI();
     }
-    initAmbiance();
+    initMusic();
 document.addEventListener('click', initAudioOnFirstClick);
 document.addEventListener('touchstart', initAudioOnFirstClick);
-// Le bouton est déjà dans l'HTML → on met à jour son texte
 updateMusicButton();  
     updateUI();
     rotateQuote();
