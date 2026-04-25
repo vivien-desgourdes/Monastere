@@ -1004,7 +1004,7 @@ function initEnsoCanvas(){
     
     const startDraw = (e) => {
         e.preventDefault();
-      vibrer(20);
+        vibrer(20);
         ensoDrawing = true;
         ensoPoints = [];
         const rect = ensoCanvas.getBoundingClientRect();
@@ -1044,25 +1044,19 @@ function initEnsoCanvas(){
             ensoCtx.beginPath();
             ensoCtx.moveTo(x, y);
             
-            // Vibration toutes les 10 points
-           if(ensoPoints.length % 10 === 0) {
-            vibrer(8);
-           }
-          
-          if(ensoPoints.length % 10 === 0) {
-                if ('vibrate' in navigator) {
-                    navigator.vibrate(8);
-                }
+            // Vibration toutes les 10 points (une seule fois !)
+            if(ensoPoints.length % 10 === 0) {
+                vibrer(8);
             }
         }
     };
     
     const stopDraw = (e) => {
-    ensoDrawing = false;
-    if(ensoPoints.length > 10) {
-        vibrer(15);  // ← vibration quand on lâche le doigt
-    }
-};
+        ensoDrawing = false;
+        if(ensoPoints.length > 10) {
+            vibrer(15);
+        }
+    };
     
     ensoCanvas.addEventListener('mousedown', startDraw);
     ensoCanvas.addEventListener('mousemove', draw);
