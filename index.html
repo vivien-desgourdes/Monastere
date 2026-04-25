@@ -426,8 +426,6 @@
         </div>
         <div class="enso-buttons">
 
-<button class="enso-btn" onclick="vibrer(200)">📳 TEST VIBRATION</button>
-          
           <button class="enso-btn" onclick="clearEnsoCanvas()">🗑️ Effacer</button>
           <button class="enso-btn" onclick="evaluateEnso()">✨ Évaluer</button>
         </div>
@@ -1004,17 +1002,21 @@ function initEnsoCanvas(){
     
     const startDraw = (e) => {
         e.preventDefault();
-        // Vibration DIRECTE sans passer par vibrer()
-        try {
-            navigator.vibrate(20);
-        } catch(e) {}
         ensoDrawing = true;
         ensoPoints = [];
         const rect = ensoCanvas.getBoundingClientRect();
         const scaleX = ensoCanvas.width / rect.width;
         const scaleY = ensoCanvas.height / rect.height;
-        const clientX = e.clientX;
-        const clientY = e.clientY;
+        let clientX, clientY;
+        
+        if(e.touches) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        
         const x = (clientX - rect.left) * scaleX;
         const y = (clientY - rect.top) * scaleY;
         if(x >= 0 && x <= ensoCanvas.width && y >= 0 && y <= ensoCanvas.height){
@@ -1032,8 +1034,16 @@ function initEnsoCanvas(){
         const rect = ensoCanvas.getBoundingClientRect();
         const scaleX = ensoCanvas.width / rect.width;
         const scaleY = ensoCanvas.height / rect.height;
-        const clientX = e.clientX;
-        const clientY = e.clientY;
+        let clientX, clientY;
+        
+        if(e.touches) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        
         const x = (clientX - rect.left) * scaleX;
         const y = (clientY - rect.top) * scaleY;
         if(x >= 0 && x <= ensoCanvas.width && y >= 0 && y <= ensoCanvas.height){
@@ -1051,18 +1061,16 @@ function initEnsoCanvas(){
     
     const stopDraw = (e) => {
         ensoDrawing = false;
-        if(ensoPoints.length > 10) {
-            try {
-                navigator.vibrate(15);
-            } catch(e) {}
-        }
     };
     
-    // Utilisation de pointer events (plus fiable que touch/mouse)
-    ensoCanvas.addEventListener('pointerdown', startDraw);
-    ensoCanvas.addEventListener('pointermove', draw);
-    ensoCanvas.addEventListener('pointerup', stopDraw);
+    ensoCanvas.addEventListener('mousedown', startDraw);
+    ensoCanvas.addEventListener('mousemove', draw);
+    ensoCanvas.addEventListener('mouseup', stopDraw);
+    ensoCanvas.addEventListener('touchstart', startDraw, { passive: false });
+    ensoCanvas.addEventListener('touchmove', draw, { passive: false });
+    ensoCanvas.addEventListener('touchend', stopDraw);
 }
+
   
   function clearEnsoCanvas(){
     if(!ensoCtx || !ensoCanvas) return;
