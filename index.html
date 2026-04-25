@@ -494,11 +494,19 @@ function updateMusicButton() {
         }
     }
 }
-
 function initAudioOnFirstClick() {
     if(musicEnabled) return;
     if(!audioElement) initMusic();
-    startMusic();
+    
+    // Démarrer directement sans passer par startMusic()
+    audioElement.play().then(() => {
+        musicEnabled = true;
+        updateMusicButton();
+        console.log("🎵 Musique démarrée au premier clic");
+    }).catch(e => {
+        console.log("Erreur démarrage auto:", e);
+    });
+    
     document.removeEventListener('click', initAudioOnFirstClick);
     document.removeEventListener('touchstart', initAudioOnFirstClick);
 }
