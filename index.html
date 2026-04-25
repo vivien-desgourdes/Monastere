@@ -1024,33 +1024,28 @@ function initEnsoCanvas(){
     };
     
     const draw = (e) => {
-        if(!ensoDrawing) return;
-        e.preventDefault();
-        const rect = ensoCanvas.getBoundingClientRect();
-        const scaleX = ensoCanvas.width / rect.width;
-        const scaleY = ensoCanvas.height / rect.height;
-        const clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
-        const clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
-        const x = (clientX - rect.left) * scaleX;
-        const y = (clientY - rect.top) * scaleY;
-        if(x >= 0 && x <= ensoCanvas.width && y >= 0 && y <= ensoCanvas.height){
-            ensoPoints.push({x, y});
-            ensoCtx.lineTo(x, y);
-            ensoCtx.strokeStyle = '#d4af37';
-            ensoCtx.lineWidth = 2.5;
-            ensoCtx.lineCap = 'round';
-            ensoCtx.lineJoin = 'round';
-            ensoCtx.stroke();
-            ensoCtx.beginPath();
-            ensoCtx.moveTo(x, y);
-            
-            // Vibration toutes les 10 points (une seule fois !)
-            if(ensoPoints.length % 10 === 0) {
-                vibrer(8);
-            }
-        }
-    };
-    
+    if(!ensoDrawing) return;
+    e.preventDefault();
+    const rect = ensoCanvas.getBoundingClientRect();
+    const scaleX = ensoCanvas.width / rect.width;
+    const scaleY = ensoCanvas.height / rect.height;
+    const clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
+    const clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+    if(x >= 0 && x <= ensoCanvas.width && y >= 0 && y <= ensoCanvas.height){
+        ensoPoints.push({x, y});
+        ensoCtx.lineTo(x, y);
+        ensoCtx.strokeStyle = '#d4af37';
+        ensoCtx.lineWidth = 2.5;
+        ensoCtx.lineCap = 'round';
+        ensoCtx.lineJoin = 'round';
+        ensoCtx.stroke();
+        ensoCtx.beginPath();
+        ensoCtx.moveTo(x, y);
+        // ← PAS DE VIBRATION ICI
+    }
+};
     const stopDraw = (e) => {
         ensoDrawing = false;
         if(ensoPoints.length > 10) {
