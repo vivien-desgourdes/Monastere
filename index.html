@@ -993,33 +993,32 @@ function vibrer(dureeMs) {
     }
 }
     
-    function initEnsoCanvas(){
+function initEnsoCanvas(){
     ensoCanvas = document.getElementById('ensoCanvas');
     if(!ensoCanvas) return;
     ensoCtx = ensoCanvas.getContext('2d');
     clearEnsoCanvas();
     
     const startDraw = (e) => {
-      e.preventDefault();
-      ensoDrawing = true;
-      ensoPoints = [];
-      const rect = ensoCanvas.getBoundingClientRect();
-      const scaleX = ensoCanvas.width / rect.width;
-      const scaleY = ensoCanvas.height / rect.height;
-      const clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
-      const clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
-      const x = (clientX - rect.left) * scaleX;
-      const y = (clientY - rect.top) * scaleY;
-      if(x >= 0 && x <= ensoCanvas.width && y >= 0 && y <= ensoCanvas.height){
-        ensoPoints.push({x, y});
-        ensoCtx.beginPath();
-        ensoCtx.moveTo(x, y);
-        ensoCtx.lineTo(x+1, y+1);
-        ensoCtx.stroke();
-      }
+        e.preventDefault();
+        ensoDrawing = true;
+        ensoPoints = [];
+        const rect = ensoCanvas.getBoundingClientRect();
+        const scaleX = ensoCanvas.width / rect.width;
+        const scaleY = ensoCanvas.height / rect.height;
+        const clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
+        const clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
+        if(x >= 0 && x <= ensoCanvas.width && y >= 0 && y <= ensoCanvas.height){
+            ensoPoints.push({x, y});
+            ensoCtx.beginPath();
+            ensoCtx.moveTo(x, y);
+            ensoCtx.lineTo(x+1, y+1);
+            ensoCtx.stroke();
+        }
     };
     
-  
     const draw = (e) => {
         if(!ensoDrawing) return;
         e.preventDefault();
@@ -1041,24 +1040,26 @@ function vibrer(dureeMs) {
             ensoCtx.beginPath();
             ensoCtx.moveTo(x, y);
             
-            // Vibration tactile pendant le tracé
-            if('vibrate' in navigator && ensoPoints.length % 8 === 0){
-                navigator.vibrate(8);
+            // Vibration toutes les 10 points
+            if(ensoPoints.length % 10 === 0) {
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(8);
+                }
             }
         }
     };
     
-    const stopDraw = () => {
-      ensoDrawing = false;
+    const stopDraw = (e) => {
+        ensoDrawing = false;
     };
     
     ensoCanvas.addEventListener('mousedown', startDraw);
     ensoCanvas.addEventListener('mousemove', draw);
     ensoCanvas.addEventListener('mouseup', stopDraw);
-    ensoCanvas.addEventListener('touchstart', startDraw);
-    ensoCanvas.addEventListener('touchmove', draw);
+    ensoCanvas.addEventListener('touchstart', startDraw, { passive: false });
+    ensoCanvas.addEventListener('touchmove', draw, { passive: false });
     ensoCanvas.addEventListener('touchend', stopDraw);
-  }
+}
   
   function clearEnsoCanvas(){
     if(!ensoCtx || !ensoCanvas) return;
