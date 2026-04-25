@@ -1004,6 +1004,7 @@ function initEnsoCanvas(){
     
     const startDraw = (e) => {
         e.preventDefault();
+      vibrer(20);
         ensoDrawing = true;
         ensoPoints = [];
         const rect = ensoCanvas.getBoundingClientRect();
@@ -1057,8 +1058,11 @@ function initEnsoCanvas(){
     };
     
     const stopDraw = (e) => {
-        ensoDrawing = false;
-    };
+    ensoDrawing = false;
+    if(ensoPoints.length > 10) {
+        vibrer(15);  // ← vibration quand on lâche le doigt
+    }
+};
     
     ensoCanvas.addEventListener('mousedown', startDraw);
     ensoCanvas.addEventListener('mousemove', draw);
