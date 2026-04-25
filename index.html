@@ -425,6 +425,7 @@
           <div class="enso-guide-circle"></div>
         </div>
         <div class="enso-buttons">
+          <button class="enso-btn" id="music-btn" onclick="toggleAmbiance()">🔊 Son ON</button>
           <button class="enso-btn" onclick="clearEnsoCanvas()">🗑️ Effacer</button>
           <button class="enso-btn" onclick="evaluateEnso()">✨ Évaluer</button>
         </div>
@@ -440,6 +441,92 @@
     <div class="panel-scroll" id="stats-area"></div>
   </div>
   <script>
+
+// ===================== AMBIANCE SONORE (bol tibétain virtuel) =====================
+let audioContext = null;
+let ambianceSource = null;
+let ambianceEnabled = false;
+
+function initAmbiance() {
+    if(audioContext) return;
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function startAmbiance() {
+    if(ambianceEnabled) return;
+    if(!audioContext) initAmbiance();
+    
+    // Reprendre le contexte audio si suspendu
+    if(audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+    
+    const now = audioContext.currentTime;
+    const gain = audioContext.createGain();
+    gain.gain.value = 0.15;  // Volume doux
+    gain.connect(audioContext.destination);
+    
+    // Fond sonore continu (oui, c'est une note tenue)
+    const oscillator = audioContext.createOscillator();
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 65.41;  // Do grave (2e octave)
+    
+    // Ajouter une légère harmonique (plus agréable)
+    const harmonic = audioContext.createOscillator();
+    harmonic.type = 'sine';
+    harmonic.frequency.value = 130.81;  // Une octave au-dessus
+    
+    const harmonicGain = audioContext.createGain();
+    harmonicGain.gain.value = 0.05;  // Très discrète
+    
+    oscillator.connect(gain);
+    harmonic.connect(harmonicGain);
+    harmonicGain.connect(gain);
+    
+    oscillator.start();
+    harmonic.start();
+    
+    // Stocker les nœuds pour pouvoir les arrêter plus tard
+    ambianceSource = { oscillator, harmonic, gain };
+    ambianceEnabled = true;
+    console.log("🎵 Ambiance sonore activée (bol tibétain virtuel)");
+}
+
+function stopAmbiance() {
+    if(!ambianceEnabled || !ambianceSource) return;
+    ambianceSource.oscillator.stop();
+    ambianceSource.harmonic.stop();
+    ambianceSource.gain.disconnect();
+    ambianceSource = null;
+    ambianceEnabled = false;
+}
+
+function toggleAmbiance() {
+    const btn = document.getElementById('music-btn');
+    if(ambianceEnabled) {
+        stopAmbiance();
+        btn.textContent = '🔇 Son OFF';
+    } else {
+        startAmbiance();
+        btn.textContent = '🔊 Son ON';
+    }
+}
+
+function initAudioOnFirstClick() {
+    if(ambianceEnabled) return;
+    if(!audioContext) initAmbiance();
+    if(audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+    document.removeEventListener('click', initAudioOnFirstClick);
+    document.removeEventListener('touchstart', initAudioOnFirstClick);
+}
+
+// Dans window.onload, ajouter :
+// initAmbiance();
+// document.addEventListener('click', initAudioOnFirstClick);
+// document.addEventListener('touchstart', initAudioOnFirstClick);
+    
   // ===================== DATA =====================
 
   
@@ -1556,7 +1643,10 @@ function initEnsoCanvas(){
       renderAchievements();
       updateUI();
     }
-    
+    initAmbiance();
+document.addEventListener('click', initAudioOnFirstClick);
+document.addEventListener('touchstart', initAudioOnFirstClick);
+  
     updateUI();
     rotateQuote();
     setTimeout(spawnGoldenSpirit, 30000 + Math.random() * 60000);
