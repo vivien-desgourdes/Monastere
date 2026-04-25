@@ -466,11 +466,17 @@ function initMusic() {
     audioElement.volume = 0.25;
     console.log("🎵 Audio initialisé");
     
-    // Gestionnaire d'erreur si fichier introuvable
-    audioElement.onerror = function() {
+    audioElement.oncanplaythrough = () => {
+        console.log("✅ Fichier MP3 chargé");
+    };
+    
+    audioElement.onerror = () => {
         console.error("❌ Fichier 'zen-music.mp3' introuvable !");
         const btn = document.getElementById('music-btn');
-        if(btn) btn.style.opacity = '0.5';
+        if(btn) {
+            btn.textContent = '⚠️ MP3 manquant';
+            btn.style.opacity = '0.5';
+        }
     };
 }
 
@@ -486,9 +492,8 @@ function toggleMusic() {
             musicEnabled = true;
             console.log("🎵 Musique démarrée");
         }).catch(e => {
-            console.log("❌ Erreur lecture audio:", e);
-            // Afficher une erreur à l'utilisateur
-            alert("Impossible de lire la musique. Vérifie que le fichier 'zen-music.mp3' existe.");
+            console.log("❌ Erreur lecture:", e);
+            musicEnabled = false;
         });
     }
     updateMusicButton();
@@ -497,7 +502,15 @@ function toggleMusic() {
 function updateMusicButton() {
     const btn = document.getElementById('music-btn');
     if(btn) {
-        btn.textContent = musicEnabled ? '🔊 Musique ON' : '🔇 Musique OFF';
+        if(musicEnabled) {
+            btn.textContent = '🔊 Musique ON';
+            btn.style.background = 'rgba(0,168,107,0.3)';
+            btn.style.borderColor = 'var(--jade2)';
+        } else {
+            btn.textContent = '🔇 Musique OFF';
+            btn.style.background = 'rgba(139,0,0,0.3)';
+            btn.style.borderColor = 'rgba(212,175,55,0.3)';
+        }
     }
 }
   // ===================== DATA =====================
