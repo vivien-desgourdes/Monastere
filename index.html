@@ -451,6 +451,14 @@ function initMusic() {
     audioElement = new Audio('zen-music.mp3');
     audioElement.loop = true;
     audioElement.volume = 0.25;
+    console.log("🎵 Audio initialisé");
+    
+    // Gestionnaire d'erreur si fichier introuvable
+    audioElement.onerror = function() {
+        console.error("❌ Fichier 'zen-music.mp3' introuvable !");
+        const btn = document.getElementById('music-btn');
+        if(btn) btn.style.opacity = '0.5';
+    };
 }
 
 function toggleMusic() {
@@ -459,10 +467,16 @@ function toggleMusic() {
     if(musicEnabled) {
         audioElement.pause();
         musicEnabled = false;
+        console.log("🔇 Musique arrêtée");
     } else {
         audioElement.play().then(() => {
             musicEnabled = true;
-        }).catch(e => console.log("Erreur:", e));
+            console.log("🎵 Musique démarrée");
+        }).catch(e => {
+            console.log("❌ Erreur lecture audio:", e);
+            // Afficher une erreur à l'utilisateur
+            alert("Impossible de lire la musique. Vérifie que le fichier 'zen-music.mp3' existe.");
+        });
     }
     updateMusicButton();
 }
