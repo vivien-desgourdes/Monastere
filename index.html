@@ -1146,11 +1146,13 @@ function initEnsoCanvas(){
     state.allTimeScore += reward;
     
     if(score >= 80){
-      state.ensoPerfectCount++;
-      state.ensoBonusEndTime = Date.now() + 120000;
-      showBanner(`🎋 Enso parfait ! +20% sagesse pendant 2 min ! +${fmt(reward)} sagesse`);
-      showPerfectEnsoAnimation();
-    } else {
+    state.ensoPerfectCount++;
+    state.ensoBonusEndTime = Date.now() + 120000;
+    showBanner(`🎋 Enso parfait ! +20% sagesse pendant 2 min ! +${fmt(reward)} sagesse`);
+    showPerfectEnsoAnimation();
+    // Vibration spéciale pour Enso parfait
+    try { navigator.vibrate([50, 30, 50]); } catch(e) {}
+} else {
       showBanner(`🍃 ${message} +${fmt(reward)} sagesse`);
     }
     
