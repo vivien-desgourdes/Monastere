@@ -954,7 +954,7 @@
     state.pets.forEach(p => { if(!counts[p.name]) counts[p.name] = {...p, n:0}; counts[p.name].n++; });
     Object.values(counts).forEach(p => {
       const idx = SPIRIT_RARITIES.findIndex(r => r.name === p.name);
-      const canFuse = p.n >= 3 && idx < SPIRIT_RARITIES.length - 1;
+      const canFuse = p.n >= 5 && idx < SPIRIT_RARITIES.length - 1;
       const total = Math.pow(p.mult, p.n).toFixed(2);
       const card = document.createElement('div'); card.className = 'pet-card';
       card.style.borderColor = p.color || 'rgba(212,175,55,0.2)';
