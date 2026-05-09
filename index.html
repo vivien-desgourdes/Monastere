@@ -57,7 +57,12 @@ header{text-align:center;position:relative;z-index:1;padding:4px 0}
     0% { transform: translateX(-100%) rotate(45deg); }
     100% { transform: translateX(100%) rotate(45deg); }
 }
-
+.fact-txt {
+    display: block;
+    width: 100%;
+    word-break: normal; /* Empêche de couper les mots au milieu */
+    overflow-wrap: anywhere; 
+}
   .fact-type{font-family:'Cinzel',serif;font-size:0.48rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:2px;flex-shrink:0}
 .fact-type.tf{color:var(--ember)}.fact-type.tc{color:var(--mys)}.fact-type.tt{color:#6a9a6a}
 .fact-inner{overflow:hidden;flex:1}
