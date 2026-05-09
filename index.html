@@ -875,66 +875,66 @@ requestAnimationFrame(smoothUpdate);
 // ==================== DONNÉES ====================
 const EPOCHS = [
   { id: "paleo", name: "🌀 Chamanisme Paléolithique", cost: 50, badge: "🏔️ Paléolithique (−40 000)", sigil: "🌀", btnLbl: "INVOQUER", pal: { bg1: "#08060f", acc: "#c89840", glow: "rgba(180,110,20,.32)" } },
-  { id: "neolith", name: "🌾 Néolithique & Déesses-Mères", cost: 300, badge: "🌾 Néolithique (−10 000)", sigil: "🌕", btnLbl: "PRIER", pal: { bg1: "#060d08", acc: "#7ab858", glow: "rgba(80,160,50,.28)" } },
-  { id: "mesopotamia", name: "🏺 Mésopotamie & Égypte", cost: 800, badge: "🏺 Antiquité orientale (−3 000)", sigil: "𓂀", btnLbl: "INCANTER", pal: { bg1: "#0d0800", acc: "#d4883a", glow: "rgba(200,110,20,.32)" } },
-  { id: "ironage", name: "⚔️ Âge du Fer — Druides & Forgerons", cost: 2000, badge: "🗡️ Âge du Fer (−1200 / −500)", sigil: "⚔️", btnLbl: "SACRIFIER", pal: { bg1: "#0a0804", acc: "#b86c2a", glow: "rgba(160,80,20,.30)" } },
-  { id: "greece", name: "⚡ Mystères Grecs & Romains", cost: 10000, badge: "🏛️ Grèce & Rome (−800 / +400)", sigil: "⚡", btnLbl: "PROPHÉTISER", pal: { bg1: "#040810", acc: "#5888c8", glow: "rgba(50,100,200,.28)" } },
-  { id: "medieval", name: "✝️ Moyen Âge — Grimoires & Foi", cost: 15000, badge: "⛪ Moyen Âge (500–1400)", sigil: "⛪", btnLbl: "BÉNIR", pal: { bg1: "#080510", acc: "#b878d8", glow: "rgba(150,80,200,.3)" } },
-  { id: "renaissance", name: "🔭 Renaissance Hermétique", cost: 80000, badge: "🖋️ Renaissance (1400–1600)", sigil: "🔭", btnLbl: "TRANSMUTER", pal: { bg1: "#050b0a", acc: "#48b8a8", glow: "rgba(40,160,140,.28)" } },
-  { id: "enlightenment", name: "🕯️ Siècle des Lumières", cost: 250000, badge: "📚 Lumières (1700–1800)", sigil: "🕯️", btnLbl: "RAISONNER", pal: { bg1: "#0c0a0a", acc: "#c8a860", glow: "rgba(200,160,60,.28)" } },
-  { id: "modern", name: "🌌 Occultisme Moderne", cost: 1000000, badge: "🌐 Époque Moderne (XIXe–XXIe)", sigil: "🌐", btnLbl: "RAYONNER", pal: { bg1: "#04060e", acc: "#8888f0", glow: "rgba(100,100,240,.3)" } },
-  { id: "ultima", name: "♾️ Ultime Réconciliation", cost: 4000000, badge: "🌠 Hors du Temps", sigil: "✧", btnLbl: "DEVENIR", pal: { bg1: "#020108", acc: "#d4af37", glow: "rgba(212,175,55,.4)" } }
+  { id: "neolith", name: "🌾 Néolithique & Déesses-Mères", cost: 1000, badge: "🌾 Néolithique (−10 000)", sigil: "🌕", btnLbl: "PRIER", pal: { bg1: "#060d08", acc: "#7ab858", glow: "rgba(80,160,50,.28)" } },
+  { id: "mesopotamia", name: "🏺 Mésopotamie & Égypte", cost: 5000, badge: "🏺 Antiquité orientale (−3 000)", sigil: "𓂀", btnLbl: "INCANTER", pal: { bg1: "#0d0800", acc: "#d4883a", glow: "rgba(200,110,20,.32)" } },
+  { id: "ironage", name: "⚔️ Âge du Fer — Druides & Forgerons", cost: 20000, badge: "🗡️ Âge du Fer (−1200 / −500)", sigil: "⚔️", btnLbl: "SACRIFIER", pal: { bg1: "#0a0804", acc: "#b86c2a", glow: "rgba(160,80,20,.30)" } },
+  { id: "greece", name: "⚡ Mystères Grecs & Romains", cost: 80000, badge: "🏛️ Grèce & Rome (−800 / +400)", sigil: "⚡", btnLbl: "PROPHÉTISER", pal: { bg1: "#040810", acc: "#5888c8", glow: "rgba(50,100,200,.28)" } },
+  { id: "medieval", name: "✝️ Moyen Âge — Grimoires & Foi", cost: 250000, badge: "⛪ Moyen Âge (500–1400)", sigil: "⛪", btnLbl: "BÉNIR", pal: { bg1: "#080510", acc: "#b878d8", glow: "rgba(150,80,200,.3)" } },
+  { id: "renaissance", name: "🔭 Renaissance Hermétique", cost: 1000000, badge: "🖋️ Renaissance (1400–1600)", sigil: "🔭", btnLbl: "TRANSMUTER", pal: { bg1: "#050b0a", acc: "#48b8a8", glow: "rgba(40,160,140,.28)" } },
+  { id: "enlightenment", name: "🕯️ Siècle des Lumières", cost: 5000000, badge: "📚 Lumières (1700–1800)", sigil: "🕯️", btnLbl: "RAISONNER", pal: { bg1: "#0c0a0a", acc: "#c8a860", glow: "rgba(200,160,60,.28)" } },
+  { id: "modern", name: "🌌 Occultisme Moderne", cost: 10000000, badge: "🌐 Époque Moderne (XIXe–XXIe)", sigil: "🌐", btnLbl: "RAYONNER", pal: { bg1: "#04060e", acc: "#8888f0", glow: "rgba(100,100,240,.3)" } },
+  { id: "ultima", name: "♾️ Ultime Réconciliation", cost: 25000000, badge: "🌠 Hors du Temps", sigil: "✧", btnLbl: "DEVENIR", pal: { bg1: "#020108", acc: "#d4af37", glow: "rgba(212,175,55,.4)" } }
 ];
 const SANCTUARIES = {
   paleo: [
-    { id: "grotte", name: "🪨 Grotte Sacrée", desc: "Peintures rupestres attirent les esprits.", baseCost: 40, basePassive: 0.6, baseClic: 0.8 },
-    { id: "feu", name: "🔥 Feu Rituel", desc: "La flamme sacrée ne s'éteint jamais.", baseCost: 90, basePassive: 1.2, baseClic: 1.5 },
-    { id: "chaman", name: "🦅 Chamane Gardien", desc: "Son tambour résonne entre les mondes.", baseCost: 190, basePassive: 2.2, baseClic: 2.8 }
+    { id: "grotte", name: "🪨 Grotte Sacrée", desc: "Peintures rupestres attirent les esprits.", baseCost: 60, basePassive: 0.6, baseClic: 0.8 },
+    { id: "feu", name: "🔥 Feu Rituel", desc: "La flamme sacrée ne s'éteint jamais.", baseCost: 1100, basePassive: 1.2, baseClic: 1.5 },
+    { id: "chaman", name: "🦅 Chamane Gardien", desc: "Son tambour résonne entre les mondes.", baseCost: 210, basePassive: 2.2, baseClic: 2.8 }
   ],
   neolith: [
-    { id: "menhir", name: "🗿 Cercle de Menhirs", desc: "Les pierres dressées captent l'énergie.", baseCost: 280, basePassive: 2.0, baseClic: 2.5 },
-    { id: "temple", name: "🌾 Temple de la Déesse", desc: "La Grande Mère bénit les rituels.", baseCost: 550, basePassive: 3.8, baseClic: 4.5 },
-    { id: "dolmen", name: "🌙 Dolmen Lunaire", desc: "Aligné sur la pleine lune.", baseCost: 950, basePassive: 6.5, baseClic: 8.0 }
+    { id: "menhir", name: "🗿 Cercle de Menhirs", desc: "Les pierres dressées captent l'énergie.", baseCost: 300, basePassive: 2.0, baseClic: 2.5 },
+    { id: "temple", name: "🌾 Temple de la Déesse", desc: "La Grande Mère bénit les rituels.", baseCost: 600, basePassive: 3.8, baseClic: 4.5 },
+    { id: "dolmen", name: "🌙 Dolmen Lunaire", desc: "Aligné sur la pleine lune.", baseCost: 1000, basePassive: 6.5, baseClic: 8.0 }
   ],
   mesopotamia: [
-    { id: "ziggurat", name: "🏺 Ziggurat", desc: "Temple-montagne où l'on lit les astres.", baseCost: 900, basePassive: 5.0, baseClic: 7.0 },
-    { id: "bibliotheque", name: "📜 Bibliothèque Sacrée", desc: "Tablettes cunéiformes renfermant sorts-prières.", baseCost: 1900, basePassive: 9.0, baseClic: 11.0 },
-    { id: "mage", name: "𓂀 Prêtre-Mage", desc: "Traduit la volonté divine en incantations.", baseCost: 4000, basePassive: 15.0, baseClic: 19.0 }
+    { id: "ziggurat", name: "🏺 Ziggurat", desc: "Temple-montagne où l'on lit les astres.", baseCost: 1000, basePassive: 5.0, baseClic: 7.0 },
+    { id: "bibliotheque", name: "📜 Bibliothèque Sacrée", desc: "Tablettes cunéiformes renfermant sorts-prières.", baseCost: 2000, basePassive: 9.0, baseClic: 11.0 },
+    { id: "mage", name: "𓂀 Prêtre-Mage", desc: "Traduit la volonté divine en incantations.", baseCost: 4500, basePassive: 15.0, baseClic: 19.0 }
   ],
   ironage: [
-    { id: "druide", name: "🌳 Cercle Druidique", desc: "Les chênes sacrés murmurent des secrets.", baseCost: 2500, basePassive: 12.0, baseClic: 15.0 },
-    { id: "forge", name: "⚙️ Forge Sacrée", desc: "Le métal forgé est une prière au feu.", baseCost: 4500, basePassive: 20.0, baseClic: 24.0 },
-    { id: "nemeton", name: "🌀 Nemeton", desc: "Sanctuaire gaulois où ciel et terre s'unissent.", baseCost: 7000, basePassive: 32.0, baseClic: 38.0 }
+    { id: "druide", name: "🌳 Cercle Druidique", desc: "Les chênes sacrés murmurent des secrets.", baseCost: 4000, basePassive: 12.0, baseClic: 15.0 },
+    { id: "forge", name: "⚙️ Forge Sacrée", desc: "Le métal forgé est une prière au feu.", baseCost: 5000, basePassive: 20.0, baseClic: 24.0 },
+    { id: "nemeton", name: "🌀 Nemeton", desc: "Sanctuaire gaulois où ciel et terre s'unissent.", baseCost: 8000, basePassive: 32.0, baseClic: 38.0 }
   ],
   greece: [
-    { id: "oracle", name: "⚡ Oracle de Delphes", desc: "La Pythie en transe.", baseCost: 4000, basePassive: 14.0, baseClic: 18.0 },
-    { id: "mysteres", name: "🌿 Mystères d'Éleusis", desc: "Les initiés reviennent transformés.", baseCost: 7000, basePassive: 25.0, baseClic: 31.0 },
-    { id: "theurge", name: "🌀 Theurge Néoplatonicien", desc: "Unit âme humaine et divine.", baseCost: 12000, basePassive: 42.0, baseClic: 50.0 }
+    { id: "oracle", name: "⚡ Oracle de Delphes", desc: "La Pythie en transe.", baseCost: 8000, basePassive: 14.0, baseClic: 18.0 },
+    { id: "mysteres", name: "🌿 Mystères d'Éleusis", desc: "Les initiés reviennent transformés.", baseCost: 10000, basePassive: 25.0, baseClic: 31.0 },
+    { id: "theurge", name: "🌀 Theurge Néoplatonicien", desc: "Unit âme humaine et divine.", baseCost: 14000, basePassive: 42.0, baseClic: 50.0 }
   ],
   medieval: [
-    { id: "scriptorium", name: "✍️ Scriptorium", desc: "Moines copistes de grimoires.", baseCost: 8500, basePassive: 30.0, baseClic: 37.0 },
-    { id: "alchimiste", name: "⚗️ Atelier Alchimique", desc: "La transmutation est une prière.", baseCost: 16000, basePassive: 54.0, baseClic: 64.0 },
-    { id: "kabbaliste", name: "✡️ Kabbaliste Chrétien", desc: "Les lettres hébraïques révèlent le divin.", baseCost: 28000, basePassive: 90.0, baseClic: 105.0 }
+    { id: "scriptorium", name: "✍️ Scriptorium", desc: "Moines copistes de grimoires.", baseCost: 15000, basePassive: 30.0, baseClic: 37.0 },
+    { id: "alchimiste", name: "⚗️ Atelier Alchimique", desc: "La transmutation est une prière.", baseCost: 18000, basePassive: 54.0, baseClic: 64.0 },
+    { id: "kabbaliste", name: "✡️ Kabbaliste Chrétien", desc: "Les lettres hébraïques révèlent le divin.", baseCost: 30000, basePassive: 90.0, baseClic: 105.0 }
   ],
   renaissance: [
-    { id: "academie", name: "🔭 Académie Platonicienne", desc: "Ficin traduit Hermès Trismégiste.", baseCost: 25000, basePassive: 85.0, baseClic: 100.0 },
-    { id: "astronome", name: "🌟 Tour Astronomique", desc: "L'observatoire lit dans les étoiles.", baseCost: 50000, basePassive: 148.0, baseClic: 170.0 },
-    { id: "hermes", name: "☿ Temple Hermétique", desc: "La magie naturelle est science divine.", baseCost: 85000, basePassive: 250.0, baseClic: 290.0 }
+    { id: "academie", name: "🔭 Académie Platonicienne", desc: "Ficin traduit Hermès Trismégiste.", baseCost: 31000, basePassive: 85.0, baseClic: 100.0 },
+    { id: "astronome", name: "🌟 Tour Astronomique", desc: "L'observatoire lit dans les étoiles.", baseCost: 60000, basePassive: 148.0, baseClic: 170.0 },
+    { id: "hermes", name: "☿ Temple Hermétique", desc: "La magie naturelle est science divine.", baseCost: 100000, basePassive: 250.0, baseClic: 290.0 }
   ],
   enlightenment: [
-    { id: "loge", name: "🕯️ Loge Maçonnique", desc: "Les rituels d'initiation libèrent l'esprit.", baseCost: 75000, basePassive: 230.0, baseClic: 270.0 },
-    { id: "mesmer", name: "💫 Cabinet de Mesmer", desc: "Le magnétisme animal guérit l'âme.", baseCost: 120000, basePassive: 360.0, baseClic: 420.0 },
-    { id: "illuminati", name: "👁️ Ordre des Illuminés", desc: "Savoir ésotérique et pouvoir.", baseCost: 180000, basePassive: 550.0, baseClic: 640.0 }
+    { id: "loge", name: "🕯️ Loge Maçonnique", desc: "Les rituels d'initiation libèrent l'esprit.", baseCost: 100000, basePassive: 230.0, baseClic: 270.0 },
+    { id: "mesmer", name: "💫 Cabinet de Mesmer", desc: "Le magnétisme animal guérit l'âme.", baseCost: 140000, basePassive: 360.0, baseClic: 420.0 },
+    { id: "illuminati", name: "👁️ Ordre des Illuminés", desc: "Savoir ésotérique et pouvoir.", baseCost: 200000, basePassive: 550.0, baseClic: 640.0 }
   ],
   modern: [
-    { id: "golddawn", name: "🌐 Loge Golden Dawn", desc: "Yeats invoque les anges.", baseCost: 70000, basePassive: 240.0, baseClic: 280.0 },
-    { id: "theosophie", name: "🕊️ Société Théosophique", desc: "Doctrine secrète universelle.", baseCost: 130000, basePassive: 400.0, baseClic: 460.0 },
-    { id: "teilhard", name: "⚛️ Chapelle Cosmique", desc: "Le Christ Oméga réconcilie matière et esprit.", baseCost: 230000, basePassive: 680.0, baseClic: 780.0 }
+    { id: "golddawn", name: "🌐 Loge Golden Dawn", desc: "Yeats invoque les anges.", baseCost: 220000, basePassive: 240.0, baseClic: 280.0 },
+    { id: "theosophie", name: "🕊️ Société Théosophique", desc: "Doctrine secrète universelle.", baseCost: 250000, basePassive: 400.0, baseClic: 460.0 },
+    { id: "teilhard", name: "⚛️ Chapelle Cosmique", desc: "Le Christ Oméga réconcilie matière et esprit.", baseCost: 270000, basePassive: 680.0, baseClic: 780.0 }
   ],
   ultima: [
-    { id: "axis", name: "🌀 L'Axe du Monde", desc: "Là où tous les mondes se rencontrent.", baseCost: 200000, basePassive: 700.0, baseClic: 800.0 },
-    { id: "noosphere", name: "🌐 Noosphère", desc: "La pensée unique devient prière.", baseCost: 375000, basePassive: 1100.0, baseClic: 1250.0 },
-    { id: "kenosis", name: "✨ Kenosis", desc: "Le vide sacré accueille le divin.", baseCost: 650000, basePassive: 1700.0, baseClic: 2000.0 }
+    { id: "axis", name: "🌀 L'Axe du Monde", desc: "Là où tous les mondes se rencontrent.", baseCost: 300000, basePassive: 700.0, baseClic: 800.0 },
+    { id: "noosphere", name: "🌐 Noosphère", desc: "La pensée unique devient prière.", baseCost: 500000, basePassive: 1100.0, baseClic: 1250.0 },
+    { id: "kenosis", name: "✨ Kenosis", desc: "Le vide sacré accueille le divin.", baseCost: 1000000, basePassive: 1700.0, baseClic: 2000.0 }
   ]
 };
 const FACTS_BY_EPOCH = {
