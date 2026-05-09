@@ -2,7 +2,7 @@
   "name": "Codex Arcanorum — Le Miroir de l'Âme",
   "short_name": "CodexArcanorum",
   "description": "Un grimoire interactif pour explorer les arcanes de l'âme.",
-  "start_url": "index-7.html",
+  "start_url": "index.html",
   "display": "standalone",
   "theme_color": "#07050e",
   "background_color": "#07050e",
