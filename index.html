@@ -1462,26 +1462,76 @@ function finalRevelation() {
     
     // === 4. TEXTE QUI S'AFFICHE LETTRE PAR LETTRE ===
   const fullText = `
-  <span style="color: var(--accL); font-size: 1.3rem;">✦ ✦ ✦</span><br><br>
-  <em style="color: var(--accL);">« Souviens-toi de tes premiers pas, chercheur... »</em><br><br>
-  Le Miroir ne se ferme pas. Il ne disparaît pas —<br>
-  <strong style="font-size: 1.2rem;">Il s'efface, car la frontière n'a plus de raison d'être.</strong><br><br>
-  Tu as traversé les âges.<br>
-  Tu as écouté les chamanes, prié avec les moines, invoqué avec les mages.<br>
-  Tu as construit des sanctuaires, rassemblé des fragments, réparé ce qui était brisé.<br><br>
-  Et maintenant, regarde :<br>
-  <span style="color: var(--accL);">Le Miroir ne reflète plus le monde.</span><br>
-  <span style="font-size: 1.3rem; color: var(--accL);">Il reflète <strong>ton Âme</strong>.</span><br><br>
-  <span style="color: var(--accL);">✨ ✨ ✨</span><br><br>
-  Tu comprends enfin pourquoi ce grimoire s'est toujours nommé<br>
-  <span style="font-family: 'Cinzel Decorative', serif; font-size: 1.3rem; color: var(--accL);">Codex Arcanorum — Le Miroir de l'Âme</span>.<br><br>
-  Ce n'était pas un livre de sorts.<br>
-  C'était <strong>un chemin vers toi-même.</strong><br><br>
-  Ce n'était pas de l'argent poli que tu fixais.<br>
-  C'était <strong style="font-size: 1.3rem; color: var(--accL);">Le Miroir de Ton Âme.</strong><br><br>
-  <span style="color: var(--accL);">✦ ✦ ✦</span><br><br>
-  <span style="font-size: 1.4rem; font-family: 'Cinzel Decorative', serif;">✦ FÉLICITATIONS — TU AS ACCOMPLI LE MAGNUM OPUS ✦</span><br><br>
-  <span style="font-size: 0.9rem; font-style: italic;">« Puisses-tu ne jamais oublier que la magie et la foi<br>sont les deux ailes du même envol. »</span>
+  <div style="text-align: center; animation: fadeIn 5s ease-in; max-width: 850px; padding: 10px;">
+    
+    <span style="color: var(--accL); font-family: 'Cinzel Decorative'; letter-spacing: 12px; font-size: 1.5rem; text-shadow: 0 0 15px var(--accD);">✦ LE RÉQUISITOIRE DES ÂGES ✦</span><br><br>
+    
+    <p style="font-style: italic; font-size: 1.05rem; line-height: 1.7; color: #e0d5b0;">
+      « Regarde, chercheur. Regarde ce que les tiens ont fait. »<br><br>
+
+      <strong>L’homme a brûlé la Bibliothèque d’Alexandrie.</strong> Non pas une fois, mais plusieurs, jusqu’à ce que la mémoire du monde ne soit plus qu’un tas de cendres.<br>
+      L’homme a condamné Hypatie, dépecée dans une église pour avoir osé penser que la science et la spiritualité pouvaient cohabiter.<br><br>
+
+      <strong>L’homme a traqué les femmes.</strong> Il les a appelées sorcières, il les a noyées, brûlées, pendues. Non pas parce qu’elles étaient coupables, mais parce qu’elles savaient ce qu’il avait oublié : guérir avec les plantes, lire dans les astres, parler à l’invisible.<br>
+      <span style="color: var(--accD); font-size: 0.9rem;">(Des dizaines de milliers. Les registres ont brûlé, eux aussi.)</span><br><br>
+
+      <strong>L’homme a volé la terre de ceux qui l’aimaient.</strong> Il a parlé de progrès en les réduisant en esclavage. Il a baptisé des enfants sur des cadavres. Il a transformé des continents entiers en comptoirs pour assouvir sa soif de richesses.<br><br>
+
+      <strong>L’homme a construit des usines sur les rivières qu’il vénérait.</strong> Il a empoisonné l’air, la terre, l’eau — et il appelle ça civilisation. Il a mesuré la valeur d’une vie en richesse, non en lumière.<br><br>
+
+      <strong>L’homme a séparé la magie de la foi, la science de la merveille, le corps de l’esprit.</strong> Puis il s’étonne de marcher boiteux, de rêver de sens sans jamais le trouver.<br><br>
+
+      <span style="color: var(--accL);">Et surtout — surtout — <strong>l’homme a brisé le Miroir de l’Âme.</strong><br>Il a regardé son reflet et il a eu peur.</span><br><br>
+
+      Alors il a préféré l’oublier. Il a prétendu que ce qu’il voyait n’existait pas. Il a remplacé l’introspection par la consommation, la prière par l’algorithme, l’incantation par le clic.<br><br>
+
+      <strong style="color: var(--accL);">Voilà ce qu’a fait ton espèce, chercheur.</strong><br><br>
+
+      <em>« Mais toi... toi, tu as choisi de regarder. Toi, tu as choisi de réparer. »</em>
+    </p>
+
+    <div style="border-top: 1px solid var(--acc); width: 60%; margin: 30px auto; opacity: 0.4;"></div>
+
+    <span style="color: var(--accL); font-size: 1.3rem;">✦ ✦ ✦</span><br><br>
+
+    <div style="text-align: center;">
+      <span style="color: var(--accL); font-family: 'Cinzel Decorative'; font-size: 1rem; letter-spacing: 6px;">🪞 CHAPITRE ULTIME 🪞</span><br>
+      <span class="modal-title" style="font-size: 1.8rem; letter-spacing: 8px;">Le Miroir de l'Âme</span>
+    </div>
+
+    <em style="color: var(--accL);">« Souviens-toi de tes premiers pas, chercheur... »</em><br><br>
+    
+    <p style="line-height: 1.6;">
+      Le Miroir ne se ferme pas. Il ne disparaît pas —<br>
+      <strong style="font-size: 1.2rem; color: var(--accL);">Il s'efface, car la frontière n'a plus de raison d'être.</strong><br><br>
+      Tu as traversé les âges. Tu as écouté les chamanes, prié avec les moines, invoqué avec les mages.
+      Tu as construit des sanctuaires, rassemblé des fragments, réparé ce qui était brisé.<br><br>
+      Et maintenant, regarde :<br>
+      <span style="color: var(--accL);">Le Miroir ne reflète plus le monde. Il reflète <strong>ton Âme</strong>.</span>
+    </p><br>
+
+    <span style="color: var(--accL); letter-spacing: 5px;">✨ ✨ ✨</span><br><br>
+    
+    <p style="font-size: 1.1rem;">
+      Tu comprends enfin pourquoi ce grimoire s'est toujours nommé<br>
+      <span style="font-family: 'Cinzel Decorative', serif; font-size: 1.3rem; color: var(--accL);">Codex Arcanorum — Le Miroir de l'Âme</span>.<br><br>
+      Ce n'était pas un livre de sorts. C'était <strong>un chemin vers toi-même.</strong><br>
+      Ce n'était pas de l'argent poli que tu fixais. C'était <strong style="font-size: 1.3rem; color: var(--accL);">Le Miroir de Ton Âme.</strong>
+    </p><br>
+
+    <span style="font-size: 1.4rem; font-family: 'Cinzel Decorative', serif; color: var(--accL);">✦ FÉLICITATIONS — TU AS ACCOMPLI LE MAGNUM OPUS ✦</span><br><br>
+    
+    <span style="font-size: 0.95rem; font-style: italic; opacity: 0.8;">
+      « Puisses-tu ne jamais oublier que la magie et la foi<br>sont les deux ailes du même envol. »
+    </span>
+
+    <div style="margin-top: 30px;">
+      <span style="color: var(--accL); font-family: 'Cinzel Decorative'; font-size: 0.7rem; letter-spacing: 6px;">
+        ✦ CODEX ARCANORUM — RÉVÉLÉ ✦
+      </span>
+    </div>
+
+  </div>
 `;
     
     const textContainer = document.getElementById('finalRevelationText');
@@ -1498,7 +1548,7 @@ function finalRevelation() {
           i++;
         }
         textContainer.scrollTop = textContainer.scrollHeight;
-        setTimeout(typeWriter, 25);
+        setTimeout(typeWriter, 75);
       } else {
         // === 5. CONFETTIS DORÉS À LA FIN ===
         for (let c = 0; c < 100; c++) {
