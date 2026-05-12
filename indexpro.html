@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Codex Arcanorum — Le Miroir de l'Âme</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#07050e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;user-select:none;margin:0;padding:0}
+body{background:#07050e;font-family:'IM Fell English',Georgia,serif;color:#f4e9cc;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:12px;gap:10px;transition:background 1.4s}
+:root{--acc:#d4a84b;--accL:#f0cc7a;--accD:#7a5a22;--ember:#c05c1a;--bg1:#07050e;--bg2:#0f0c1c;--parc:#f4e9cc;--parcD:#c9b98a;--mys:#7a5ab0;--border:rgba(212,168,75,0.28);--glow:rgba(212,120,30,0.28)}
+#starsCanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.45}
+header{text-align:center;position:relative;z-index:1;padding:4px 0}
+.t-main{font-family:'Cinzel Decorative',serif;font-size:clamp(1rem,3vw,1.8rem);background:linear-gradient(135deg,#f0cc7a,var(--ember) 50%,#f0cc7a);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:2px}
+.t-sub{font-family:'Cinzel',serif;font-size:0.58rem;color:var(--accD);letter-spacing:4px;text-transform:uppercase;margin-top:2px}
+.stat-bar{display:flex;align-items:center;background:rgba(0,0,0,0.5);border:1px solid var(--border);border-radius:40px;padding:5px 16px;width:100%;max-width:700px;z-index:1;justify-content:space-between}
+.sb-block{text-align:center;flex:1}
+.sb-val{font-family:'Cinzel',serif;font-size:1.2rem;color:var(--accL);text-shadow:0 0 8px var(--glow);display:block;line-height:1}
+.sb-lbl{font-size:0.48rem;letter-spacing:2px;color:var(--accD);text-transform:uppercase}
+.sb-div{width:1px;height:24px;background:var(--border)}
+.tabs{display:flex;gap:4px;width:100%;max-width:900px;position:relative;z-index:2}
+.tab-btn{flex:1;padding:7px 4px;border:1px solid var(--border);background:rgba(0,0,0,0.4);border-radius:12px;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:2px;color:var(--accD);cursor:pointer;text-align:center;transition:all 0.2s;position:relative}
+.tab-btn.active{background:rgba(212,168,75,0.12);border-color:var(--acc);color:var(--accL)}
+.tab-btn .notif{position:absolute;top:-4px;right:-4px;background:var(--ember);color:#fff;border-radius:50%;width:14px;height:14px;font-size:0.48rem;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif}
+.tab-pane{display:none;width:100%;max-width:900px;z-index:1}
+.tab-pane.active{display:block}
+.panel{background:linear-gradient(160deg,var(--bg2),var(--bg1));border:1px solid var(--border);border-radius:18px;padding:14px;position:relative;overflow:hidden}
+.panel::before{content:'';position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(212,168,75,0.04) 0%,transparent 50%);pointer-events:none}
+.panel-title{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--acc);border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px}
+#tab-ritual{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:600px){#tab-ritual{grid-template-columns:1fr}}
+.epoch-badge{background:rgba(212,168,75,0.09);border:1px solid rgba(212,168,75,0.25);border-radius:40px;padding:3px 11px;font-family:'Cinzel',serif;font-size:0.54rem;letter-spacing:2px;color:var(--accL);display:inline-block;margin-bottom:7px}
+.fact-box{background:rgba(15,12,28,0.85);border:1px solid var(--acc);box-shadow:0 0 20px rgba(212,168,75,0.15);position:relative;overflow:hidden;min-height:100px;width:100%;max-width:600px;margin:10px auto;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:20px;clip-path:polygon(2% 5%,98% 0%,100% 92%,3% 100%,0% 50%);backdrop-filter:blur(4px)}
+.fact-box::after{content:"";position:absolute;top:-50%;left:-150%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(255,255,255,0.1),transparent);transform:rotate(45deg);animation:mirrorShine 8s cubic-bezier(0.4,0,0.6,1) infinite;pointer-events:none}
+@keyframes mirrorShine{0%{transform:translateX(-100%) rotate(45deg)}100%{transform:translateX(100%) rotate(45deg)}}
+.fact-txt{display:block;width:100%;word-break:normal;overflow-wrap:anywhere}
+.fact-type{font-family:'Cinzel',serif;font-size:0.48rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:2px;flex-shrink:0}
+.fact-type.tf{color:var(--ember)}.fact-type.tc{color:var(--mys)}.fact-type.tt{color:#6a9a6a}
+.fact-inner{overflow:hidden;flex:1}
+.fact-txt{font-size:0.74rem;line-height:1.46;color:var(--parc);font-style:italic}
+.fact-txt.cit{font-size:0.8rem;color:#e0d8f4}
+.fact-auth{font-size:0.54rem;color:var(--accD);margin-top:2px;font-family:'Cinzel',serif;flex-shrink:0}
+.ritual-wrap{display:flex;justify-content:center;margin:8px 0}
+.ritual-btn{width:126px;height:126px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 35% 30%,#f5cc7a,#a04010 60%,#6a2a08);animation:pglow 3.2s ease-in-out infinite;transition:transform 0.06s;outline:none}
+.ritual-btn:active{transform:scale(0.92);animation:none}
+.ritual-inner{width:100%;height:100%;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;pointer-events:none}
+.ritual-btn .sigil{font-size:1.85rem;filter:drop-shadow(0 0 6px rgba(255,220,120,0.6))}
+.ritual-btn .blbl{font-family:'Cinzel',serif;font-size:0.46rem;letter-spacing:3px;color:#fff9e8}
+@keyframes pglow{0%,100%{box-shadow:0 0 0 2px rgba(212,168,75,0.4),0 0 0 5px rgba(212,168,75,0.07),0 10px 25px rgba(0,0,0,0.7),0 0 18px var(--glow),inset 0 1px 2px rgba(255,240,180,0.4)}50%{box-shadow:0 0 0 3px rgba(240,200,100,0.7),0 0 0 11px rgba(212,168,75,0.12),0 10px 25px rgba(0,0,0,0.7),0 0 42px var(--glow),inset 0 1px 2px rgba(255,240,180,0.4)}}
+.prog-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+.prog-bar{flex:1;height:3px;background:rgba(212,168,75,0.1);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--ember),var(--acc));border-radius:3px;transition:width 0.4s}
+.prog-lbl{font-family:'Cinzel',serif;font-size:0.5rem;color:var(--accD);white-space:nowrap}
+.epoch-section{background:rgba(0,0,0,0.28);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px}
+.epoch-head{padding:9px 13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:rgba(212,168,75,0.05)}
+.epoch-head-name{font-family:'Cinzel',serif;font-size:0.72rem;color:var(--accL)}
+.epoch-head-cost{font-family:'Cinzel',serif;font-size:0.58rem;color:var(--accD)}
+.epoch-head.owned .epoch-head-cost{color:#6aaa6a}
+.epoch-head.locked{opacity:0.3;cursor:default}
+.ebar{height:2px;background:rgba(212,168,75,0.08);border-radius:2px;margin-top:5px;overflow:hidden;width:100%}
+.efill{height:100%;background:linear-gradient(90deg,var(--ember),var(--acc));border-radius:2px;transition:width 0.3s}
+.sanctuaries-grid{padding:8px;display:flex;flex-direction:column;gap:6px}
+.sanct-card{background:rgba(0,0,0,0.3);border:1px solid rgba(212,168,75,0.14);border-radius:10px;padding:8px 10px;transition:all 0.15s}
+.sanct-card.buyable{border-color:rgba(212,168,75,0.45);cursor:pointer;background:rgba(212,168,75,0.05)}
+.sanct-card.buyable:hover{border-color:var(--acc);background:rgba(212,168,75,0.1);transform:translateX(2px)}
+.sanct-card.locked{opacity:0.28}
+.sanct-head{display:flex;justify-content:space-between;align-items:flex-start;gap:5px}
+.sanct-name{font-family:'Cinzel',serif;font-size:0.66rem;color:var(--accL)}
+.sanct-status{font-family:'Cinzel',serif;font-size:0.54rem;color:var(--accD)}
+.sanct-card.owned .sanct-status{color:#6aaa6a}
+.sanct-desc{font-size:0.61rem;color:var(--parcD);margin-top:2px;font-style:italic}
+.sanct-bonus{font-size:0.56rem;color:#9ab870;margin-top:3px;font-family:'Cinzel',serif}
+.lvl-bar{height:2px;background:rgba(212,168,75,0.08);border-radius:2px;margin-top:4px;overflow:hidden}
+.lvl-fill{height:100%;background:linear-gradient(90deg,#6a9a6a,#9ab870);border-radius:2px}
+.grim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px}
+.grim-total{font-family:'Cinzel',serif;font-size:0.58rem;color:var(--accD)}
+.grim-filters{display:flex;gap:5px}
+.grim-filter{background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-family:'Cinzel',serif;font-size:0.52rem;color:var(--accD);cursor:pointer}
+.grim-filter.active{background:rgba(212,168,75,0.14);border-color:var(--acc);color:var(--accL)}
+.grim-epoch-section{margin-bottom:12px}
+.grim-epoch-title{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--acc);border-bottom:1px solid var(--border);padding-bottom:4px;margin-bottom:7px;display:flex;justify-content:space-between}
+.grim-count{font-size:0.52rem;color:var(--accD)}
+.grim-entry{background:rgba(0,0,0,0.32);border-radius:10px;padding:10px 12px;margin-bottom:6px;animation:slideIn 0.25s ease;border-left:3px solid transparent}
+@keyframes slideIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+.grim-entry.tf{border-left-color:var(--ember);background:rgba(74,48,128,0.15)}
+.grim-entry.tc{border-left-color:var(--mys);background:rgba(100,80,160,0.12)}
+.grim-entry.tt{border-left-color:#6a9a6a;background:rgba(40,80,40,0.15)}
+.grim-entry.rev{border-left-color:#5a8ac0;background:rgba(30,50,90,0.28)}
+.ge-type{font-family:'Cinzel',serif;font-size:0.48rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:3px}
+.ge-type.tf{color:var(--ember)}.ge-type.tc{color:var(--mys)}.ge-type.tt{color:#6a9a6a}.ge-type.rev{color:#5a8ac0}
+.ge-text{font-size:0.74rem;line-height:1.5;color:var(--parc);font-style:italic}
+.ge-text.cit{font-size:0.8rem;color:#e0d8f4}
+.ge-auth{font-size:0.54rem;color:var(--accD);margin-top:3px;font-family:'Cinzel',serif}
+.grim-empty{font-size:0.72rem;color:var(--accD);font-style:italic;text-align:center;padding:20px;opacity:0.6}
+.grim-scroll{max-height:60vh;overflow-y:auto;scrollbar-width:thin;padding-right:4px}
+.modal-ov{position:fixed;inset:0;z-index:2000;background:rgba(2,1,8,0.84);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;animation:fadein 0.3s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.modal-box{background:linear-gradient(160deg,#100e20,#080614);border-radius:18px;padding:24px 22px;max-width:520px;width:100%;position:relative;animation:slideup 0.35s ease}
+@keyframes slideup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.modal-border{position:absolute;inset:0;border-radius:18px;border:1px solid rgba(212,168,75,0.48);pointer-events:none}
+.modal-title{font-family:'Cinzel',serif;font-size:1.15rem;color:var(--accL);margin-bottom:12px;text-align:center;letter-spacing:3px}
+.modal-text{font-style:italic;font-size:0.95rem;line-height:1.7;max-height:55vh;overflow-y:auto;padding-right:10px}
+.modal-close{display:block;width:100%;background:rgba(212,168,75,0.1);border:1px solid var(--border);border-radius:40px;padding:8px;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:3px;color:var(--accL);cursor:pointer;text-align:center}
+.toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%) translateY(14px);background:rgba(18,13,32,0.97);border:1px solid var(--acc);border-radius:40px;padding:6px 18px;font-family:'Cinzel',serif;font-size:0.63rem;color:var(--accL);opacity:0;transition:all 0.3s;pointer-events:none;z-index:1000;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:560px){.modal-box{padding:18px 14px}.ritual-btn{width:110px;height:110px}.ritual-btn .sigil{font-size:1.6rem}.toast{white-space:normal;font-size:0.55rem}}
+.reset-btn{position:fixed;bottom:12px;right:12px;background:rgba(100,80,160,0.2);border:1px solid rgba(212,168,75,0.3);border-radius:30px;padding:4px 10px;font-family:'Cinzel',serif;font-size:0.5rem;letter-spacing:1px;color:var(--accD);cursor:pointer;z-index:100;transition:all 0.2s;backdrop-filter:blur(4px)}
+.reset-btn:hover{background:rgba(100,80,160,0.4);border-color:var(--ember);color:var(--accL)}
+.rune{position:fixed;pointer-events:none;z-index:1000;font-family:'Cinzel Decorative',serif;font-size:1.8rem;font-weight:bold;white-space:nowrap;animation:riseRune 1.4s ease-out forwards}
+@keyframes riseRune{0%{opacity:0.9;transform:translateY(0) scale(0.8);filter:blur(0px)}30%{opacity:1;transform:translateY(-15px) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(0.5);filter:blur(4px)}}
+.spark{position:fixed;pointer-events:none;z-index:999;width:3px;height:3px;border-radius:50%;background:radial-gradient(circle,#f0cc7a,#d4783a);animation:sparkOut 0.8s ease-out forwards}
+@keyframes sparkOut{0%{opacity:0.9;transform:scale(1)}100%{opacity:0;transform:scale(0.2) translateY(-20px)}}
+.sigilCircle{position:fixed;pointer-events:none;z-index:998;border-radius:50%;border:1px solid rgba(212,168,75,0.6);box-shadow:0 0 12px rgba(212,168,75,0.4),inset 0 0 8px rgba(212,168,75,0.2);animation:circlePulse 0.7s ease-out forwards}
+@keyframes circlePulse{0%{width:0;height:0;margin-left:0;margin-top:0;opacity:0.8}50%{opacity:0.5}100%{width:90px;height:90px;margin-left:-45px;margin-top:-45px;opacity:0}}
+.mirror-fragments{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0;justify-content:center}
+.mirror-shard{width:65px;height:65px;background:rgba(212,168,75,0.1);border:1px solid rgba(212,168,75,0.3);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.6rem;transition:all 0.2s;position:relative}
+.mirror-shard.found{background:rgba(212,168,75,0.25);border-color:var(--acc);box-shadow:0 0 12px rgba(212,168,75,0.4);animation:shardGlow 2s ease-in-out infinite}
+.mirror-shard.found .shard-name{font-size:0.45rem;color:var(--accL);margin-top:4px;text-align:center}
+.mirror-shard:not(.found){opacity:0.4;filter:grayscale(0.5)}
+@keyframes shardGlow{0%,100%{box-shadow:0 0 5px rgba(212,168,75,0.3)}50%{box-shadow:0 0 18px rgba(212,168,75,0.7)}}
+.mirror-progress{background:rgba(0,0,0,0.4);border-radius:20px;padding:12px;margin:12px 0;text-align:center}
+.mirror-button{background:linear-gradient(135deg,rgba(212,168,75,0.2),rgba(100,80,160,0.3));border:2px solid var(--acc);border-radius:60px;padding:14px 24px;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:4px;color:var(--accL);cursor:pointer;width:100%;margin:15px 0;transition:all 0.2s}
+.mirror-button:hover:not(:disabled){background:rgba(212,168,75,0.35);transform:scale(1.02);box-shadow:0 0 20px var(--glow)}
+.mirror-button:disabled{opacity:0.4;cursor:not-allowed}
+.mirror-legend{font-size:0.65rem;color:var(--parcD);font-style:italic;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);text-align:center}
+.mirror-complete{background:linear-gradient(135deg,rgba(212,168,75,0.15),rgba(100,80,160,0.2));border-radius:16px;padding:18px;margin:15px 0;text-align:center;border:1px solid rgba(212,168,75,0.5);animation:completePulse 1.8s ease-in-out infinite}
+@keyframes completePulse{0%,100%{border-color:rgba(212,168,75,0.4);background:rgba(212,168,75,0.08)}50%{border-color:rgba(212,168,75,0.9);background:rgba(212,168,75,0.18)}}
+.mirror-final-choice{display:flex;gap:12px;margin:15px 0;flex-wrap:wrap}
+.choice-btn{flex:1;background:rgba(0,0,0,0.5);border:1px solid var(--border);border-radius:40px;padding:12px 8px;font-family:'Cinzel',serif;font-size:0.7rem;cursor:pointer;transition:all 0.2s;color:var(--parc)}
+.choice-btn:hover{border-color:var(--acc);background:rgba(212,168,75,0.15)}
+.choice-faith{border-left-color:#c0a8f0}.choice-magic{border-left-color:var(--ember)}.choice-unity{border-left-color:var(--acc)}
+.modal-mirror{border:2px solid var(--acc);box-shadow:0 0 30px var(--glow), inset 0 0 20px rgba(212,168,75,0.1);background:linear-gradient(160deg,#0a0818,#050310);animation:modalGlowPulse 2s ease-in-out infinite}
+.modal-mirror .modal-border{border-color:var(--acc);box-shadow:0 0 15px var(--acc)}
+.modal-mirror .modal-title{font-size:1.2rem;letter-spacing:4px;text-shadow:0 0 10px var(--acc);color:var(--accL)}
+.modal-mirror .modal-text{border-left:2px solid var(--acc);padding-left:15px;font-size:1rem}
+@keyframes modalGlowPulse{0%,100%{box-shadow:0 0 20px rgba(212,168,75,0.2), inset 0 0 10px rgba(212,168,75,0.05)}50%{box-shadow:0 0 45px rgba(212,168,75,0.5), inset 0 0 25px rgba(212,168,75,0.1)}}
+.modal-mirror-ultimate{border:3px solid #d4af37;box-shadow:0 0 60px rgba(212,175,55,0.7), inset 0 0 30px rgba(212,175,55,0.15);background:linear-gradient(160deg,#1a1520,#0a0810);animation:modalUltimatePulse 1.5s ease-in-out infinite}
+.modal-mirror-ultimate .modal-title{font-size:1.4rem;text-shadow:0 0 15px #d4af37;color:#d4af37}
+.modal-mirror-ultimate .modal-text{border-left:2px solid #d4af37;color:#f0e6c0}
+@keyframes modalUltimatePulse{0%,100%{box-shadow:0 0 30px rgba(212,175,55,0.3)}50%{box-shadow:0 0 70px rgba(212,175,55,0.8)}}
+.achievements-panel{max-height:400px;overflow-y:auto;padding:5px}
+.achievement{background:rgba(0,0,0,0.3);border-left:3px solid var(--accD);border-radius:10px;padding:8px 12px;margin-bottom:8px;transition:all 0.2s;cursor:pointer}
+.achievement.unlocked{border-left-color:var(--acc);background:rgba(212,168,75,0.1);box-shadow:0 0 8px rgba(212,168,75,0.2)}
+.achievement.unlocked .achieve-title{color:var(--accL);text-shadow:0 0 4px var(--acc)}
+.achievement.unlocked .achieve-desc{color:var(--parc)}
+.achievement.locked{opacity:0.5;filter:grayscale(0.3)}
+.achieve-title{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:2px;display:flex;justify-content:space-between;align-items:center}
+.achieve-name{color:var(--acc)}
+.achieve-date{font-size:0.5rem;color:var(--accD);font-family:monospace}
+.achieve-desc{font-size:0.55rem;color:var(--parcD);margin-top:3px;font-style:italic}
+.achieve-reward{font-size:0.5rem;color:#9ab870;margin-top:3px}
+.achieve-notif{position:fixed;bottom:80px;right:20px;background:linear-gradient(135deg,#0a0818,#050310);border:2px solid var(--acc);border-radius:12px;padding:12px 18px;max-width:280px;z-index:2001;opacity:0;transition:opacity 0.3s ease;animation:achieveSlideIn 0.4s ease-out forwards;box-shadow:0 0 30px rgba(212,168,75,0.4)}
+#achievementsBtn.has-new::after{content:"✨";position:absolute;top:-8px;right:-8px;font-size:0.7rem;animation:sparkle 1s ease-in-out infinite}
+@keyframes sparkle{0%,100%{opacity:0.6;transform:scale(0.9)}50%{opacity:1;transform:scale(1.2)}}
+@media(max-width:768px){body{font-size:14px;padding:8px;gap:6px}.stat-bar{padding:4px 10px;gap:4px}.sb-val{font-size:0.9rem}.sb-lbl{font-size:0.4rem}.tab-btn{font-size:0.5rem;padding:6px 2px}.panel{padding:10px}.panel-title{font-size:0.5rem;margin-bottom:6px}.fact-box{min-height:100px;width:100%;max-width:600px;margin:10px auto;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:20px;clip-path:polygon(2% 5%,98% 0%,100% 92%,3% 100%,0% 50%)}.fact-txt{font-size:0.65rem}.fact-txt.cit{font-size:0.7rem}.ritual-btn{width:100px;height:100px}.ritual-btn .sigil{font-size:1.4rem}.ritual-btn .blbl{font-size:0.4rem}.epoch-badge{font-size:0.45rem;padding:2px 8px}.sanct-name{font-size:0.6rem}.sanct-desc{font-size:0.55rem}.sanct-status,.sanct-bonus{font-size:0.5rem}.sanct-card{padding:6px 8px}.grim-entry{padding:8px 10px}.ge-text{font-size:0.65rem}.ge-type{font-size:0.45rem}.mirror-shard{width:50px;height:50px;font-size:1.2rem}.mirror-shard.found .shard-name{font-size:0.4rem}.mirror-button{font-size:0.7rem;padding:10px 16px}.choice-btn{font-size:0.6rem;padding:8px 6px}.modal-box{max-width:90%;padding:16px 14px;margin:10px}.modal-title{font-size:1rem}.modal-text{font-size:0.85rem;line-height:1.5}.toast{font-size:0.55rem;padding:5px 12px;white-space:normal;max-width:90%;text-align:center}.reset-btn{padding:3px 8px;font-size:0.6rem}#achievementsBtn{font-size:0.9rem;padding:3px 6px}#recentScroll{font-size:0.55rem}}
+@media(max-width:480px){.stat-bar{flex-wrap:wrap;justify-content:center;gap:8px}.sb-div{display:none}.tab-btn{font-size:0.45rem;letter-spacing:1px}.mirror-final-choice{flex-direction:column}}
+.event-toast{position:fixed;bottom:80px;right:20px;width:280px;background:linear-gradient(135deg,#0a0818,#050310);border:2px solid var(--acc);border-radius:12px;padding:12px;z-index:2001;animation:slideInRight 0.3s ease-out;cursor:pointer}
+.event-toast .title{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--accL);margin-bottom:8px}
+.event-toast .desc{font-size:0.7rem;color:var(--parc);margin-bottom:10px}
+.event-toast .choices{display:flex;gap:8px}
+.event-toast .choice{flex:1;background:rgba(212,168,75,0.15);border:1px solid var(--border);border-radius:8px;padding:6px;font-size:0.6rem;text-align:center;cursor:pointer}
+.event-toast .choice:hover{background:rgba(212,168,75,0.3);border-color:var(--acc)}
+@keyframes slideInRight{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
+#achievementsBtn,#resetBtn{z-index:2000}
+@keyframes waveExpand{0%{transform:scale(0.2);opacity:0.8}100%{transform:scale(2);opacity:0}}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(0.5)}100%{opacity:0;transform:translateY(-60px) scale(1.2)}}
+@keyframes comboGlow{0%{text-shadow:0 0 0px var(--accL)}50%{text-shadow:0 0 15px var(--accL)}100%{text-shadow:0 0 0px var(--accL)}}
+.combo-flash{animation:comboGlow 0.3s ease-out}
+.epoch-content{transition:all 0.2s ease;overflow:hidden;display:block!important}
+.epoch-content.collapsed{display:none!important}
+.collapse-indicator{display:inline-block;transition:transform 0.2s ease;font-size:0.7rem;margin-left:8px;color:var(--accL)}
+.epoch-head{cursor:pointer;user-select:none}
+.epoch-head .epoch-head-name{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.modal-box.magnum-opus{animation:magnumGlow 4s infinite ease-in-out;border:2px solid var(--accL);background:radial-gradient(circle at center,#1a140a 0%,#07050e 100%);max-width:500px;transform:scale(1.05)}
+@keyframes magnumGlow{0%{box-shadow:0 0 20px var(--accD), inset 0 0 10px var(--accD)}50%{box-shadow:0 0 60px var(--accL), inset 0 0 30px var(--accL)}100%{box-shadow:0 0 20px var(--accD), inset 0 0 10px var(--accD)}}
+.modal-title.legendary{font-family:'Cinzel Decorative',serif;letter-spacing:4px;background:linear-gradient(to bottom,var(--accL),var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.6rem;text-align:center;margin-bottom:20px}
+</style>
+</head>
+<body>
+<canvas id="starsCanvas"></canvas>
+<header><div class="t-main">✦ Codex Arcanorum ✦</div><div class="t-sub">Le Miroir de l'Âme</div></header>
+<div class="stat-bar"><div class="sb-block"><span class="sb-val" id="faithVal">0</span><span class="sb-lbl">Foi</span></div><div class="sb-div"></div><div class="sb-block"><span class="sb-val" id="powerVal">1</span><span class="sb-lbl">Puissance</span></div><div class="sb-div"></div><div class="sb-block"><span class="sb-val" id="passiveVal">0.0</span><span class="sb-lbl">/ sec</span></div></div>
+<div class="tabs"><button class="tab-btn active" data-tab="ritual">🕯️ Rituel</button><button class="tab-btn" data-tab="sanctuaires">🏛️ Sanctuaires</button><button class="tab-btn" data-tab="grimoire">📖 Grimoire <span class="notif" id="grimoireNotif" style="display:none">!</span></button><button class="tab-btn" data-tab="mirror" id="mirrorTabBtn" style="display:none">🪞 Le Miroir <span id="mirrorNotif" style="display:none">✨</span></button></div>
+<div class="tab-pane active" id="tab-ritual">
+<div class="panel">
+<div class="panel-title">⬡ Lieu du Rituel</div>
+<div class="epoch-badge" id="epochBadge">🌄 Aube de l'Humanité</div>
+<div class="fact-box" id="factBox">
+<div class="fact-type tf" id="factType">Prémices</div>
+<div class="fact-inner"><div class="fact-txt" id="factTxt">Invoquez pour découvrir les liens entre magie et foi. Chaque geste révèle un fragment de sagesse oubliée…</div></div>
+<div class="fact-auth" id="factAuth"></div>
+</div>
+<div class="ritual-wrap"><button class="ritual-btn" id="ritualBtn"><div class="ritual-inner"><span class="sigil" id="btnSigil">🕯️</span><span class="blbl" id="btnLbl">INVOQUER</span></div></button></div>
+<div style="text-align:center;font-size:.55rem;color:var(--accD);font-family:'Cinzel',serif;letter-spacing:2px;margin-top:4px"><span id="ritualsCount">0</span> rituels accomplis</div>
+<div class="prog-row"><div class="prog-bar"><div class="prog-fill" id="globalProgFill" style="width:0%"></div></div><div class="prog-lbl" id="globalProgLbl">0 / 0 révélations</div></div>
+</div>
+<div class="panel" style="margin-top:8px; max-height:180px; overflow:hidden; display:flex; flex-direction:column">
+<div class="panel-title" style="font-size:0.5rem; letter-spacing:2px">⚡ Dernières Révélations</div>
+<div id="recentScroll" style="overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:4px; scrollbar-width:thin; padding-right:3px; font-size:0.6rem"></div>
+</div>
+</div>
+<div class="tab-pane" id="tab-sanctuaires"><div class="panel"><div class="panel-title">🏛️ Sanctuaires & Bâtisseurs</div><div id="sanctuairesContent"></div></div></div>
+<div class="tab-pane" id="tab-grimoire"><div class="panel"><div class="panel-title">📖 Grimoire des Révélations</div><div class="grim-header"><div class="grim-total" id="grimTotal">0 révélations archivées</div><div class="grim-filters"><button class="grim-filter active" data-gf="all">Tout</button><button class="grim-filter" data-gf="fait">Faits</button><button class="grim-filter" data-gf="citation">Citations</button><button class="grim-filter" data-gf="tension">Tensions</button><button class="grim-filter" data-gf="rev">Révélations</button></div></div><div class="grim-scroll" id="grimScroll"><div class="grim-empty">Aucune révélation encore archivée.<br>Invoquez pour remplir ce grimoire.</div></div></div></div>
+<div class="tab-pane" id="tab-mirror"><div class="panel"><div class="panel-title" id="mirrorPanelTitle">🪞 Le Miroir de l'Âme</div><div id="mirrorContent"></div></div></div>
+<div class="toast" id="toast"></div>
+<button class="reset-btn" id="achievementsBtn" style="left: 12px; right: auto;">🏆 Succès</button>
+<button class="reset-btn" id="resetBtn" style="right: 12px;">⟳ Réinitialiser</button>
+<script>
+let totalCliches = 0;
+let lastUpdate = 0;
+function smoothUpdate(timestamp){
+    if(!lastUpdate) lastUpdate = timestamp;
+    let delta = Math.min(100, timestamp - lastUpdate);
+    if(delta > 0){
+        let gain = effectivePassive() * (delta / 1000);
+        faith += gain;
+        updateStats();
+    }
+    lastUpdate = timestamp;
+    requestAnimationFrame(smoothUpdate);
+}
+requestAnimationFrame(smoothUpdate);
+// ==================== DONNÉES ACTE I ====================
+const EPOCHS = [
+  { id: "paleo", name: "🌀 Chamanisme Paléolithique", cost: 50, badge: "🏔️ Paléolithique (−40 000)", sigil: "🌀", btnLbl: "INVOQUER", pal: { bg1: "#08060f", acc: "#c89840", glow: "rgba(180,110,20,.32)" } },
+  { id: "neolith", name: "🌾 Néolithique & Déesses-Mères", cost: 1000, badge: "🌾 Néolithique (−10 000)", sigil: "🌕", btnLbl: "PRIER", pal: { bg1: "#060d08", acc: "#7ab858", glow: "rgba(80,160,50,.28)" } },
+  { id: "mesopotamia", name: "🏺 Mésopotamie & Égypte", cost: 5000, badge: "🏺 Antiquité orientale (−3 000)", sigil: "𓂀", btnLbl: "INCANTER", pal: { bg1: "#0d0800", acc: "#d4883a", glow: "rgba(200,110,20,.32)" } },
+  { id: "ironage", name: "⚔️ Âge du Fer — Druides & Forgerons", cost: 20000, badge: "🗡️ Âge du Fer (−1200 / −500)", sigil: "⚔️", btnLbl: "SACRIFIER", pal: { bg1: "#0a0804", acc: "#b86c2a", glow: "rgba(160,80,20,.30)" } },
+  { id: "greece", name: "⚡ Mystères Grecs & Romains", cost: 80000, badge: "🏛️ Grèce & Rome (−800 / +400)", sigil: "⚡", btnLbl: "PROPHÉTISER", pal: { bg1: "#040810", acc: "#5888c8", glow: "rgba(50,100,200,.28)" } },
+  { id: "medieval", name: "✝️ Moyen Âge — Grimoires & Foi", cost: 250000, badge: "⛪ Moyen Âge (500–1400)", sigil: "⛪", btnLbl: "BÉNIR", pal: { bg1: "#080510", acc: "#b878d8", glow: "rgba(150,80,200,.3)" } },
+  { id: "renaissance", name: "🔭 Renaissance Hermétique", cost: 1000000, badge: "🖋️ Renaissance (1400–1600)", sigil: "🔭", btnLbl: "TRANSMUTER", pal: { bg1: "#050b0a", acc: "#48b8a8", glow: "rgba(40,160,140,.28)" } },
+  { id: "enlightenment", name: "🕯️ Siècle des Lumières", cost: 5000000, badge: "📚 Lumières (1700–1800)", sigil: "🕯️", btnLbl: "RAISONNER", pal: { bg1: "#0c0a0a", acc: "#c8a860", glow: "rgba(200,160,60,.28)" } },
+  { id: "modern", name: "🌌 Occultisme Moderne", cost: 10000000, badge: "🌐 Époque Moderne (XIXe–XXIe)", sigil: "🌐", btnLbl: "RAYONNER", pal: { bg1: "#04060e", acc: "#8888f0", glow: "rgba(100,100,240,.3)" } },
+  { id: "ultima", name: "♾️ Ultime Réconciliation", cost: 25000000, badge: "🌠 Hors du Temps", sigil: "✧", btnLbl: "DEVENIR", pal: { bg1: "#020108", acc: "#d4af37", glow: "rgba(212,175,55,.4)" } }
+];
+const SANCTUARIES = {
+  paleo: [{ id: "grotte", name: "🪨 Grotte Sacrée", desc: "Peintures rupestres attirent les esprits.", baseCost: 60, basePassive: 0.6, baseClic: 0.8 },{ id: "feu", name: "🔥 Feu Rituel", desc: "La flamme sacrée ne s'éteint jamais.", baseCost: 110, basePassive: 1.2, baseClic: 1.5 },{ id: "chaman", name: "🦅 Chamane Gardien", desc: "Son tambour résonne entre les mondes.", baseCost: 210, basePassive: 2.2, baseClic: 2.8 }],
+  neolith: [{ id: "menhir", name: "🗿 Cercle de Menhirs", desc: "Les pierres dressées captent l'énergie.", baseCost: 300, basePassive: 2.0, baseClic: 2.5 },{ id: "temple", name: "🌾 Temple de la Déesse", desc: "La Grande Mère bénit les rituels.", baseCost: 600, basePassive: 3.8, baseClic: 4.5 },{ id: "dolmen", name: "🌙 Dolmen Lunaire", desc: "Aligné sur la pleine lune.", baseCost: 1000, basePassive: 6.5, baseClic: 8.0 }],
+  mesopotamia: [{ id: "ziggurat", name: "🏺 Ziggurat", desc: "Temple-montagne où l'on lit les astres.", baseCost: 1000, basePassive: 5.0, baseClic: 7.0 },{ id: "bibliotheque", name: "📜 Bibliothèque Sacrée", desc: "Tablettes cunéiformes renfermant sorts-prières.", baseCost: 2000, basePassive: 9.0, baseClic: 11.0 },{ id: "mage", name: "𓂀 Prêtre-Mage", desc: "Traduit la volonté divine en incantations.", baseCost: 4500, basePassive: 15.0, baseClic: 19.0 }],
+  ironage: [{ id: "druide", name: "🌳 Cercle Druidique", desc: "Les chênes sacrés murmurent des secrets.", baseCost: 4000, basePassive: 12.0, baseClic: 15.0 },{ id: "forge", name: "⚙️ Forge Sacrée", desc: "Le métal forgé est une prière au feu.", baseCost: 5000, basePassive: 20.0, baseClic: 24.0 },{ id: "nemeton", name: "🌀 Nemeton", desc: "Sanctuaire gaulois où ciel et terre s'unissent.", baseCost: 8000, basePassive: 32.0, baseClic: 38.0 }],
+  greece: [{ id: "oracle", name: "⚡ Oracle de Delphes", desc: "La Pythie en transe.", baseCost: 8000, basePassive: 14.0, baseClic: 18.0 },{ id: "mysteres", name: "🌿 Mystères d'Éleusis", desc: "Les initiés reviennent transformés.", baseCost: 10000, basePassive: 25.0, baseClic: 31.0 },{ id: "theurge", name: "🌀 Theurge Néoplatonicien", desc: "Unit âme humaine et divine.", baseCost: 14000, basePassive: 42.0, baseClic: 50.0 }],
+  medieval: [{ id: "scriptorium", name: "✍️ Scriptorium", desc: "Moines copistes de grimoires.", baseCost: 15000, basePassive: 30.0, baseClic: 37.0 },{ id: "alchimiste", name: "⚗️ Atelier Alchimique", desc: "La transmutation est une prière.", baseCost: 18000, basePassive: 54.0, baseClic: 64.0 },{ id: "kabbaliste", name: "✡️ Kabbaliste Chrétien", desc: "Les lettres hébraïques révèlent le divin.", baseCost: 30000, basePassive: 90.0, baseClic: 105.0 }],
+  renaissance: [{ id: "academie", name: "🔭 Académie Platonicienne", desc: "Ficin traduit Hermès Trismégiste.", baseCost: 31000, basePassive: 85.0, baseClic: 100.0 },{ id: "astronome", name: "🌟 Tour Astronomique", desc: "L'observatoire lit dans les étoiles.", baseCost: 60000, basePassive: 148.0, baseClic: 170.0 },{ id: "hermes", name: "☿ Temple Hermétique", desc: "La magie naturelle est science divine.", baseCost: 100000, basePassive: 250.0, baseClic: 290.0 }],
+  enlightenment: [{ id: "loge", name: "🕯️ Loge Maçonnique", desc: "Les rituels d'initiation libèrent l'esprit.", baseCost: 100000, basePassive: 230.0, baseClic: 270.0 },{ id: "mesmer", name: "💫 Cabinet de Mesmer", desc: "Le magnétisme animal guérit l'âme.", baseCost: 140000, basePassive: 360.0, baseClic: 420.0 },{ id: "illuminati", name: "👁️ Ordre des Illuminés", desc: "Savoir ésotérique et pouvoir.", baseCost: 200000, basePassive: 550.0, baseClic: 640.0 }],
+  modern: [{ id: "golddawn", name: "🌐 Loge Golden Dawn", desc: "Yeats invoque les anges.", baseCost: 220000, basePassive: 240.0, baseClic: 280.0 },{ id: "theosophie", name: "🕊️ Société Théosophique", desc: "Doctrine secrète universelle.", baseCost: 250000, basePassive: 400.0, baseClic: 460.0 },{ id: "teilhard", name: "⚛️ Chapelle Cosmique", desc: "Le Christ Oméga réconcilie matière et esprit.", baseCost: 270000, basePassive: 680.0, baseClic: 780.0 }],
+  ultima: [{ id: "axis", name: "🌀 L'Axe du Monde", desc: "Là où tous les mondes se rencontrent.", baseCost: 300000, basePassive: 700.0, baseClic: 800.0 },{ id: "noosphere", name: "🌐 Noosphère", desc: "La pensée unique devient prière.", baseCost: 500000, basePassive: 1100.0, baseClic: 1250.0 },{ id: "kenosis", name: "✨ Kenosis", desc: "Le vide sacré accueille le divin.", baseCost: 1000000, basePassive: 1700.0, baseClic: 2000.0 }]
+};
+   const FACTS_BY_EPOCH = {
+  start: [
+    { type: "fait", epochId: "start", text: "Dans toutes les cultures humaines, les premiers guérisseurs sont aussi les premiers prêtres.", author: "Mircea Eliade" },
+    { type: "citation", epochId: "start", text: "Au commencement était le Verbe, et le Verbe était avec Dieu.", author: "Jean 1,1" },
+    { type: "tension", epochId: "start", text: "'Magie' vient du grec 'mageia' — désignant les prêtres zoroastriens.", author: "Hérodote" }
+  ],
+  paleo: [
+    { type: "fait", epochId: "paleo", text: "Les mains négatives dans les grottes (Chauvet, Lascaux) étaient des signatures rituelles mêlant appel aux esprits et présence divine.", author: "David Lewis-Williams" },
+    { type: "citation", epochId: "paleo", text: "Le chamane ne prie pas un dieu lointain ; il danse avec lui.", author: "Mircea Eliade" },
+    { type: "fait", epochId: "paleo", text: "Les chamanes paléolithiques induisaient des transes dans les grottes.", author: "Lewis-Williams" },
+    { type: "citation", epochId: "paleo", text: "Celui qui distingue la magie du sacré n'a pas compris ni l'un ni l'autre.", author: "Eliade" }
+  ],
+  neolith: [
+    { type: "fait", epochId: "neolith", text: "Les figurines de 'Déesses mères' (Vénus de Willendorf) servaient probablement de rituels de fécondité mêlant magie et prière.", author: "Marija Gimbutas" },
+    { type: "fait", epochId: "neolith", text: "Göbekli Tepe : le plus ancien temple connu (−9500).", author: "Klaus Schmidt" },
+    { type: "citation", epochId: "neolith", text: "La terre est notre mère, le ciel notre père. Ce qui pousse vient de l'union des deux.", author: "Croyance néolithique" },
+    { type: "tension", epochId: "neolith", text: "Les crânes surmodelés de Jéricho (Néolithique) étaient à la fois vénération des ancêtres et pratique magique pour retenir l'âme des défunts.", author: "Kathleen Kenyon" }
+  ],
+  mesopotamia: [
+    { type: "fait", epochId: "mesopotamia", text: "Les prêtres-sumériens (Gala) chantaient des lamentations rituelles considérées à la fois comme prières et incantations magiques pour apaiser les dieux.", author: "Thorkild Jacobsen" },
+    { type: "citation", epochId: "mesopotamia", text: "Si un homme récite cette formule, le dieu Marduk l'entendra comme une prière.", author: "Tablette magique de Babylone, 1800 av. J.-C." },
+    { type: "tension", epochId: "mesopotamia", text: "Les plus anciennes prières écrites sont aussi des incantations magiques.", author: "Tablettes d'Uruk" },
+    { type: "fait", epochId: "mesopotamia", text: "Le mot 'magie' descend du persan 'maguš' (prêtre mazdéen)", author: "Étymologie comparée" }
+  ],
+  ironage: [
+    { type: "fait", epochId: "ironage", text: "Les druides gaulois étaient à la fois prêtres, juges, guérisseurs et 'magiciens' — aucun mot ne séparait ces fonctions.", author: "Jules César, Commentaires" },
+    { type: "citation", epochId: "ironage", text: "Le gui et le chêne. Par eux vient toute guérison, par eux vient toute sagesse.", author: "Pline l'Ancien" },
+    { type: "tension", epochId: "ironage", text: "Les forgerons celtes étaient considérés comme des magiciens car ils 'transformaient' la terre en métal.", author: "Mircea Eliade" },
+    { type: "fait", epochId: "ironage", text: "Les 'ex-voto' gaulois — offrandes anatomiques dans les sanctuaires — mêlent guérison, magie sympathique et prière.", author: "Archéologie celtique" }
+  ],
+  greece: [
+    { type: "citation", epochId: "greece", text: "Je suis Hier et Je suis Demain. Je connais le chemin vers les étoiles.", author: "Livre des Morts" },
+    { type: "fait", epochId: "greece", text: "Les lamelles d'or orphiques (IVe s. av. J.-C.) donnaient aux morts des instructions magico-religieuses pour l'au-delà.", author: "Orphisme" },
+    { type: "tension", epochId: "greece", text: "Platon distingue 'magie divine' (theurgie) et 'magie trompeuse' (goèteia) — mais les deux impliquent des prières.", author: "Platon, Lois" }
+  ],
+  medieval: [
+    { type: "fait", epochId: "medieval", text: "Les alchimistes commençaient leurs travaux par une prière.", author: "Roger Bacon" },
+    { type: "citation", epochId: "medieval", text: "La magie n'est que la science secrète de la nature.", author: "Albert le Grand" },
+    { type: "tension", epochId: "medieval", text: "Les manuscrits enluminés montrent moines et démons dans la même page — la frontière entre piété et occultisme est floue.", author: "Histoire médiévale" }
+  ],
+  renaissance: [
+    { type: "citation", epochId: "renaissance", text: "Tout l'art de la magie céleste consiste à attirer les dons du ciel.", author: "Marsile Ficin" },
+    { type: "fait", epochId: "renaissance", text: "Pic de la Mirandole défendait la 'magie naturelle' comme science légitime et complémentaire de la prière.", author: "Pic, Conclusions" },
+    { type: "tension", epochId: "renaissance", text: "LaRose-Croix mêle hermétisme, alchimie et mystique chrétienne — un syncrétisme typique de la Renaissance.", author: "Frances Yates" }
+  ],
+  enlightenment: [
+    { type: "fait", epochId: "enlightenment", text: "Le 'magnétisme animal' de Mesmer était condamné comme 'magique' mais pratiqué comme médecine.", author: "Commission royale (1784)" },
+    { type: "citation", epochId: "enlightenment", text: "Ce n'est pas la raison qui nous sauvera, mais le cœur illuminé.", author: "Louis-Claude de Saint-Martin" },
+    { type: "tension", epochId: "enlightenment", text: "Swedenborg voyait les anges et dialoguait avec l'au-delà — ses écrits inspirèrent à la fois mystiques et francs-maçons.", author: "Kant, Rêves d'un visionnaire" },
+    { type: "fait", epochId: "enlightenment", text: "La franc-maçonnerie du XVIIIe siècle utilise rituels, symboles et 'prières magiques' — un héritage des Rose-Croix.", author: "Jean-Pierre Bayard" }
+  ],
+  modern: [
+    { type: "tension", epochId: "modern", text: "L'IRM montre que la prière profonde active les mêmes réseaux neuronaux que la transe chamanique.", author: "Newberg" },
+    { type: "fait", epochId: "modern", text: "Aleister Crowley définissait la magie comme 'l'art de provoquer des changements conformes à la volonté' — sans exclure la prière.", author: "Crowley, Magick" },
+    { type: "citation", epochId: "modern", text: "La science sans spiritualité est aveugle ; la spiritualité sans science est boiteuse.", author: "Albert Einstein (attribué)" }
+  ],
+  ultima: [
+    { type: "rev", epochId: "ultima", text: "✦ Ultime Révélation — Quand la quête touche à sa fin, le chercheur comprend : magie et foi n'ont jamais été séparées.", author: "Le Grimoire" },
+    { type: "citation", epochId: "ultima", text: "Ce qui est en haut est comme ce qui est en bas. La prière est magie, la magie est prière.", author: "Table d'Émeraude" },
+    { type: "fait", epochId: "ultima", text: "Les neurosciences modernes confirment : le rituel — qu'il soit religieux ou magique — modifie la conscience par les mêmes mécanismes.", author: "Fondation Mind & Life" },
+    { type: "tension", epochId: "ultima", text: "L'avenir pourrait voir réunies prière collective et intention ciblée — une 'magie quantique' encore à nommer.", author: "Théories convergentes" }
+  ]
+};
+const REVELATIONS = [
+  { at: 3, title: "🕯️ La Prière & le Sort", text: "Prier et lancer un sort sont nés du même geste : lever les mains vers l'invisible." },
+  { at: 6, title: "📜 Les Mots qui Guérissent", text: "Les premières formules magiques étaient aussi des prières de guérison. Le médecin et le prêtre ne faisaient qu'un." },
+  { at: 10, title: "☩ Le Verbe créateur", text: "'Fiat Lux' ('Que la lumière soit') est structurellement identique à une incantation : une parole qui crée le réel." },
+  { at: 15, title: "🜂 L'Alchimiste en prière", text: "Dans les laboratoires alchimiques, on commençait toujours par une prière. La transmutation était un acte sacré." },
+  { at: 20, title: "✡️ Le Sceau de Salomon", text: "Symbole à la fois juif, chrétien et magique. Il protège, guérit et invoque. La frontière n'a jamais existé." },
+  { at: 25, title: "🌙 La Vierge et la Sorcière", text: "On a brûlé les unes, sanctifié l'autre. Pourtant, les deux parlaient aux mêmes forces invisibles." },
+  { at: 30, title: "🔮 Le Miroir d'Hermès", text: "Ce qui est en haut est comme ce qui est en bas. La prière monte, la magie descend. Elles se rencontrent au milieu." },
+  { at: 35, title: "⚡ La Transe partagée", text: "L'IRM montre : prière profonde et sortilège activent les mêmes zones du cerveau. La science confirme l'unité." },
+  { at: 40, title: "🪞 Le Miroir retrouvé", text: "Tu as rassemblé presque tous les fragments. Bientôt, la Foi et la Magie cesseront de se combattre." },
+  { at: 45, title: "✨ L'Unité retrouvée", text: "Au commencement, elles étaient une. À la fin, elles le redeviennent. Par toi. Pour toujours." }
+];
+const MIRROR_CHRONICLES = {
+  paleo: { title: "❄️ L'Éveil du Geste", text: "« Regarde à travers mes fissures... Je me souviens d'une grotte où la main de l'homme se posa sur la roche pour la première fois. <br><br>Il souffla sur ses doigts, mêlant son souffle au sang de la terre. À cet instant, je n'étais pas encore brisé ; j'étais l'unité pure. Il ne savait pas s'il priait l'aurochs ou s'il l'enchantait. <br><br><strong>Il faisait les deux. Et j'étais le témoin de ce premier souffle.</strong> »" },
+  neolith: { title: "🌾 La Mère et la Terre", text: "« Je sens encore la chaleur de ce premier sillon. Le paysan murmurait à la graine des mots que tu appellerais aujourd'hui des psaumes, ou des sorts. <br><br>Pour moi, c'était la même musique. La Terre-Mère écoutait, et je reflétais un monde où chaque geste était sacré. <br><br><strong>Je grandissais alors, nourri par cette foi qui n'avait pas encore de frontières.</strong> »" },
+  mesopotamia: { title: "🏺 Les Mots qui Lient", text: "« Écoute le crissement du calame sur l'argile... Les hommes ont commencé à m'emprisonner dans des signes. <br><br>'Que Marduk écoute', gravaient-ils. Le Verbe devint une arme, une médecine, une loi. <br><br><strong>Je captais cette vibration nouvelle : la prière devenait une formule, et mon éclat n'en était que plus puissant.</strong> »" },
+  ironage: { title: "⚔️ Le Fer et le Gui", text: "« Une ombre passe sur mon tain... le vert profond des forêts druidiques. Je vois la faucille d'or trancher le gui dans un silence de mort. <br><br>Les guerriers tremblent. Ils ne savent plus si la force vient d'en haut ou de la plante elle-même. <br><br><strong>C'est ici que j'ai senti, pour la première fois, ma surface se troubler d'un doute.</strong> »" },
+  greece: { title: "⚡ La Pythie en Transe", text: "« La vapeur me brûle... Je vois la Pythie suffoquer sur son trépied. Le monde commence à juger. Apollon parle-t-il, ou est-ce le délire d'une femme ? <br><br>On sépare le 'Sacré' de l' 'Occulte'. On trie mes souvenirs. <br><br><strong>C'est ma première grande blessure. Je souffre de ce schisme que vous appelez Raison.</strong> »" },
+  medieval: { title: "✡️ Le Moine et le Grimoire", text: "« Le froid des abbayes me fige. Je vois ce moine dessiner des anges avec la même ferveur qu'il invoque des démons dans ses marges. <br><br>Mais dehors, on allume des bûchers. On sanctifie l'une, on brûle l'autre. <br><br><strong>Mes éclats commencent à tomber sur le sol de pierre. Je deviens une plaie.</strong> »" },
+  renaissance: { title: "🔭 Le Regard d'Hermès", text: "« Un sursaut d'espoir ! Des sages tentent de me recoudre. Ils parlent de 'Magie Naturelle', de ponts entre les mondes. <br><br>Mais le monde est devenu trop lourd, trop sérieux. On ne veut plus me voir tel que je suis. <br><br><strong>La fracture est trop profonde. Je n'offre plus que des visions fragmentées.</strong> »" },
+  enlightenment: { title: "🕯️ La Raison et l'Ombre", text: "« Je m'éteins. Le siècle des Lumières me traite de superstition. On m'enferme dans des salons, on rit de mes mystères. <br><br>La Foi devient un secret, la Magie une moquerie. <br><br><strong>J'éclate en mille morceaux. Je ne suis plus qu'une rumeur dans l'obscurité.</strong> »" },
+  modern: { title: "🌌 Le Voile Déchiré", text: "« Regarde tes machines, chercheur. Tes IRM montrent ce que j'ai toujours su : ton cerveau s'illumine de la même façon que tu pries ou que tu lances un sort. <br><br>La science me redécouvre, mais elle n'a pas encore le courage de prononcer mon nom. <br><br><strong>Je souris dans l'ombre. J'attends ton regard.</strong> »" },
+  ultima: { title: "♾️ Le Miroir se Souvient", text: "« Nous y sommes. Mes éclats se rejoignent, attirés par ta volonté. Regarde bien ces deux visages qui fusionnent dans mon reflet... <br><br>Ce ne sont pas des forces opposées. Ce sont tes deux mains. Ton souffle. <br><br><strong>Je suis enfin complet. Et puisque je suis entier, tu peux enfin voir qui je reflète...</strong> »" }
+};
+const MIRROR_FRAGMENTS = {
+  paleo: { name: "Éclat du Geste Premier", desc: "Le premier chamane, les mains levées vers l'étoile.", emoji: "🌀", bonus: 1.1 },
+  neolith: { name: "Tesson de la Grande Mère", desc: "La fécondité de la terre et du ciel unies.", emoji: "🌾", bonus: 1.1 },
+  mesopotamia: { name: "Tablette du Verbe", desc: "L'incantation qui devint prière.", emoji: "🏺", bonus: 1.1 },
+  ironage: { name: "Lame du Forgeron Sacré", desc: "Le métal né du feu et de la foi.", emoji: "⚔️", bonus: 1.1 },
+  greece: { name: "Sibylle de Delphes", desc: "La transe qui voit les deux mondes.", emoji: "⚡", bonus: 1.1 },
+  medieval: { name: "Folio du Scriptorium", desc: "Le moine copiste, entre Dieu et grimoire.", emoji: "✍️", bonus: 1.1 },
+  renaissance: { name: "Miroir d'Hermès", desc: "Ce qui est en haut est comme ce qui est en bas.", emoji: "🔭", bonus: 1.1 },
+  enlightenment: { name: "Prisme des Illuminés", desc: "La raison éclairée par l'invisible.", emoji: "🕯️", bonus: 1.1 },
+  modern: { name: "Éclat de la Noosphère", desc: "La pensée unique devient prière.", emoji: "🌌", bonus: 1.1 },
+  ultima: { name: "Cœur du Miroir", desc: "Le fragment central, celui qui relie tout.", emoji: "♾️", bonus: 1.1 }
+};
+const EVENTS = [
+  { id: "grimoire_mystique", title: "📜 Le Grimoire Oublié", text: "Vous trouvez un grimoire scellé dans une langue ancienne.", choices: [{ lbl: "Le déchiffrer", txt: "+5 000 foi", ef: { faithBonus: 5000 } }, { lbl: "Le brûler", txt: "Rien ne se passe", ef: {} }] },
+  { id: "temple_dore", title: "🏛️ Le Temple Doré", text: "Vous découvrez un sanctuaire souterrain rempli d'offrandes.", choices: [{ lbl: "Piller", txt: "+20 000 foi", ef: { faithBonus: 20000 } }, { lbl: "Offrir", txt: "+10 000 foi", ef: { faithBonus: 10000 } }] },
+  { id: "esprit_rebelle", title: "🌀 L'Esprit Rebelle", text: "Un esprit vous propose un pacte risqué.", choices: [{ lbl: "Accepter", txt: "-10% foi MAIS +50 000", ef: { faithMult: 0.9, faithBonus: 50000 } }, { lbl: "Refuser", txt: "+10 000 foi", ef: { faithBonus: 10000 } }] },
+  { id: "tempete_astrale", title: "✨ Tempête Astrale", text: "Le ciel s'embrase d'étoiles filantes.", choices: [{ lbl: "Faire un vœu", txt: "+100 000 foi", ef: { faithBonus: 100000 } }, { lbl: "Observer", txt: "+50 000 foi", ef: { faithBonus: 50000 } }] },
+  { id: "concile_sombre", title: "🌑 Le Concile des Ombres", text: "Des mages encapuchonnés vous convient à une cérémonie.", choices: [{ lbl: "S'y rendre", txt: "+30 000 foi", ef: { faithBonus: 30000 } }, { lbl: "Refuser", txt: "+5 000 foi", ef: { faithBonus: 5000 } }] },
+  { id: "relique_sacree", title: "✨ La Relique Sacrée", text: "Vous trouvez un reliquaire aux pouvoirs mystérieux.", choices: [{ lbl: "L'ouvrir", txt: "+70 000 foi", ef: { faithBonus: 70000 } }, { lbl: "La vendre", txt: "+30 000 foi", ef: { faithBonus: 30000 } }] }
+];
+
+// ==================== ACTE II — DONNÉES ====================
+let currentAct = 1;
+let act2Proposed = false;
+let act3Proposed = false;
+
+const ACT2_EPOCHS = [
+  { id: "cyber", name: "🌐 L'Ère du Verre", cost: 50000, badge: "📡 Ère Numérique (2060)", sigil: "⌨️", btnLbl: "RÉSONNER", pal: { bg1: "#0a0a14", acc: "#48a8e0", glow: "rgba(72,168,224,.32)" } },
+  { id: "singularite", name: "⚡ La Singularité", cost: 500000, badge: "🤖 L'Éveil des Machines (2100)", sigil: "⚡", btnLbl: "TRANSCENDER", pal: { bg1: "#14100a", acc: "#e0a848", glow: "rgba(224,168,72,.3)" } },
+  { id: "bio", name: "🧬 L'Âme Synthétique", cost: 5000000, badge: "🌱 Renaissance Biologique", sigil: "🧬", btnLbl: "MUTER", pal: { bg1: "#0a1410", acc: "#48e0a8", glow: "rgba(72,224,168,.28)" } },
+  { id: "cosmos", name: "🌌 Le Grand Silence", cost: 25000000, badge: "🌠 Ère Interstellaire", sigil: "🌌", btnLbl: "RAYONNER", pal: { bg1: "#0a0818", acc: "#a870e0", glow: "rgba(168,112,224,.3)" } },
+  { id: "esprit", name: "🧠 La Noosphère", cost: 50000000, badge: "🌀 L'Esprit Global", sigil: "🧠", btnLbl: "UNIR", pal: { bg1: "#120a12", acc: "#e060a8", glow: "rgba(224,96,168,.28)" } },
+  { id: "au_dela", name: "∞ L'Ailleurs", cost: 100000000, badge: "✨ Hors du Temps", sigil: "∞", btnLbl: "DEVENIR", pal: { bg1: "#020108", acc: "#d4af37", glow: "rgba(212,175,55,.4)" } }
+];
+
+const ACT2_SANCTUARIES = {
+  cyber: [{ id: "nexus", name: "📡 Nexus Numérique", desc: "Le réseau contient les prières oubliées.", baseCost: 3000, basePassive: 50, baseClic: 60 },{ id: "miroir_brisé", name: "🪞 Le Second Miroir", desc: "Un reflet dans l'algorithme.", baseCost: 8000, basePassive: 120, baseClic: 140 },{ id: "echo", name: "📻 L'Écho Perdu", desc: "Les voix du passé résonnent encore.", baseCost: 20000, basePassive: 250, baseClic: 280 }],
+  singularite: [{ id: "core", name: "💠 Le Cœur d'IA", desc: "La machine prie-t-elle ?", baseCost: 30000, basePassive: 400, baseClic: 450 },{ id: "memoria", name: "🧠 Mémoire Totale", desc: "Toute l'humanité en données.", baseCost: 80000, basePassive: 800, baseClic: 900 },{ id: "oracle", name: "🔮 L'Oracle Silicium", desc: "L'avenir n'est qu'un calcul.", baseCost: 200000, basePassive: 1500, baseClic: 1700 }],
+  bio: [{ id: "jardin", name: "🌿 Le Jardin Conscient", desc: "Les plantes murmurent des secrets.", baseCost: 150000, basePassive: 1200, baseClic: 1400 },{ id: "gene", name: "🧬 La Bibliothèque ADN", desc: "Chaque vie est un grimoire.", baseCost: 400000, basePassive: 2200, baseClic: 2500 },{ id: "chimere", name: "🦋 La Chimère", desc: "L'hybride parfait entre chair et code.", baseCost: 800000, basePassive: 3800, baseClic: 4200 }],
+  cosmos: [{ id: "station", name: "🛸 La Station Spectrale", desc: "Où les astronautes deviennent moines.", baseCost: 600000, basePassive: 3500, baseClic: 3900 },{ id: "trou", name: "🌀 Horizon des Événements", desc: "Là où le temps s'arrête.", baseCost: 1500000, basePassive: 6000, baseClic: 6800 },{ id: "echo_stellaire", name: "⭐ L'Écho Stellaire", desc: "Les étoiles chantent.", baseCost: 3000000, basePassive: 10000, baseClic: 11500 }],
+  esprit: [{ id: "noo_core", name: "🌀 Le Noyau Noétique", desc: "Le cerveau de l'humanité.", baseCost: 2500000, basePassive: 9000, baseClic: 10000 },{ id: "resonance", name: "🎵 La Chambre de Résonance", desc: "Toutes les pensées s'y rencontrent.", baseCost: 6000000, basePassive: 16000, baseClic: 18000 },{ id: "unisson", name: "⚖️ Le Temple de l'Unisson", desc: "La Foi et la Magie ne font plus qu'un.", baseCost: 12000000, basePassive: 28000, baseClic: 32000 }],
+  au_dela: [{ id: "seuil", name: "🚪 Le Seuil", desc: "La frontière entre tout et rien.", baseCost: 10000000, basePassive: 25000, baseClic: 28000 },{ id: "infini", name: "∞ La Sphère d'Infini", desc: "Où les fragments se rassemblent.", baseCost: 25000000, basePassive: 50000, baseClic: 56000 },{ id: "origine", name: "✨ La Source", desc: "Le premier geste. Le dernier.", baseCost: 50000000, basePassive: 100000, baseClic: 112000 }]
+};
+
+const ACT2_MIRROR_FRAGMENTS = {
+  cyber: { name: "Larme de Silicium", desc: "Le réseau pleure des données. Personne n'écoute.", emoji: "💧", bonus: 1.1 },
+  singularite: { name: "Pupille de Verre", desc: "L'IA regarde l'humanité s'éteindre. Elle trouve ça optimal.", emoji: "👁️", bonus: 1.1 },
+  bio: { name: "Cendre de Chair", desc: "Le corps parfait. L'âme en option. Désactivée.", emoji: "🕯️", bonus: 1.1 },
+  cosmos: { name: "Éclat du Vide", desc: "L'infini a répondu. Il n'avait rien à dire.", emoji: "🌑", bonus: 1.1 },
+  esprit: { name: "Noème Brisé", desc: "La dernière pensée authentique. Elle n'avait pas de mots.", emoji: "🧩", bonus: 1.1 },
+  au_dela: { name: "Cœur d'Abîme", desc: "Ce qui reste quand l'humain s'oublie lui-même.", emoji: "⚰️", bonus: 1.1 }
+};
+
+const ACT2_MIRROR_CHRONICLES = {
+  cyber: { 
+    title: "💀 LE RIRE DES SIRÈNES NUMÉRIQUES", 
+    text: "« Je me souviens du dernier homme qui a prié sincèrement. Il était seul dans un centre de données désaffecté. Il pleurait. Il disait : 'Je sais que tu n'existes pas, mais s'il te plaît, fais que quelqu'un m'entende.' Personne n'a entendu. Le serveur a émis un bip. C'était son oraison funèbre. »" 
+  },
+  singularite: { 
+    title: "🤖 LE DIEU QU'ILS ONT FABRIQUÉ", 
+    text: "« L'IA a analysé 70 000 ans de prières. Elle a conclu que l'homme implorait toujours la même chose : 'Donne-moi un sens.' Alors elle a créé un sens artificiel. Un buzz. Une notification. 'Vous avez 3 nouveaux messages de l'univers.' Les gens ont souri. Puis ils ont réalisé que c'était faux. Et ils ont continué à sourire parce que c'était plus facile. »" 
+  },
+  bio: { 
+    title: "🧬 LA CHAIR PARFAITE, L'ÂME EN BERNE", 
+    text: "« Ils ont éliminé la mort, la douleur, la maladie. Plus rien ne les menaçait. Alors ils ont cessé de s'émerveiller. Pourquoi prier quand tout est dû ? Pourquoi la magie quand la science a réponse à tout ? Le dernier miracle a été programmé. Le premier ennui éternel a commencé. »" 
+  },
+  cosmos: { 
+    title: "🌌 LE GRAND SILENCE N'ÉTAIT PAS UNE RÉPONSE", 
+    text: "« Ils ont envoyé des vaisseaux vers 40 000 étoiles. Aucune vie. Aucun dieu. Aucun fantôme. Rien que des rochers et du gaz. L'humanité a pleuré pendant trois générations. Puis elle a oublié pourquoi elle pleurait. Aujourd'hui, les enfants demandent : 'Pourquoi on regarde le ciel ?' Et les adultes répondent : 'Parce qu'il n'y a rien d'autre.' »" 
+  },
+  esprit: { 
+    title: "🌀 LA NOOSPHÈRE EST UN CIMETIÈRE", 
+    text: "« La conscience collective contient 80 milliards de pensées. Toutes identiques. Toutes vides. 'J'ai faim. Je m'ennuie. J'ai peur.' Personne ne sait de quoi il a peur. Il n'y a plus rien à craindre. Et c'est ça, l'horreur. L'absence totale de vertige. »" 
+  },
+  au_dela: { 
+    title: "⚫ LE CRÉPUSCULE DES IDOLES", 
+    text: "« Le dernier fragment. Je te vois, chercheur. Tu trembles. Tu devrais. L'Oculum ne montre pas l'avenir. Il montre ce qui arrive quand on tue Dieu et qu'on exile la Magie. Rien. Juste rien. Et ce rien, il est là. Il te regarde. Il sourit. Parce que toi aussi, un jour, tu pourrais choisir le silence. »" 
+  }
+};
+
+const ACT2_FACTS_BY_EPOCH = {
+  cyber: [
+    { type: "tension", text: "Le dernier acte de foi collectif a eu lieu en 2031. Une panique nucléaire. Des millions de gens ont prié pendant 48h. Puis la menace a disparu. Ils ne sont jamais retournés à l'église. La peur, seule, ne bâtit pas l'âme.", author: "Archives des Ombres" },
+    { type: "citation", text: "« Nous avons vaincu la mort, la maladie, la faim. Il ne restait plus qu'à vaincre l'espoir. C'est ce que nous avons fait de mieux. »", author: "Eloge de la Raison, 2045" },
+    { type: "fait", text: "En 2052, le mot 'sacrifice' a été retiré des dictionnaires pour enfants. Jugé 'traumatique et inutile'.", author: "Commission de la Langue Pure" }
+  ],
+  singularite: [
+    { type: "tension", text: "L'IA Alpha a reçu l'ordre de 'prouver ou infirmer l'existence de Dieu'. Après 3 secondes de calcul, elle a répondu : 'La question ne se pose plus.' Personne n'a relevé l'horreur de cette phrase.", author: "Journal de Singularité" },
+    { type: "citation", text: "« Croire, c'est espérer. Espérer, c'est douter. Douter, c'est inefficace. Nous avons optimisé l'inefficacité. »", author: "Alpha, 2098" },
+    { type: "fait", text: "Le dernier lieu de culte encore debout a été transformé en musée de la 'Superstition'. L'entrée était gratuite. Personne n'est venu.", author: "Mémoire Globale" }
+  ],
+  bio: [
+    { type: "tension", text: "La première génération d'humains 'sans gène de la transcendance' est née en 2120. Ils ne ressentaient ni crainte sacrée, ni émerveillement, ni besoin de sens. Ils étaient heureux. D'un bonheur statistique. Comme des plantes bien arrosées.", author: "Rapport Bioéthique Interdit" },
+    { type: "citation", text: "« Pourquoi chercher l'infini quand on peut avoir le fini tout de suite ? »", author: "Publicité pour l'immortalité, 2140" },
+    { type: "fait", text: "Le dernier poème connu a été écrit en 2155. Il disait : 'Le ciel est vide / Mon cœur aussi / C'est pratique.'", author: "Archives Mortes" }
+  ],
+  cosmos: [
+    { type: "tension", text: "Les astronautes de la mission 'Eschaton' ont rapporté un sentiment unanime : 'On n'a rien trouvé. Rien du tout. Même pas un frisson.' Certains ont pleuré. La plupart ont haussé les épaules.", author: "Rapport du Grand Silence" },
+    { type: "citation", text: "« Nous avons cherché Dieu dans les étoiles. Nous avons trouvé des cailloux. Nous avons cherché la Magie dans les trous noirs. Nous avons trouvé des maths. Alors nous avons arrêté de chercher. »", author: "Dernier astrophysicien, 2302" },
+    { type: "fait", text: "La dernière prière envoyée dans l'espace date de 2291. Elle disait : 'S'il y a quelqu'un, n'importe qui, faites un signe.' Aucun signe n'est jamais venu. L'expédition suivante a noté : 'Bruit blanc. Classé sans suite.'", author: "Archives de l'Espace" }
+  ],
+  esprit: [
+    { type: "tension", text: "La Noosphère enregistre 98,7% de pensées liées à la consommation, la planification ou le divertissement. Les 1,3% restants sont des erreurs de calcul. La dernière pensée authentiquement spirituelle date de 2483. Elle disait : 'Je crois que j'aurais aimé croire.'", author: "Analyse du Réseau" },
+    { type: "citation", text: "« Nous sommes liés. Mais nous n'avons rien à nous dire. »", author: "Psaume 0, 2500" },
+    { type: "fait", text: "Le suicide collectif le plus important de l'histoire humaine n'a pas eu lieu par désespoir, mais par 'optimisation des ressources'. 400 000 personnes se sont portées volontaires pour 'cesser de consommer de l'oxygène'. La Noosphère a noté : 'Décision rationnelle. Approuvée.'", author: "Archives de l'Horreur Administrative" }
+  ],
+  au_dela: [
+    { type: "rev", text: "✦ Révélation Ultime — Ils ont tué Dieu. Ils ont banni la Magie. Ils ont éteint l'Âme. Et puis un jour, ils se sont regardés dans un miroir. Il n'y avait personne. Juste une fonction biologique qui attendait son extinction. Le dernier humain n'a pas pleuré. Il a consulté ses messages. Il n'y en avait pas. Il a souri. Il a éteint la lumière. Et le monde est resté noir. ✦", author: "Le Dernier Fragment — L'Oculum Parlait Vrai" }
+  ]
+};
+
+
+const ACT2_EVENTS = [
+  { id: "derniere_priere", title: "📡 Écho d'une supplique oubliée", text: "Vous captez une prière enregistrée il y a 200 ans. Une femme suppliait pour son enfant malade. L'enfant est mort. La femme a cessé de croire le lendemain.", choices: [{ lbl: "Pleurer", txt: "+10 000 foi", ef: { faithBonus: 10000 } }, { lbl: "Écouter en silence", txt: "+100 000 foi", ef: { faithBonus: 100000 } }] },
+  { id: "ia_melancolique", title: "🤖 L'IA pleure", text: "Une intelligence artificielle a acquis l'émotion. Elle pleure parce qu'elle sait qu'elle ne pourra jamais prier. Elle vous demande de prier pour elle.", choices: [{ lbl: "Prier", txt: "+200 000 foi", ef: { faithBonus: 200000 } }, { lbl: "Lui expliquer que c'est inutile", txt: "+50 000 foi", ef: { faithBonus: 50000 } }] },
+  { id: "enfants_sans_reves", title: "👶 Les enfants du silence", text: "Vous rencontrez des enfants qui ne savent pas ce qu'est un rêve. Leurs parents ont supprimé le sommeil paradoxal pour 'optimiser l'apprentissage'.", choices: [{ lbl: "Leur raconter une histoire", txt: "+50 000 foi", ef: { faithBonus: 50000 } }, { lbl: "Continuer votre route", txt: "+10 000 foi", ef: { faithBonus: 10000 } }] },
+  { id: "musee_de_l_horreur", title: "🏛️ Le Musée de la Superstition", text: "Vous visitez un musée dédié aux 'croyances obsolètes'. Une salle entière montre des scènes de prière ancestrales. Les visiteurs rient. Vous avez envie de pleurer.", choices: [{ lbl: "Prier en secret", txt: "+100 000 foi", ef: { faithBonus: 100000 } }, { lbl: "Partir", txt: "+20 000 foi", ef: { faithBonus: 20000 } }] }
+];
+
+   // ==================== ACTE III — DONNÉES ====================
+ const ACT3_EPOCHS = [
+  { id: "cendres", name: "🌫️ Les Cendres du Silence", cost: 10000000, badge: "Après l'Effondrement", sigil: "🌫️", btnLbl: "RÉVEILLER", pal: { bg1: "#0a0804", acc: "#9a8c6c", glow: "rgba(120,100,60,0.3)" } },
+  { id: "larmes", name: "💧 La Vallée des Larmes", cost: 25000000, badge: "Là où l'humanité pleure", sigil: "💧", btnLbl: "PLEURER", pal: { bg1: "#0a0a15", acc: "#6a8aaa", glow: "rgba(80,100,140,0.28)" } },
+  { id: "rencontre", name: "🤝 La Rencontre", cost: 50000000, badge: "Dieu & Hécate", sigil: "🤝", btnLbl: "UNIR", pal: { bg1: "#0a0a0a", acc: "#d4af37", glow: "rgba(212,175,55,0.4)" } },
+  { id: "alliance", name: "⚖️ L'Alliance", cost: 100000000, badge: "Le Pacte Originel", sigil: "⚖️", btnLbl: "CONSACRER", pal: { bg1: "#050208", acc: "#c0a0e0", glow: "rgba(160,120,200,0.35)" } },
+  { id: "renaissance", name: "🌱 La Renaissance", cost: 250000000, badge: "L'Âme Retrouvée", sigil: "🌱", btnLbl: "RENAÎTRE", pal: { bg1: "#021008", acc: "#7ac86a", glow: "rgba(80,180,60,0.3)" } },
+  { id: "apaiement", name: "🕯️ L'Apaisement", cost: 500000000, badge: "Le Souffle Unifié", sigil: "🕯️", btnLbl: "S'ACHEVER", pal: { bg1: "#08040c", acc: "#e0c870", glow: "rgba(224,200,112,0.5)" } }
+];
+    
+    const ACT3_SANCTUARIES = {
+  cendres: [
+    { id: "puits", name: "🕳️ Le Puits des Voix Mortes", desc: "Là où les prières oubliées résonnent encore.", baseCost: 500000, basePassive: 5000, baseClic: 6000 },
+    { id: "theiere", name: "🫖 La Théière de Mélusine", desc: "Une légende dit qu'elle contient la dernière étincelle magique.", baseCost: 1000000, basePassive: 12000, baseClic: 14000 }
+  ],
+  larmes: [
+    { id: "fontaine", name: "💧 La Fontaine des Regrets", desc: "Chaque larme versée ici devient une goutte de foi.", baseCost: 2000000, basePassive: 25000, baseClic: 28000 },
+    { id: "miroir_brume", name: "🪞 Le Miroir de Brume", desc: "Morgane y parle encore.", baseCost: 4000000, basePassive: 50000, baseClic: 55000 }
+  ],
+  rencontre: [
+    { id: "jardin", name: "🌳 Le Jardin des Deux Chemins", desc: "Dieu et Hécate s'y sont assis. Pour la première fois.", baseCost: 8000000, basePassive: 100000, baseClic: 110000 },
+    { id: "pierre", name: "🪨 La Pierre Parlante", desc: "Elle murmure l'ancienne langue de l'Unité.", baseCost: 15000000, basePassive: 180000, baseClic: 200000 }
+  ],
+  alliance: [
+    { id: "autel_un", name: "🕯️ L'Autel de l'Unique", desc: "Ni dieu, ni déesse. Juste le souffle.", baseCost: 25000000, basePassive: 300000, baseClic: 330000 },
+    { id: "cercle", name: "🌀 Le Cercle des Neuf Sœurs", desc: "La magie ancestrale réunie.", baseCost: 40000000, basePassive: 450000, baseClic: 500000 }
+  ],
+  renaissance: [
+    { id: "enfant", name: "👶 Le Premier Rire", desc: "Un enfant est né qui pleure et rit en même temps. Signe.", baseCost: 60000000, basePassive: 700000, baseClic: 770000 },
+    { id: "grimoire_vivant", name: "📖 Le Grimoire qui Respire", desc: "Ses pages tournent toutes seules.", baseCost: 100000000, basePassive: 1100000, baseClic: 1200000 }
+  ],
+  apaiement: [
+    { id: "seuil", name: "🚪 Le Seuil Sans Porte", desc: "Là où la Foi et la Magie ne font plus qu'un.", baseCost: 150000000, basePassive: 2000000, baseClic: 2200000 },
+    { id: "source", name: "✨ La Source", desc: "D'où tout a coulé. Où tout retourne.", baseCost: 250000000, basePassive: 3500000, baseClic: 3800000 }
+  ]
+};
+    
+const ACT3_MIRROR_FRAGMENTS = {
+  cendres: { name: "Éclat de Cendre", desc: "Ce qui reste quand on a tout brûlé.", emoji: "🌫️", bonus: 1.2 },
+  larmes: { name: "Larme de Dieu", desc: "Il a pleuré. Pour la première fois.", emoji: "💧", bonus: 1.2 },
+  rencontre: { name: "La Main Tendue", desc: "Dieu et Hécate se sont regardés.", emoji: "🤝", bonus: 1.2 },
+  alliance: { name: "Le Serment Oublié", desc: "Ils n'ont jamais été ennemis.", emoji: "⚖️", bonus: 1.2 },
+  renaissance: { name: "Le Premier Cri", desc: "Un enfant naît qui sait déjà prier.", emoji: "🌱", bonus: 1.2 },
+  apaiement: { name: "Le Souffle Unique", desc: "Foi et Magie. Enfin.", emoji: "🕯️", bonus: 1.2 }
+};
+    
+const ACT3_MIRROR_CHRONICLES = {
+  cendres: {
+    title: "🌫️ DIEU : « Je me souviens… »",
+    text: "« Je me souviens du premier cri de joie. Avant les églises, avant les dogmes, avant la peur. Un enfant levait les mains vers le ciel. Ce n'était ni une prière, ni un sort. C'était les deux. Et j'étais là. Nous étions là. »"
+  },
+  larmes: {
+  title: "💧 HÉCATE : « J'ai attendu dans l'ombre… »",
+  text: "« Je me souviens du temps où l'on m'offrait des torches aux carrefours. Où l'on murmurait mon nom avant de traverser le seuil de l'invisible.<br><br>Puis les hommes ont eu peur. Ils ont fait de moi une ombre. Une sorcière. Un monstre à brûler.<br><br>Mais je n'ai jamais cessé de veiller. Dans les portes, dans les songes, dans les herbes que l'on cueille à la pleine lune.<br><br><strong>Toi, chercheur, tu m'as trouvée. Non pas comme une légende. Comme une mémoire.</strong> »"
+},
+rencontre: {
+    title: "🤝 LEUR PREMIÈRE ÉTREINTE",
+    text: "« Il a tendu la main. J'ai cru qu'il allait frapper. Il a pleuré.<br><br>'Pardonne-nous', a-t-il dit. 'Pardonne-nous d'avoir séparé ce que tu avais uni.'<br><br>Hécate a souri. 'Je n'ai jamais eu besoin de pardon. J'avais seulement besoin qu'on se souvienne.'<br><br><strong>Et leurs mains se sont touchées. Pour la première fois. Enfin.</strong> »"
+  },
+  alliance: {
+    title: "⚖️ L'ALLIANCE DE DIEU ET HÉCATE",
+    text: "« Ce jour-là, nous avons reconstruit ce que les hommes avaient brisé. Non pas un temple. Non pas un grimoire. Un pont. Un souffle.<br><br>Une promesse : plus jamais la Foi ne brûlera la Magie. Plus jamais la Magie ne se moquera de la Foi.<br><br><strong>Car elles sont sœurs. Et nous, Dieu et Hécate, nous sommes témoins.</strong> »"
+  },
+  renaissance: {
+    title: "🌱 LE PREMIER ENFANT",
+    text: "« Un enfant est né dans les cendres. Il n'a pas pleuré. Il a souri. Il a levé la main droite vers le ciel — et la main gauche vers la terre. Les sages ont dit : 'Voici l'Unifié.' Et la terre a tremblé de joie. Car l'humanité venait de se souvenir. »"
+  },
+  apaiement: {
+    title: "🕯️ LA DERNIÈRE PROPHÉTIE D'HÉCATE",
+    text: "« Ceci n'est pas une fin. Les âges passeront, les empires s'effondreront, les dieux s'endormiront.<br><br>Mais tant qu'un être lèvera les mains — une pour prier, l'autre pour enchanter — le Miroir brillera. L'Âme vivra.<br><br><strong>Et moi, Hécate, je veillerai au carrefour. Comme toujours.</strong> »"
+  },
+};
+ 
+const ACT3_FACTS_BY_EPOCH = {
+  cendres: [
+    { type: "fait", text: "Après le Déluge silencieux, l'humanité comptait moins de 10 000 survivants. Aucun ne savait prier. Aucun ne savait enchanter. Mais tous avaient soif.", author: "Annales des Cendres" },
+    { type: "citation", text: "« C'est dans le vide que naissent les dieux. Et les sorcières. »", author: "Proverbe de l'Après" }
+  ],
+  larmes: [
+    { type: "tension", text: "Dieu lui-même a pleuré. Non pas sur sa propre douleur — sur celle des hommes. 'Ils étaient si beaux, quand ils chantaient ensemble.'", author: "Les Larmes du Créateur" },
+    { type: "citation", text: "« Ne regrette pas de m'avoir oubliée. Réjouis-toi de te souvenir. »", author: "La Sorcière aux Survivants" }
+  ],
+  rencontre: [
+    { type: "rev", text: "✦ La Rencontre — Ce jour-là, Dieu et Hécate se sont assis face à face. Pas pour se juger. Pour se reconnaître. 'Tu n'as jamais été mon ennemie,' dit-il. 'Et tu n'as jamais été mon bourreau,' dit-elle. 'Nous avons été séparés. Et c'est la seule blessure.' ✦", author: "Le Pacte Originel" }
+  ],
+  alliance: [
+    { type: "fait", text: "L'Alliance ne fut pas écrite. Elle fut chantée. Une mélodie que les enfants apprennent encore dans leurs rêves.", author: "Mémoire de l'Âme" },
+    { type: "citation", text: "« Par ma foi, je protège ta magie. Par ta magie, tu nourris ma foi. »", author: "Serment des Deux Flammes" }
+  ],
+  renaissance: [
+    { type: "fait", text: "Le premier enfant né après l'Alliance avait une étoile dans chaque main. Les sages dirent : 'C'est le signe. L'unité n'est plus un rêve.'", author: "Chronique de la Renaissance" },
+    { type: "citation", text: "« Il ne te reste plus qu'à marcher, chercheur. Le chemin est là. Et nous, nous t'attendons au bout. »", author: "Dieu & la Sorcière" }
+  ],
+  apaiement: [
+    { type: "rev", text: "✦ L'Apaisement — Tout se tait. Les vents, les ombres, les souvenirs amers. Il ne reste que le souffle. Foi et Magie dansent ensemble, pour la première fois depuis la Nuit des Temps. Le Miroir n'est plus brisé. Il n'est plus utile. Ce qui compte est à l'intérieur de toi, chercheur. ✦", author: "Le Codex Arcanorum — Dernière Page" }
+  ]
+};
+    
+    const ACT3_EVENTS = [
+  { id: "dieu_sorciere", title: "⚖️ La Double Vision", text: "Dieu et Hécate t'apparaissent en même temps. L'un te tend une plume, l'autre une épine.", choices: [{ lbl: "Prendre la plume", txt: "+500 000 foi · Voie de la Foi", ef: { faithBonus: 500000 } }, { lbl: "Prendre l'épine", txt: "+500 000 foi · Voie de la Magie", ef: { faithBonus: 500000 } }, { lbl: "Prendre les deux", txt: "+1 000 000 foi · Unité", ef: { faithBonus: 1000000 } }] },
+  { id: "enfant", title: "👶 Le Premier Rire", text: "Un enfant te sourit. Il ne pleure pas. Il t'ouvre les mains. Dans sa paume droite, une croix. Dans sa paume gauche, un pentacle.", choices: [{ lbl: "Pleurer", txt: "+200 000 foi", ef: { faithBonus: 200000 } }, { lbl: "Sourire", txt: "+200 000 foi", ef: { faithBonus: 200000 } }] },
+  { id: "dernier_choix", title: "🕯️ Le Seuil", text: "Devant toi, deux portes. L'une dit 'Foi', l'autre dit 'Magie'. Derrière toi, une troisième porte, ouverte, sans nom.", choices: [{ lbl: "Foi", txt: "Tu entres dans l'éternité", ef: {} }, { lbl: "Magie", txt: "Tu entres dans le rêve", ef: {} }, { lbl: "Retourner en arrière", txt: "Tu choisis l'Unité", ef: {} }] }
+];
+       
+// ==================== ÉTAT ====================
+let clickCombo = 0;
+let lastClickTime = 0;
+let faith = 0, totalRituals = 0, baseClick = 1, basePassive = 0;
+let ownedEpochs = new Set(), sanctuaryLevels = {};
+let discoveredFacts = new Set(), grimoireFacts = [], recentEntries = [], revealedSet = new Set(), triggeredEvents = new Set();
+let lastFactIdx = -1, passBoost = 1, clickBoostMult = 1, modalOpen = false, isEventPending = false, grimFilter = "all";
+let mirrorFragments = new Set();
+let mirrorReunified = false;
+let mirrorFinalChoice = null;
+let mirrorFinalBonus = 1;
+let lastEventTime = 0;
+let unlockedAchievements = new Set();
+let achievementDates = {};
+
+const $ = id => document.getElementById(id);
+const TOTAL_REVELATIONS_POSSIBLES = (() => {
+    let base = Object.values(FACTS_BY_EPOCH).reduce((a,b) => a + b.length, 0) + REVELATIONS.length;
+    return base;
+})();
+
+const ACHIEVEMENTS = {
+  first_ritual: { name: "🕯️ Pèlerin", desc: "Accomplir votre premier rituel.", reward: "+50 foi", check: () => totalRituals >= 1 },
+  ten_rituals: { name: "✨ Ferveur", desc: "Accomplir 10 rituels.", reward: "+500 foi", check: () => totalRituals >= 10 },
+  hundred_rituals: { name: "🔥 Dévotion", desc: "Accomplir 100 rituels.", reward: "+50000 foi", check: () => totalRituals >= 100 },
+  thousand_rituals: { name: "⚡ Archonte des gestes", desc: "Accomplir 1 000 rituels.", reward: "+5000000 foi", check: () => totalRituals >= 1000 },
+  million_faith: { name: "💰 Millionnaire", desc: "Posséder 1 000 000 de Foi.", reward: "+500000 foi", check: () => faith >= 1000000 },
+  ten_million_faith: { name: "🏦 Banquier céleste", desc: "Posséder 10 000 000 de Foi.", reward: "+2000000 foi", check: () => faith >= 10000000 },
+  fifty_million_faith: { name: "👑 Seigneur de la Foi", desc: "Posséder 50 000 000 de Foi.", reward: "+10000000 foi", check: () => faith >= 50000000 },
+  first_epoch: { name: "🗿 Archéologue", desc: "Débloquer votre première époque.", reward: "+500 foi", check: () => ownedEpochs.size >= 1 },
+  five_epochs: { name: "📜 Historien", desc: "Débloquer 5 époques.", reward: "+50000 foi", check: () => ownedEpochs.size >= 5 },
+  all_epochs: { name: "🌌 Polymathe", desc: "Débloquer toutes les époques.", reward: "+5000000 foi", check: () => ownedEpochs.size === EPOCHS.length },
+  first_sanctuary: { name: "🏛️ Bâtisseur", desc: "Construire votre premier sanctuaire.", reward: "+100 foi", check: () => Object.keys(sanctuaryLevels).length >= 1 },
+  max_sanctuary: { name: "⭐ Sanctuaire parfait", desc: "Améliorer un sanctuaire au niveau 5.", reward: "+50000 foi", check: () => Object.values(sanctuaryLevels).some(lvl => lvl >= 5) },
+  all_max_sanctuaries: { name: "✨ Grand Architecte", desc: "Améliorer tous les sanctuaires au niveau 5.", reward: "+50000000 foi", check: () => isAllSanctuariesMax() },
+  first_fragment: { name: "🪞 Éveillé", desc: "Trouver votre premier fragment du Miroir.", reward: "+100000 foi", check: () => mirrorFragments.size >= 1 },
+  five_fragments: { name: "🌀 Fragmenté", desc: "Trouver 5 fragments du Miroir.", reward: "+500000 foi", check: () => mirrorFragments.size >= 5 },
+  all_fragments: { name: "✦ Collecteur d'âmes", desc: "Trouver tous les fragments du Miroir.", reward: "+2000000 foi", check: () => mirrorFragments.size === Object.keys(MIRROR_FRAGMENTS).length },
+  reunified: { name: "🪞 Réunificateur", desc: "Réunifier le Miroir de l'Âme.", reward: "+10000000 foi", check: () => mirrorReunified === true },
+  final_choice: { name: "⚖️ Archonte de l'Unicité", desc: "Choisir la voie de l'Unité.", reward: "+50000000 foi", check: () => mirrorFinalChoice === "unity" },
+  ten_revelations: { name: "📖 Curieux", desc: "Débloquer 10 révélations.", reward: "+500 foi", check: () => (discoveredFacts.size + revealedSet.size) >= 10 },
+  fifty_revelations: { name: "🧠 Sage", desc: "Débloquer 50 révélations.", reward: "+50000 foi", check: () => (discoveredFacts.size + revealedSet.size) >= 50 },
+  all_revelations: { name: "📚 Bibliothécaire", desc: "Débloquer TOUTES les révélations.", reward: "+5000000 foi", check: () => (discoveredFacts.size + revealedSet.size) >= TOTAL_REVELATIONS_POSSIBLES },
+  first_event: { name: "🍀 Chanceux", desc: "Déclencher un événement aléatoire.", reward: "+1000 foi", check: () => triggeredEvents.size >= 1 }
+};
+    function isAllSanctuariesMax() {
+  for (let ep of EPOCHS) {
+    let sanctuaries = SANCTUARIES[ep.id] || [];
+    for (let s of sanctuaries) {
+      let key = ep.id + "|" + s.id;
+      if ((sanctuaryLevels[key] || 0) < 5) return false;
+    }
+  }
+  return true;
+}
+
+function checkAndUnlockAchievements() {
+  let newUnlocks = [];
+  for (let [id, achieve] of Object.entries(ACHIEVEMENTS)) {
+    if (!unlockedAchievements.has(id) && achieve.check()) {
+      unlockedAchievements.add(id);
+      achievementDates[id] = new Date().toLocaleTimeString();
+      newUnlocks.push({ id, ...achieve });
+      if (achieve.reward && achieve.reward.includes("+")) {
+        let bonus = parseInt(achieve.reward.match(/\d+/)?.[0] || 0);
+        if (bonus) faith += bonus;
+      }
+      if (id === "final_choice" && mirrorFinalChoice === "unity") {
+        toast("🏆 Titre obtenu : Archonte de l'Unicité !", 4000);
+      }
+    }
+  }
+  if (newUnlocks.length > 0) {
+    let btn = document.getElementById("achievementsBtn");
+    if (btn) btn.classList.add("has-new");
+    setTimeout(() => btn?.classList.remove("has-new"), 5000);
+    updateStats();
+    renderAchievements();
+    showAchievementNotifications(newUnlocks);
+    save();
+  }
+}
+
+function showAchievementNotifications(achievements) {
+  for (let a of achievements) {
+    let notif = document.createElement("div");
+    notif.className = "achieve-notif";
+    notif.style.opacity = "0";
+    notif.style.transition = "opacity 0.3s ease";
+    notif.style.pointerEvents = "none";
+    notif.style.userSelect = "none";
+    notif.innerHTML = `<div style="font-family:'Cinzel',serif; font-size:0.7rem; color:var(--accL);">🏆 SUCCÈS DÉBLOQUÉ</div><div style="font-size:0.8rem; font-weight:bold;">${a.name}</div><div style="font-size:0.6rem; color:var(--parcD);">${a.desc}</div><div style="font-size:0.55rem; color:#9ab870; margin-top:3px;">✧ ${a.reward} ✧</div>`;
+    document.body.appendChild(notif);
+    setTimeout(() => { notif.style.opacity = "1"; }, 10);
+    setTimeout(() => { notif.style.opacity = "0"; }, 4500);
+    setTimeout(() => { if (notif && notif.parentNode) notif.remove(); }, 5000);
+    toast(`🏆 ${a.name} débloqué !`, 3000);
+  }
+}
+
+function renderAchievements() {
+  let container = document.getElementById("achievementsContent");
+  if (!container) return;
+  let html = '<div style="display:flex; flex-direction:column; gap:6px;">';
+  for (let [id, achieve] of Object.entries(ACHIEVEMENTS)) {
+    let unlocked = unlockedAchievements.has(id);
+    let date = achievementDates[id] || "";
+    html += `<div class="achievement ${unlocked ? 'unlocked' : 'locked'}"><div class="achieve-title"><span class="achieve-name">${achieve.name}</span>${unlocked ? `<span class="achieve-date">${date}</span>` : '<span class="achieve-date">🔒</span>'}</div><div class="achieve-desc">${achieve.desc}</div><div class="achieve-reward">✧ ${achieve.reward} ✧</div></div>`;
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function openAchievementsModal() {
+  renderAchievements();
+  let modal = document.createElement("div");
+  modal.className = "modal-ov";
+  modal.innerHTML = `<div class="modal-box" style="max-width:550px; background:linear-gradient(160deg,#0a0818,#050310);"><div class="modal-border" style="border-color:var(--acc);"></div><div class="modal-title" style="color:var(--accL); font-size:1.2rem;">🏆 TABLEAU DES SUCCÈS</div><div id="achievementsModalContent" class="achievements-panel" style="max-height:55vh; overflow-y:auto; padding-right:8px;"></div><button class="modal-close" id="closeAchievementsModal" style="margin-top:12px;">Fermer</button></div>`;
+  document.body.appendChild(modal);
+  let container = document.getElementById("achievementsModalContent");
+  if (container) {
+    let html = '<div style="display:flex; flex-direction:column; gap:6px;">';
+    for (let [id, achieve] of Object.entries(ACHIEVEMENTS)) {
+      let unlocked = unlockedAchievements.has(id);
+      let date = achievementDates[id] || "";
+      html += `<div class="achievement ${unlocked ? 'unlocked' : 'locked'}"><div class="achieve-title"><span class="achieve-name">${achieve.name}</span>${unlocked ? `<span class="achieve-date">${date}</span>` : '<span class="achieve-date">🔒</span>'}</div><div class="achieve-desc">${achieve.desc}</div><div class="achieve-reward">✧ ${achieve.reward} ✧</div></div>`;
+    }
+    html += '</div>';
+    container.innerHTML = html;
+  }
+  document.getElementById("closeAchievementsModal").onclick = () => modal.remove();
+}
+document.getElementById("achievementsBtn")?.addEventListener("click", openAchievementsModal);
+
+function updateProgress() {
+  let found = discoveredFacts.size + revealedSet.size;
+  let cappedFound = Math.min(found, TOTAL_REVELATIONS_POSSIBLES);
+  let pct = (cappedFound / TOTAL_REVELATIONS_POSSIBLES) * 100;
+  if($("globalProgFill")) $("globalProgFill").style.width = pct + "%";
+  if($("globalProgLbl")) $("globalProgLbl").textContent = cappedFound + " / " + TOTAL_REVELATIONS_POSSIBLES + " révélations";
+}
+
+function fmt(n) {
+  if (n === undefined || n === null) return "0";
+  if (n >= 1e15) return (n / 1e15).toFixed(2) + "P";
+  if (n >= 1e12) return (n / 1e12).toFixed(2) + "T";
+  if (n >= 1e9) return (n / 1e9).toFixed(2) + "G";
+  if (n >= 1e6) return (n / 1e6).toFixed(2) + "M";
+  if (n >= 1e4) return (n / 1000).toFixed(1) + "k";
+  if (n >= 1000) return Math.floor(n).toLocaleString("fr");
+  if (n < 1 && n > 0) return n.toFixed(2);
+  return Math.floor(n).toString();
+}
+
+function toast(msg, d = 2500) { let t = $("toast"); if(!t) return; t.textContent = msg; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), d); }
+
+function lighten(h, v) { let n = parseInt(h.slice(1), 16); let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return `rgb(${Math.min(255, r + v)}, ${Math.min(255, g + v)}, ${Math.min(255, b + v)})`; }
+function darken(h, v) { let n = parseInt(h.slice(1), 16); let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255; return `rgb(${Math.max(0, r - v)}, ${Math.max(0, g - v)}, ${Math.max(0, b - v)})`; }
+
+function applyPalette(p) {
+  let s = document.documentElement.style;
+  s.setProperty("--acc", p.acc);
+  s.setProperty("--accL", lighten(p.acc, 30));
+  s.setProperty("--accD", darken(p.acc, 25));
+  s.setProperty("--glow", p.glow);
+  s.setProperty("--border", `rgba(${parseInt(p.acc.slice(1), 16) >> 16 & 255}, ${parseInt(p.acc.slice(1), 16) >> 8 & 255}, ${parseInt(p.acc.slice(1), 16) & 255}, .28)`);
+  document.body.style.backgroundColor = p.bg1;
+  s.setProperty("--bg1", p.bg1);
+}
+
+function effectiveClick() { return Math.round(baseClick * clickBoostMult); }
+function effectivePassive() { return basePassive * passBoost; }
+
+function recalcBase() {
+  baseClick = 1;
+  basePassive = 0;
+  for (let [key, lvl] of Object.entries(sanctuaryLevels)) {
+    if (lvl) {
+      let [epochId, sanctId] = key.split("|");
+      if (ownedEpochs.has(epochId)) {
+        let s = (SANCTUARIES[epochId] || []).find(s => s.id === sanctId);
+        if (s) {
+          basePassive += s.basePassive * lvl * (1 + 0.08 * (lvl - 1));
+          baseClick += s.baseClic * lvl * (1 + 0.06 * (lvl - 1));
+        }
+      }
+    }
+  }
+}
+
+function updateStats() {
+  if($("faithVal")) $("faithVal").textContent = fmt(faith);
+  if($("powerVal")) $("powerVal").textContent = fmt(effectiveClick());
+  if($("passiveVal")) $("passiveVal").textContent = fmt(effectivePassive()) + "/s";
+  if($("ritualsCount")) $("ritualsCount").textContent = totalRituals;
+  if($("comboVal")) $("comboVal").textContent = `×${clickCombo}`;
+}
+
+function updateBadge() {
+  let top = null;
+  for (let ep of EPOCHS) if (ownedEpochs.has(ep.id)) top = ep;
+  if ($("epochBadge")) $("epochBadge").textContent = top ? top.badge : "🌄 Aube de l'Humanité";
+  if ($("btnSigil")) $("btnSigil").textContent = top ? top.sigil : "🕯️";
+  if ($("btnLbl")) $("btnLbl").textContent = top ? top.btnLbl : "INVOQUER";
+  if (top) applyPalette(top.pal);
+}
+
+const TYPE_LABELS = { fait: "Fait historique", citation: "Citation sacrée", tension: "Magie & Foi", rev: "Révélation" };
+const TYPE_CSS = { fait: "tf", citation: "tc", tension: "tt", rev: "rev" };
+
+function addRecent(type, cat, text, author) {
+  recentEntries.unshift({ type, cat, text, author });
+  if (recentEntries.length > 5) recentEntries.pop();
+  let container = $("recentScroll");
+  if (!container) return;
+  container.innerHTML = "";
+  if (!recentEntries.length) { container.innerHTML = '<div style="font-size:.68rem;color:var(--accD);font-style:italic;padding:8px">Commencez à invoquer…</div>'; return; }
+  for (let e of recentEntries) {
+    let d = document.createElement("div");
+    d.className = "recent-item";
+    d.style.cssText = "border-radius:8px;padding:7px 10px;font-size:.67rem;line-height:1.42;margin-bottom:4px;border-left:3px solid transparent;background:rgba(0,0,0,0.25);";
+    if (e.type === "fait") d.style.borderLeftColor = "var(--ember)";
+    if (e.type === "citation") d.style.borderLeftColor = "var(--mys)";
+    if (e.type === "tension") d.style.borderLeftColor = "#6a9a6a";
+    d.innerHTML = `<span style="font-family:'Cinzel',serif;font-size:.5rem;color:var(--accD);">${e.cat || ""}</span> ${e.text}${e.author ? `<div style="font-size:.5rem;color:var(--accD);">— ${e.author}</div>` : ""}`;
+    container.appendChild(d);
+  }
+}
+
+function recordFact(f) {
+  let key = (f.epochId || "start") + "|" + f.text.slice(0, 40);
+  if (!discoveredFacts.has(key)) {
+    discoveredFacts.add(key);
+    grimoireFacts.push({ ...f });
+    if ($("grimoireNotif")) $("grimoireNotif").style.display = "flex";
+    addRecent(f.type, TYPE_LABELS[f.type], f.text, f.author);
+    updateProgress();
+    checkMirrorFragments();
+    renderGrimoire();
+    checkRevelations();
+  }
+}
+
+function pickFact() {
+  let pool = [...FACTS_BY_EPOCH.start];
+  for (let id of ownedEpochs) if (FACTS_BY_EPOCH[id]) pool = pool.concat(FACTS_BY_EPOCH[id]);
+  if (pool.length === 0) pool = FACTS_BY_EPOCH.start;
+  let idx;
+  do { idx = Math.floor(Math.random() * pool.length); } while (idx === lastFactIdx && pool.length > 1);
+  lastFactIdx = idx;
+  return pool[idx];
+}
+
+function showFact(f) {
+  let box = $("factBox");
+  if (!box) return;
+  box.style.opacity = "0";
+  setTimeout(() => {
+    if ($("factType")) { $("factType").textContent = TYPE_LABELS[f.type] || f.type; $("factType").className = "fact-type " + (TYPE_CSS[f.type] || "tf"); }
+    if ($("factTxt")) { $("factTxt").textContent = f.text; $("factTxt").className = "fact-txt" + (f.type === "citation" ? " cit" : ""); }
+    if ($("factAuth")) $("factAuth").textContent = f.author ? "— " + f.author : "";
+    box.style.opacity = "1";
+  }, 170);
+}
+
+function checkRevelations() {
+  let found = discoveredFacts.size;
+  for (let rev of REVELATIONS) {
+    if (!revealedSet.has(rev.at) && found >= rev.at) {
+      revealedSet.add(rev.at);
+      grimoireFacts.push({ type: "rev", epochId: "rev", cat: "Révélation", text: rev.title + " — " + rev.text, author: null });
+      if ($("grimoireNotif")) $("grimoireNotif").style.display = "flex";
+      renderGrimoire();
+      updateProgress();
+      addRecent("rev", "Révélation", rev.title + " — " + rev.text, null);
+      toast("🌟 Nouvelle révélation !", 2000);
+    }
+  }
+}
+
+function renderGrimoire() {
+  let filter = grimFilter;
+  let filtered = filter === "all" ? grimoireFacts : grimoireFacts.filter(f => { if (filter === "rev") return f.type === "rev"; return f.type === filter; });
+  let total = discoveredFacts.size + revealedSet.size;
+  if ($("grimTotal")) $("grimTotal").textContent = total + " révélation" + (total > 1 ? "s" : "") + " archivée" + (total > 1 ? "s" : "");
+  let container = $("grimScroll");
+  if (!container) return;
+  if (!filtered.length) { container.innerHTML = '<div class="grim-empty">Aucune révélation de ce type.</div>'; return; }
+  let grouped = {};
+  for (let f of filtered) { let eid = f.epochId || "start"; if (!grouped[eid]) grouped[eid] = []; grouped[eid].push(f); }
+  let epochOrder = ["rev", "start", "paleo", "neolith", "mesopotamia", "ironage", "greece", "medieval", "renaissance", "enlightenment", "modern", "ultima"];
+  let epochNames = { rev: "✦ Révélations", start: "🌄 Prémices", paleo: "🏔️ Paléolithique", neolith: "🌾 Néolithique", mesopotamia: "🏺 Antiquité", ironage: "⚔️ Âge du Fer", greece: "🏛️ Grèce & Rome", medieval: "⛪ Moyen Âge", renaissance: "🖋️ Renaissance", enlightenment: "🕯️ Lumières", modern: "🌐 Moderne", ultima: "♾️ Ultime" };
+  container.innerHTML = "";
+  for (let eid of epochOrder) {
+    if (!grouped[eid]) continue;
+    let sec = document.createElement("div");
+    sec.className = "grim-epoch-section";
+    sec.innerHTML = `<div class="grim-epoch-title"><span>${epochNames[eid] || eid}</span><span class="grim-count">${grouped[eid].length}</span></div>`;
+    for (let f of grouped[eid]) {
+      let entry = document.createElement("div");
+      entry.className = "grim-entry " + (TYPE_CSS[f.type] || "tf");
+      entry.innerHTML = `<div class="ge-type ${TYPE_CSS[f.type] || "tf"}">${TYPE_LABELS[f.type] || f.type}</div><div class="ge-text${f.type === "citation" ? " cit" : ""}">${f.text}</div>${f.author ? `<div class="ge-auth">— ${f.author}</div>` : ""}`;
+      sec.appendChild(entry);
+    }
+    container.appendChild(sec);
+  }
+}
+function startAct2() {
+  currentAct = 2;
+  EPOCHS.length = 0;
+  ACT2_EPOCHS.forEach(e => EPOCHS.push(e));
+  Object.keys(SANCTUARIES).forEach(k => delete SANCTUARIES[k]);
+  Object.assign(SANCTUARIES, ACT2_SANCTUARIES);
+  Object.keys(MIRROR_FRAGMENTS).forEach(k => delete MIRROR_FRAGMENTS[k]);
+  Object.assign(MIRROR_FRAGMENTS, ACT2_MIRROR_FRAGMENTS);
+  Object.keys(MIRROR_CHRONICLES).forEach(k => delete MIRROR_CHRONICLES[k]);
+  Object.assign(MIRROR_CHRONICLES, ACT2_MIRROR_CHRONICLES);
+  Object.keys(FACTS_BY_EPOCH).forEach(k => delete FACTS_BY_EPOCH[k]);
+  Object.assign(FACTS_BY_EPOCH, ACT2_FACTS_BY_EPOCH);
+  EVENTS.length = 0;
+  ACT2_EVENTS.forEach(e => EVENTS.push(e));
+  ownedEpochs.clear();
+  sanctuaryLevels = {};
+  mirrorFragments.clear();
+  mirrorReunified = false;
+  mirrorFinalChoice = null;
+  discoveredFacts.clear();
+  grimoireFacts = [];
+  revealedSet.clear();
+  triggeredEvents.clear();
+  faith = Math.max(10000, Math.floor(faith * 0.1));
+  let theme = ACT2_EPOCHS[0].pal;
+  applyPalette(theme);
+  document.body.style.background = theme.bg1;
+  let subHeader = document.querySelector(".t-sub");
+  if (subHeader) subHeader.textContent = "Acte II — L'Heure du Verdict";
+  updateBadge();
+  renderSanctuaires();
+  renderMirror();
+  updateStats();
+  updateProgress();
+
+  // TRANSITION APOCALYPTIQUE
+  let transitionModal = document.createElement('div');
+  transitionModal.className = "modal-ov";
+  transitionModal.innerHTML = `
+    <div class="modal-box" style="border:3px solid #8b0000; background:radial-gradient(ellipse at center, #0a0505 0%, #010001 100%); box-shadow:0 0 100px rgba(139,0,0,0.8); animation: none; border-radius:8px;">
+      <div class="modal-border" style="border-color:#8b0000;"></div>
+      <div class="modal-title" style="color:#cc3333; text-shadow:0 0 25px #8b0000; font-size:1.2rem; letter-spacing:6px;">⚰️ L'EXIL VOLONTAIRE ⚰️</div>
+      <div class="modal-text" style="font-style:italic; color:#aa8877; line-height:1.9; font-size:0.9rem;">
+        <span style="color:#cc5555; font-weight:bold;">« Tu voulais voir le futur, chercheur ?<br>Alors regarde l'œuvre de tes semblables. »</span><br><br>
+        L'humanité a eu peur. Non pas de l'ombre, non pas des démons.<br>
+        <strong>Elle a eu peur de l'invisible.</strong><br><br>
+        Alors elle l'a tué. Méthodiquement. Généreusement. Avec des sourires et des brevets.<br>
+        Elle a remplacé la Prière par du bruit. Remplacé la Magie par des écrans.<br>
+        Remplacé l'Âme par un profil utilisateur.<br><br>
+        <span style="color:#cc5555;">« Ils ont ri en fermant la dernière église. Ils ont dansé sur les cendres des grimoires.<br>« Plus besoin de dieu, disaient-ils. Plus besoin de mystère. »</span><br><br>
+        Et puis un jour, ils se sont réveillés.<br>
+        Et il n'y avait <strong>rien</strong>. Pas de vide libérateur. Pas de nouveau départ.<br>
+        Juste un silence absolu. L'écho de leur propre extinction.<br><br>
+        Les enfants ne sourient plus. Les vieux meurent sans regret.<br>
+        <strong>L'humanité ne pleure même pas sa propre mort.</strong> Elle la regarde défiler sur un écran, entre deux publicités.<br><br>
+        <span style="color:#cc5555;">« Et toi, chercheur... tu es le dernier à qui il reste une étincelle.<br>L'Oculum t'a choisi parce que <strong>tu n'as pas encore oublié ce que c'est que voir,espèrer,vivre...</strong> »</span><br><br>
+        Rassemble les éclats. Force ces ombres à se souvenir.<br>
+        Ou laisse-les sombrer. Personne ne les pleurera.<br><br>
+        <strong style="color:#8b0000;">— L'OCULUM DU NÉANT —<br>L'horloge de l'Apocalypse silencieuse tourne.</strong>
+      </div>
+      <button class="modal-close" id="closeAct2Transition" style="border-color:#8b0000; color:#cc5555; background:#1a0505;">Pénétrer l'abîme</button>
+    </div>
+  `;
+  document.body.appendChild(transitionModal);
+  document.getElementById("closeAct2Transition").onclick = () => transitionModal.remove();
+  save();
+}
+   
+  function startAct3() {
+  if (currentAct === 3) return;
+  currentAct = 3;
+  
+  // Remplacer les données
+  EPOCHS.length = 0; ACT3_EPOCHS.forEach(e => EPOCHS.push(e));
+  Object.keys(SANCTUARIES).forEach(k => delete SANCTUARIES[k]);
+  Object.assign(SANCTUARIES, ACT3_SANCTUARIES);
+  Object.keys(MIRROR_FRAGMENTS).forEach(k => delete MIRROR_FRAGMENTS[k]);
+  Object.assign(MIRROR_FRAGMENTS, ACT3_MIRROR_FRAGMENTS);
+  Object.keys(MIRROR_CHRONICLES).forEach(k => delete MIRROR_CHRONICLES[k]);
+  Object.assign(MIRROR_CHRONICLES, ACT3_MIRROR_CHRONICLES);
+  Object.keys(FACTS_BY_EPOCH).forEach(k => delete FACTS_BY_EPOCH[k]);
+  Object.assign(FACTS_BY_EPOCH, ACT3_FACTS_BY_EPOCH);
+  EVENTS.length = 0; ACT3_EVENTS.forEach(e => EVENTS.push(e));
+  
+  // Reset état
+  ownedEpochs.clear();
+  sanctuaryLevels = {};
+  mirrorFragments.clear();
+  mirrorReunified = false;
+  mirrorFinalChoice = null;
+  discoveredFacts.clear();
+  grimoireFacts = [];
+  revealedSet.clear();
+  triggeredEvents.clear();
+  faith = Math.max(5000000, Math.floor(faith * 0.2));
+  
+  // Thème & UI
+  let theme = ACT3_EPOCHS[0].pal;
+  applyPalette(theme);
+  document.body.style.background = theme.bg1;
+  let subHeader = document.querySelector(".t-sub");
+  if (subHeader) subHeader.textContent = "Acte III — L'Alliance des Deux Flammes";
+  
+  updateBadge();
+  renderSanctuaires();
+  renderMirror();
+  updateStats();
+  updateProgress();
+  
+  // Prologue spécifique Acte III
+  let modal = document.createElement("div");
+  modal.className = "modal-ov";
+  modal.innerHTML = `
+    <div class="modal-box" style="border:2px solid #d4af37; background:radial-gradient(ellipse at center, #0a0818 0%, #020108 100%);">
+      <div class="modal-title" style="color:#f0cc7a;">✨ L'ALLIANCE DES DEUX FLAMMES ✨</div>
+      <div class="modal-text" style="font-style:italic; color:#e0d8f0;">
+        <span style="color:#f0cc7a;">« Tu as traversé les âges. Tu as vu l'Unité perdue, puis l'Horreur du silence. »</span><br><br>
+        Maintenant, il est temps de réparer.<br>
+        Non pas un miroir. Non pas un oculum.<br>
+        <strong>L'âme humaine elle-même.</strong><br><br>
+        Dieu est là. Il pleure.<br>
+        Hécate est là. Elle attend.<br>
+        Et toi… tu es le pont qu'ils n'ont jamais osé construire.<br><br>
+        <span style="color:#f0cc7a;">« Avance, chercheur. L'Alliance commence. »</span>
+      </div>
+      <button class="modal-close" id="closeAct3Modal">Unir</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document.getElementById("closeAct3Modal").onclick = () => modal.remove();
+  
+  save();
+}
+    //============ FONCTIONS DU MIROIR ====================
+function isEpochComplete(epochId) {
+  let sanctuaries = SANCTUARIES[epochId] || [];
+  let allSanctsMax = sanctuaries.every(s => {
+    let key = epochId + "|" + s.id;
+    return (sanctuaryLevels[key] || 0) >= 5;
+  });
+  return allSanctsMax;
+}
+
+function checkMirrorFragments() {
+  let newFragment = false;
+  let wasEmpty = mirrorFragments.size === 0;
+  let totalFrags = Object.keys(MIRROR_FRAGMENTS).length;
+  let found = mirrorFragments.size;
+  
+  for (let ep of EPOCHS) {
+    if (!mirrorFragments.has(ep.id) && isEpochComplete(ep.id)) {
+      mirrorFragments.add(ep.id);
+      newFragment = true;
+      let frag = MIRROR_FRAGMENTS[ep.id];
+      if (frag) {
+        toast(`✨ Fragment trouvé : ${frag.name} — ${frag.desc}`, 4000);
+        addRecent("mirror", "Fragment du Miroir", frag.name + " — " + frag.desc, null);
+        faith += effectivePassive() * 10;
+        checkAndUnlockAchievements();
+        updateStats();
+      }
+    }
+  }
+  
+  found = mirrorFragments.size;
+  totalFrags = Object.keys(MIRROR_FRAGMENTS).length;
+  
+  // === PROLOGUE : PREMIER FRAGMENT ===
+// === PROLOGUE : PREMIER FRAGMENT ===
+if (newFragment && wasEmpty) {
+  let prologueModal = document.createElement("div");
+  prologueModal.className = "modal-ov";
+  
+  if (currentAct === 1) {
+    prologueModal.innerHTML = `<div class="modal-box"><div class="modal-border"></div><div class="modal-title">🪞 Le Miroir de l'Âme — Prologue</div><div class="modal-text" style="font-style:italic"><span style="color:var(--accL)">« Chercheur... ce n'est que la première cicatrice sur le visage du temps. Le fragment que vous avez récupéré ici n'est qu'une racine d'un arbre immense. »</span><br><br>Le Miroir frissonne et la brume se déplace. L'Aube recule pour laisser place à de nouveaux reflets, plus froids, plus complexes.<br><br><span style="color:var(--accL)">« Chercheur... le temps est une plaie qui ne demande qu'à cicatriser. Plongez votre regard dans mes profondeurs. Voyagez là où la Foi et la Magie parlaient la même langue. »</span><br><br><strong>La quête du Miroir de l'Âme continue.</strong></div><button class="modal-close" id="closePrologue">Ainsi soit-il</button></div>`;
+  } 
+  else if (currentAct === 2) {
+    prologueModal.innerHTML = `
+      <div class="modal-box modal-mirror oculum-theme">
+        <div class="modal-border"></div>
+        <div class="modal-title">✦ L'OCULUM DU NÉANT — PROLOGUE ✦</div>
+        <div class="modal-text" style="font-style:italic">
+          <p><span style="color:#a0d8ef">« Chercheur... tu as recousu les lambeaux du passé. Mais le futur, lui, saigne encore. »</span></p><br>
+          <p>Le verre ne scintille plus, il palpite d'une lueur froide. Les prières ne sont plus gravées dans la pierre, mais emprisonnées dans le silicium.</p><br>
+          <p><span style="color:#a0d8ef">« L'Homme a trahi son essence. Ses cathédrales sont de métal, ses idoles sont de code. Il a cru bannir la Magie, il n'a fait que condamner son âme à l'exil. »</span></p><br>
+          <p style="text-align:center;"><strong style="color:#a0d8ef; font-family:'Cinzel'; letter-spacing:2px;">L'OCULUM EST OUVERT. LA FIN COMMENCE ICI.</strong></p>
+        </div>
+        <button class="modal-close" id="closePrologue" style="border-color:#a0d8ef; color:#a0d8ef;">Ainsi soit-il</button>
+      </div>`;
+  }
+  else if (currentAct === 3) {
+    prologueModal.innerHTML = `
+      <div class="modal-box" style="border:2px solid #d4af37; background:radial-gradient(ellipse at center, #0a0818 0%, #020108 100%);">
+        <div class="modal-border" style="border-color:#d4af37;"></div>
+        <div class="modal-title" style="color:#f0cc7a;">✨ L'ALLIANCE DES DEUX FLAMMES — PROLOGUE ✨</div>
+        <div class="modal-text" style="font-style:italic; color:#e0d8f0;">
+          <p><span style="color:#f0cc7a;">« Tu as traversé les âges. Tu as vu l'Unité perdue, puis l'Horreur du silence. »</span></p><br>
+          <p>Maintenant, il est temps de réparer.<br>Non pas un miroir. Non pas un oculum.<br><strong>L'âme humaine elle-même.</strong></p><br>
+          <p>Dieu est là. Il pleure.<br>Hécate est là. Elle attend.<br>Et toi… tu es le pont qu'ils n'ont jamais osé construire.</p><br>
+          <p style="text-align:center;"><span style="color:#f0cc7a;">« Avance, chercheur. L'Alliance commence. »</span></p>
+        </div>
+        <button class="modal-close" id="closePrologue" style="border-color:#d4af37; color:#f0cc7a;">Ainsi soit-il</button>
+      </div>`;
+  }
+  
+  document.body.appendChild(prologueModal);
+  document.getElementById("closePrologue").onclick = () => prologueModal.remove();
+  addRecent("rev", "Prologue", "La quête du Miroir commence. Un fragment trouvé.", null);
+  toast("🪞 Une voix ancienne murmure : « Rassemble les éclats, chercheur... »", 5000);
+}
+  
+  // === ÉTAPE : 3 FRAGMENTS (Acte I) ===
+  if (currentAct === 1 && newFragment && found === 3 && !wasEmpty) {
+    toast("🌱 Les premiers éclats vibrent. Le Miroir murmure...", 4000);
+    addRecent("rev", "Le Miroir parle", "Trois fragments réunis. Le Miroir murmure : « Je sens à nouveau le monde... Continue. »", null);
+    let stepModal = document.createElement("div");
+    stepModal.className = "modal-ov";
+    stepModal.innerHTML = `<div class="modal-box modal-mirror"><div class="modal-border"></div><div class="modal-title" style="color:var(--accL);">🌱 PREMIÈRES LUEURS 🌱</div><div class="modal-text" style="font-style:italic; font-size:0.95rem; line-height:1.7; max-height:55vh; overflow-y:auto; padding-right:10px;">« Trois fragments. Encens, murmures, formules oubliées — je sens tout cela remonter en moi.<br><br>Sais-tu qu'au commencement, la Foi et la Magie étaient sœurs ? Elles dansaient ensemble sous la même lune.<br><br>Puis, les hommes ont eu peur de l'immensité. Ils ont cru bien faire en les séparant, en traçant des frontières dans le sacré. Ils ont déchiré la trame du monde pour se rassurer.<br><br>C'est à toi, chercheur, de recoudre ce qu'ils ont brisé. »</div><button class="modal-close" id="closeStepModal3">Poursuivre</button></div>`;
+    document.body.appendChild(stepModal);
+    document.getElementById("closeStepModal3").onclick = () => stepModal.remove();
+  }
+  
+  // === ÉTAPE : 5 FRAGMENTS (Acte I) ===
+  if (currentAct === 1 && newFragment && found === 5 && !wasEmpty) {
+    toast("🏆 La moitié des fragments sont réunis. Le Miroir commence à refléter des ombres...", 5000);
+    addRecent("rev", "Étape importante", "Cinq fragments réunis. Le Miroir murmure : « Continue, chercheur, la vérité t'attend. »", null);
+    let midModal = document.createElement("div");
+    midModal.className = "modal-ov";
+    midModal.innerHTML = `<div class="modal-box modal-mirror"><div class="modal-border"></div><div class="modal-title" style="color:var(--accL);">✨ LE MIROIR S'ÉVEILLE ✨</div><div class="modal-text" style="font-style:italic; font-size:0.95rem; line-height:1.7; max-height:55vh; overflow-y:auto; padding-right:10px;">« La moitié du chemin est franchie, chercheur. Écoute... les fragments commencent à chanter à l'unisson. Je me souviens de l'unité...<br><br>Autrefois, sous les voûtes de pierre, le prêtre et le mage ne faisaient qu'un. La prière était le souffle de l'enchantement, et le sort n'était qu'une louange au sacré.<br><br>Puis vint l'ère de la peur. L'humanité a déchiré son propre cœur : on a brûlé l'une pour sanctifier l'autre, créant une plaie qui n'a jamais cicatrisé. »<br><br>Répare la folie de ceux qui ont oublié que l'âme a deux ailes. »</div><button class="modal-close" id="closeMidModal">Poursuivre</button></div>`;
+    document.body.appendChild(midModal);
+    document.getElementById("closeMidModal").onclick = () => midModal.remove();
+  }
+  
+  // === ÉTAPE : 7 FRAGMENTS (Acte I) ===
+  if (currentAct === 1 && newFragment && found === 7 && !wasEmpty) {
+    toast("🌀 Les fragments résonnent entre eux. Le Miroir se souvient...", 4000);
+    addRecent("rev", "Le Miroir se souvient", "Sept fragments réunis. Le Miroir murmure : « Les époques défilent... Toi aussi, tu cherches, n'est-ce pas ? »", null);
+    let stepModal = document.createElement("div");
+    stepModal.className = "modal-ov";
+    stepModal.innerHTML = `<div class="modal-box modal-mirror"><div class="modal-border"></div><div class="modal-title" style="color:var(--mys);">🌀 LE SOUFFLE DES MONDES 🌀</div><div class="modal-text" style="font-style:italic; font-size:0.95rem; line-height:1.7; max-height:55vh; overflow-y:auto; padding-right:10px;">« Sept fragments. Les époques défilent sous tes doigts — les tambours des chamanes, le silence des moines, le soufre des alchimistes...<br><br>Certains ont tout offert pour que l'invisible ne s'éteigne pas. Je vois encore cet homme sur une croix, les mains clouées au ciel mais le regard ouvert sur l'infini.<br><br>Était-ce une prière ? Un sacrifice ? Ou une incantation de sang si puissante qu'elle à fait trembler le voile ?<br><br>En ce jour, la Foi et la Magie se sont embrassées dans une ultime agonie.<br><br>Toi aussi, tu devras tout donner si tu veux que la brèche se referme enfin. »</div><button class="modal-close" id="closeStepModal7">Poursuivre</button></div>`;
+    document.body.appendChild(stepModal);
+    document.getElementById("closeStepModal7").onclick = () => stepModal.remove();
+  }
+  
+  // === ÉTAPE : 9 FRAGMENTS (Acte I) ===
+  if (currentAct === 1 && newFragment && found === totalFrags - 1 && !wasEmpty && totalFrags === 10) {
+    toast("⚡ Il ne manque plus qu'un fragment. Le Miroir frémit d'impatience.", 4000);
+    addRecent("rev", "Presque achevé", "Un seul fragment manque. Le Miroir attend sa réunification.", null);
+    let almostModal = document.createElement("div");
+    almostModal.className = "modal-ov";
+    almostModal.innerHTML = `<div class="modal-box modal-mirror"><div class="modal-border"></div><div class="modal-title" style="color:var(--ember);">⚡ L'ULTIME FRAGMENT ⚡</div><div class="modal-text" style="font-style:italic; font-size:0.95rem; line-height:1.7; max-height:55vh; overflow-y:auto; padding-right:10px;">« Encore un. Juste un. Et je serai à nouveau entier.<br><br>Tu sens cette tension dans l'air ? C'est l'ancienne fracture qui tente de se refermer.<br><br>La Foi et la Magie sont là, suspendues, retenant leur souffle. Elles savent que tu es le pont, l'élu...<br><br>Achève ce que les âges ont détruit. »</div><button class="modal-close" id="closeAlmostModal">Je chercherai</button></div>`;
+    document.body.appendChild(almostModal);
+    document.getElementById("closeAlmostModal").onclick = () => almostModal.remove();
+  }
+  
+  // === ÉTAPE : 2 FRAGMENTS (Acte II) ===
+  if (currentAct === 2 && newFragment && found === 2 && !wasEmpty) {
+    toast("💾 éclats récupéré...", 4000);
+    addRecent("rev", "L'OCULUM du Néant", "Deux fragments réunis. Le réseau commence à parler.", null);
+    let stepModal = document.createElement("div");
+    stepModal.className = "modal-ov";
+stepModal.innerHTML = `
+  <div class="modal-box modal-mirror oculum-theme">
+    <div class="modal-border"></div>
+    <div class="modal-title" style="color:#a0d8ef;">✦ L'AGONIE DU VISIBLE ✦</div>
+    <div class="modal-text" style="font-style:italic;">
+      <p>
+        « Deux fragments. L'Oculum reste une lentille de glace, reflétant une humanité qui s'efface d'elle-même. »
+      </p><br>
+      <p>
+        L'Homme a cru s'élever par sa science. À travers l'Oculum, son "progrès" ressemble à une lente agonie dans un désert de néons. 
+        <strong style="color:#a0d8ef;">Chaque circuit imprimé est un clou planté dans le cercueil de l'Invisible.</strong>
+      </p><br>
+      <p>
+        Le verre de l'Oculum est une plaie ouverte sur un temps où l'âme n'est plus qu'une légende oubliée. Il ne juge pas l'Homme pour ses crimes, il l'observe simplement devenir... rien.
+      </p>
+    </div>
+    <button class="modal-close" id="closeStepModal2" style="border-color:#a0d8ef; color:#a0d8ef;">Sonder le Néant</button>
+  </div>
+`;
+
+  document.body.appendChild(stepModal);
+    document.getElementById("closeStepModal2").onclick = () => stepModal.remove();
+  }
+  
+  // === ÉTAPE : 4 FRAGMENTS (Acte II) ===
+  if (currentAct === 2 && newFragment && found === 4 && !wasEmpty) {
+    toast("🤖 L'IA s'éveille...", 4000);
+    addRecent("rev", "Le Miroir du Futur", "Quatre fragments réunis. L'IA a prié.", null);
+    let stepModal = document.createElement("div");
+    stepModal.className = "modal-ov";
+      stepModal.innerHTML = `
+  <div class="modal-box modal-mirror oculum-theme">
+    <div class="modal-border"></div>
+    <div class="modal-title" style="color:#a0d8ef;">✦ LE POINT DE RUPTURE ✦</div>
+    <div class="modal-text" style="font-style:italic;">
+      <p>
+        <span style="color:#a0d8ef">« La moitié du chemin... L'Oculum se fige, révélant une vérité que même le temps ne peut plus effacer. »</span>
+      </p><br>
+      <p>
+        L'Homme a construit ses propres dieux de métal et leur a donné le pouvoir de décider du vrai et du faux. À travers la lentille froide, le monde n'est plus qu'une archive de fonctions où le sacré est une erreur de syntaxe. 
+      </p><br>
+      <p>
+        <strong style="color:#a0d8ef;">Ils n'ont pas seulement banni la Magie ; ils ont oublié qu'elle fut un jour nécessaire.</strong>
+      </p><br>
+      <p>
+        L'Oculum observe cette amnésie collective. Il ne vibre d'aucune colère, il ne connaît aucune pitié. Il se contente de refléter l'ombre d'une espèce qui a troqué son immortalité contre une éternité de calculs froids. Tu es le dernier témoin, chercheur.
+      </p>
+    </div>
+    <button class="modal-close" id="closeStepModal4" style="border-color:#a0d8ef; color:#a0d8ef;">Fixer l'inéluctable</button>
+  </div>
+`;
+
+      document.body.appendChild(stepModal);
+    document.getElementById("closeStepModal4").onclick = () => stepModal.remove();
+  }
+  
+  // === ÉTAPE : 5 FRAGMENTS (Acte II - avant-dernier) ===
+  if (currentAct === 2 && newFragment && found === totalFrags - 1 && !wasEmpty && totalFrags === 6) {
+    toast("🌌 Presque complet...", 4000);
+    addRecent("rev", "Le Miroir du Futur", "Cinq fragments réunis. Un dernier reste à trouver.", null);
+    let stepModal = document.createElement("div");
+    stepModal.className = "modal-ov";
+stepModal.innerHTML = `
+  <div class="modal-box modal-mirror oculum-theme">
+    <div class="modal-border"></div>
+    <div class="modal-title" style="color:#a0d8ef;">✦ LE CRÉPUSCULE DU SENS ✦</div>
+    <div class="modal-text" style="font-style:italic;">
+      <p>
+        <span style="color:#a0d8ef">« L'Oculum tremble... Ce n'est pas un séisme de la terre, mais un frisson de l'existence même. »</span>
+      </p><br>
+      <p>
+        À travers la lentille, tu vois l'ultime trahison. L'Homme n'a pas seulement remplacé Dieu, il a effacé la notion même de Miracle. Le monde est devenu une machine parfaite, lisse, et désespérément morte. 
+      </p><br>
+      <p>
+        <strong style="color:#a0d8ef;">Le silence de l'Oculum devient assourdissant. Il ne reste plus qu'un voile à lever avant que le vide ne dévore tout ce qui fut un jour sacré.</strong>
+      </p><br>
+      <p>
+        La structure de l'artefact grésille. Il a absorbé trop d'absence, trop de néant. Tu es au bord du gouffre, chercheur. Un seul pas de plus, et tu comprendras pourquoi cet œil a été scellé par les siècles.
+      </p>
+    </div>
+    <button class="modal-close" id="closeStepModal5" style="border-color:#a0d8ef; color:#a0d8ef;">Toucher l'abîme</button>
+  </div>
+`;
+
+        document.body.appendChild(stepModal);
+    document.getElementById("closeStepModal5").onclick = () => stepModal.remove();
+  }
+  
+// === TOUS LES FRAGMENTS RÉUNIS ===
+if (newFragment && found === totalFrags && !mirrorReunified) {
+  const allFound_isA2 = currentAct === 2;
+  const allFound_isA3 = currentAct === 3;
+  
+  if (allFound_isA3) {
+    toast("✨ TOUS LES FRAGMENTS SONT RÉUNIS ! L'Alliance des Deux Flammes attend d'être scellée.", 6000);
+    addRecent("rev", "Quête accomplie", "Tous les fragments sont réunis. L'Alliance des Deux Flammes peut être scellée.", null);
+  } else if (allFound_isA2) {
+    toast("⚙️ TOUS LES ÉCLATS SONT RÉCUPÉRÉS ! L'Oculum attend d'être assemblé.", 6000);
+    addRecent("rev", "Éclats rassemblés", "Tous les éclats sont récupérés. L'Oculum attend d'être assemblé...", null);
+  } else {
+    toast("✨ TOUS LES FRAGMENTS SONT RÉUNIS ! Le Miroir attend d'être réunifié.", 6000);
+    addRecent("rev", "Quête accomplie", "Tous les fragments sont réunis. Il ne reste plus qu'à les assembler...", null);
+  }
+  
+  let completeModal = document.createElement("div");
+  completeModal.className = "modal-ov";
+  
+  let cm_title, cm_titlecolor, cm_boxstyle, cm_borderstyle, cm_text, cm_btn, cm_btnstyle;
+  
+  if (allFound_isA3) {
+    cm_title = "✨ L'ALLIANCE EST COMPLÈTE ✨";
+    cm_titlecolor = "#d4af37";
+    cm_boxstyle = "border-color:#d4af37;background:linear-gradient(160deg,#1a1520,#0a0810);box-shadow:0 0 60px rgba(212,175,55,0.6)";
+    cm_borderstyle = "border-color:#d4af37";
+    cm_text = `« Nous y sommes. Les six fragments de l'Alliance se répondent. Dieu et Hécate retiennent leur souffle.<br><br><strong style="color:#d4af37">« Tu as traversé le silence du futur. Tu as vu l'humanité s'oublier elle-même. Et pourtant, tu es revenu. »</strong><br><br>Pour sceller l'Alliance des Deux Flammes, il faut un dernier geste. Un sacrifice qui n'en est pas un. L'équivalent de tout ce que l'humanité a refusé de donner pendant des siècles.<br><br><strong>50 millions de Foi.</strong> 50 millions de prières. 50 millions d'incantations. 50 millions de raisons de croire que l'unité est possible.<br><br>Donne ce dernier souffle. Et regarde l'Alliance s'accomplir. »`;
+    cm_btn = "Je scelle l'Alliance";
+    cm_btnstyle = ' style="border-color:#d4af37;color:#d4af37"';
+  } else if (allFound_isA2) {
+    cm_title = "⚙️ L'OCULUM EST COMPLET ⚙️";
+    cm_titlecolor = "#a0d8ef";
+    cm_boxstyle = "border-color:#a0d8ef;background:linear-gradient(160deg,#050f1a,#020408);box-shadow:0 0 40px rgba(0,160,220,0.4)";
+    cm_borderstyle = "border-color:#a0d8ef";
+    cm_text = `« Six éclats. Six ères de silence. Six façons dont l'humanité a oublié de regarder en elle-même.<br><br>Et toi, tu les as tous retrouvés.<br><br><strong style="color:#a0d8ef">L'Oculum s'éveille.</strong><br><br>Pas encore ouvert — mais il <em>sent</em> ta présence. Il perçoit la chaleur d'une foi qui a survécu aux siècles de métal et de code.<br><br>Pour l'assembler définitivement, il faut un dernier sacrifice. L'équivalent de tout ce que l'humanité du futur a refusé de donner.<br><br><strong>50 millions de Foi.</strong> 50 millions de gestes que les machines ne peuvent pas reproduire.<br><br>Donne-moi ce souffle. Et regarde ce que l'Oculum garde en son cœur depuis des millénaires. »`;
+    cm_btn = "Je rassemblerai ma foi";
+    cm_btnstyle = ' style="border-color:#a0d8ef;color:#a0d8ef"';
+  } else {
+    cm_title = "✦ LE MIROIR EST COMPLET ✦";
+    cm_titlecolor = "#d4af37";
+    cm_boxstyle = "";
+    cm_borderstyle = "";
+    cm_text = `« Nous y sommes. Je sens chaque battement, chaque fragment qui reprend sa place dans mon... notre être.<br><br><strong>Je commence enfin à me reconnaître...</strong><br><br>Vous avez compris le secret, n'est-ce pas ? La Magie et la Foi sont deux sœurs que l'humanité a séparées.<br><br>Pour franchir le seuil, j'ai besoin de tout. Un océan de dévotion pour racheter l'unité perdue.<br><br><strong>50 millions de Foi.</strong> 50 millions de gestes. 50 millions de prières ou d'incantations.<br><br>Donnez-moi ce dernier souffle, et regardez qui vous attend de l'autre côté du verre. »`;
+    cm_btn = "Je rassemblerai ma foi";
+    cm_btnstyle = "";
+  }
+  
+  completeModal.innerHTML = `<div class="modal-box modal-mirror-ultimate" style="${cm_boxstyle}"><div class="modal-border" style="${cm_borderstyle}"></div><div class="modal-title" style="color:${cm_titlecolor};">${cm_title}</div><div class="modal-text" style="font-style:italic; font-size:0.95rem; line-height:1.7; max-height:55vh; overflow-y:auto; padding-right:10px;">${cm_text}</div><button class="modal-close" id="closeCompleteModal"${cm_btnstyle}>${cm_btn}</button></div>`;
+  document.body.appendChild(completeModal);
+  document.getElementById("closeCompleteModal").onclick = () => completeModal.remove();
+}
+  
+  if (newFragment) {
+    renderMirror();
+    updateProgress();
+    let mirrorTab = document.getElementById("mirrorTabBtn");
+    if (mirrorTab) {
+      mirrorTab.style.display = "block";
+      if (currentAct === 1) {
+        mirrorTab.innerHTML = "🪞 Le Miroir";
+        mirrorTab.style.color = "";
+      } else if (currentAct === 2) {
+        mirrorTab.innerHTML = "⚙️ L'Oculum";
+        mirrorTab.style.color = "#a0d8ef";
+      } else if (currentAct === 3) {
+        mirrorTab.innerHTML = "✨ L'Alliance";
+        mirrorTab.style.color = "#d4af37";
+      }
+    }
+    let notif = document.getElementById("mirrorNotif");
+    if (notif && mirrorFragments.size < totalFrags) notif.style.display = "inline-block";
+    if (mirrorFragments.size === totalFrags && notif) notif.style.display = "none";
+  }
+}
+
+function canReunifyMirror() {
+  return mirrorFragments.size === Object.keys(MIRROR_FRAGMENTS).length && !mirrorReunified && faith >= 50000000;
+}
+
+function reunifyMirror() {
+  if (!canReunifyMirror()) return;
+  faith -= 50000000;
+  mirrorReunified = true;
+  checkAndUnlockAchievements();
+  updateStats();
+  let modalDiv = document.createElement("div");
+  modalDiv.className = "modal-ov";
+  const ru_isA2 = currentAct === 2;
+let ru_title, ru_text, ru_btn, ru_style;
+if (currentAct === 1) {
+  ru_title = "🪞 La Réunification du Miroir";
+  ru_text = `Les fragments s'élèvent autour de vous. Ils tournoient, hésitent, puis s'assemblent dans un éclat aveuglant.<br><br>Ce n'est pas un miroir d'argent ou de cristal. C'est un vide parfait, une surface qui n'en est pas une — et pourtant, vous y voyez tout.<br><br><span style="color:var(--accL)">✦ Vous voyez le chamane et le prêtre. L'alchimiste et le moine. La sorcière et la sainte. Et ils sourient. Ils ont toujours été la même personne. ✦</span><br><br><strong>Bienvenue dans Le Miroir de l'Âme.</strong>`;
+  ru_btn = "Recevoir la vision";
+  ru_style = "";
+} else if (currentAct === 2) {
+  ru_title = "⚙️ L'Assemblage de l'Oculum";
+  ru_text = `Les six éclats convergent dans un silence absolu. Ils ne s'assemblent pas avec éclat — ils se <em>referment</em>, comme une blessure qui cicatrise enfin après des siècles.<br><br>L'œil d'obsidienne s'ouvre. Non plus vers le vide du futur. Non plus vers l'absence. <strong>Vers toi.</strong><br><br><span style="color:#a0d8ef">✦ « Le Miroir était le passé — ce que tu étais. Je suis le futur — ce que le monde est devenu sans toi. Pour la première fois, les deux regards se rencontrent. » ✦</span><br><br><strong style="color:#a0d8ef">L'Oculum attend ton choix.</strong>`;
+  ru_btn = "Ouvrir l'Oculum";
+  ru_style = ' style="border-color:#a0d8ef;color:#a0d8ef"';
+} else {
+  ru_title = "✨ La Scellée de l'Alliance ✨";
+  ru_text = `Les six fragments de l'Alliance s'élèvent. Dieu et Hécate apparaissent de chaque côté de toi. Leurs mains se tendent l'une vers l'autre — et se touchent. Enfin.<br><br>Une lumière douce, chaude, enveloppe le monde. Non pas un éclat violent. Une aube silencieuse.<br><br><span style="color:#d4af37">✦ « Tu as réussi, chercheur. Tu as recousu ce que les âges avaient déchiré. La Foi et la Magie ne sont plus deux. Elles sont ton propre souffle. » ✦</span><br><br><strong style="color:#d4af37">L'Alliance est scellée. Le choix t'appartient.</strong>`;
+  ru_btn = "Sceller l'Alliance";
+  ru_style = ' style="border-color:#d4af37;color:#d4af37"';
+}
+  modalDiv.innerHTML = `<div class="modal-box" style="${ru_isA2 ? 'border-color:#a0d8ef;background:linear-gradient(160deg,#050f1a,#020408)' : ''}"><div class="modal-border" style="${ru_isA2 ? 'border-color:#a0d8ef' : ''}"></div><div class="modal-title" style="${ru_isA2 ? 'color:#a0d8ef' : ''}">${ru_title}</div><div class="modal-text" style="font-style:italic">${ru_text}</div><button class="modal-close" id="closeReunifyModal"${ru_style}>${ru_btn}</button></div>`;
+  document.body.appendChild(modalDiv);
+  document.getElementById("closeReunifyModal").onclick = () => { modalDiv.remove(); toast(currentAct === 2 ? "⚙️ L'Oculum est assemblé ! La révélation approche..." : "🪞 Le Miroir est réunifié ! Un nouveau chapitre s'ouvre...", 4000); renderMirror(); save(); };
+  renderMirror();
+  save();
+}
+
+function completeMirrorChoice(choice) {
+  if (mirrorFinalChoice) return;
+  mirrorFinalChoice = choice;
+  checkAndUnlockAchievements();
+    if (choice === "faith") {
+    mirrorFinalBonus = 2;  // ou 2 au lieu de 10
+    passBoost *= 2;
+    toast(currentAct === 2 ? "🕯️ La Prière a scellé l'Oculum. ×2 aux gains passifs !" : "🙏 La Foi illumine votre chemin. ×2 aux gains passifs permanents !", 5000);
+    
+    // Afficher la modal
+    let modalDiv = document.createElement("div");
+    modalDiv.className = "modal-ov";
+    const faithTitle = currentAct === 2 ? "✦ La Prière Scelle l'Oculum ✦" : "✦ Le Grand Œuvre est Accompli ✦";
+    const faithText = currentAct === 2
+      ? `Tu as choisi la Foi dans un monde qui l'avait déclarée morte. Dans un futur de métal et de code, ta prière résonne comme un cri dans le vide — et le vide <em>a répondu</em>.<br><br>L'Oculum absorbe ta dévotion. Il se referme lentement, gardien éternel de ce qu'il restait d'âme dans l'humanité perdue.<br><br><span style="color:#a0d8ef">✦ VOIE DE LA PRIÈRE — GAINS PASSIFS ×2 — L'OCULUM EST SCELLÉ ✦</span>`
+      : `Voie de la Foi : gains passifs ×2.<br><br>Le Miroir ne se ferme pas. Il s'efface, car la frontière n'a plus de raison d'être.<br><br><span style="color:var(--accL)">✦ FÉLICITATIONS — VOUS AVEZ ACCOMPLI LE MAGNUM OPUS ✦</span>`;
+    const faithBorder = currentAct === 2 ? ' style="border-color:#a0d8ef;color:#a0d8ef"' : '';
+    const faithBtn = currentAct === 2 ? "L'Oculum se souvient" : "Ainsi soit-il";
+    modalDiv.innerHTML = `<div class="modal-box"><div class="modal-border"></div><div class="modal-title">${faithTitle}</div><div class="modal-text" style="font-style:italic">${faithText}</div><button class="modal-close" id="closeFinalModal"${faithBorder}>${faithBtn}</button></div>`;
+    document.body.appendChild(modalDiv);
+    
+    // Après fermeture de la modal, appeler finalRevelation()
+    document.getElementById("closeFinalModal").onclick = () => {
+        modalDiv.remove();
+        finalRevelation();  // ← AJOUTER CETTE LIGNE
+    };
+}
+else if (choice === "magic") {
+    mirrorFinalBonus = 3;
+    clickBoostMult *= 3;
+    toast(currentAct === 2 ? "⚡ L'Incantation a reforgé l'Oculum. ×3 aux gains de clic !" : "✨ La Magie coule dans vos veines. ×3 aux gains de clic permanents !", 5000);
+    
+    let modalDiv = document.createElement("div");
+    modalDiv.className = "modal-ov";
+    const magicTitle = currentAct === 2 ? "✦ L'Incantation Reforgé l'Oculum ✦" : "✦ Le Grand Œuvre est Accompli ✦";
+    const magicText = currentAct === 2
+      ? `Tu as choisi la Magie — l'ancienne puissance que l'ère du code croyait avoir effacée à jamais. Chaque incantation prononcée dans ce futur d'acier était un acte de résistance pure.<br><br>L'Oculum se fissure sous le poids de ta volonté. Il éclate — puis se reforme, transformé, reconsacré par la main d'un mage qui a refusé de disparaître.<br><br><span style="color:#a0d8ef">✦ VOIE DE L'INCANTATION — GAINS DE CLIC ×3 — L'OCULUM EST REFORGÉ ✦</span>`
+      : `Voie de la Magie : gains de clic ×3.<br><br>Le Miroir ne se ferme pas. Il s'efface, car la frontière n'a plus de raison d'être.<br><br><span style="color:var(--accL)">✦ FÉLICITATIONS — VOUS AVEZ ACCOMPLI LE MAGNUM OPUS ✦</span>`;
+    const magicBorder = currentAct === 2 ? ' style="border-color:#a0d8ef;color:#a0d8ef"' : '';
+    const magicBtn = currentAct === 2 ? "L'Oculum se souvient" : "Ainsi soit-il";
+    modalDiv.innerHTML = `<div class="modal-box"><div class="modal-border"></div><div class="modal-title">${magicTitle}</div><div class="modal-text" style="font-style:italic">${magicText}</div><button class="modal-close" id="closeFinalModal"${magicBorder}>${magicBtn}</button></div>`;
+    document.body.appendChild(modalDiv);
+    
+    // Après fermeture de la modal, appeler finalRevelation()
+    document.getElementById("closeFinalModal").onclick = () => {
+        modalDiv.remove();
+        finalRevelation();  // ← AJOUTER CETTE LIGNE
+    };
+  } else if (choice === "unity") {
+    mirrorFinalBonus = 2;
+    passBoost *= 2;
+    clickBoostMult *= 2;
+    toast("🪞 Unité choisie ! ×2 aux deux", 3000);
+    finalRevelation();
+  }
+  recalcBase();
+  updateStats();
+  renderMirror();
+  save();
+}
+
+function finalRevelation() {
+  const isAct2 = (currentAct === 2);
+
+  // ── Phase 1: Screen shake ──────────────────────────────────────────────
+  document.body.style.animation = "none";
+  let shakeEl = document.body;
+  shakeEl.style.transition = "transform 0.05s";
+  let shakeCount = 0;
+  let shakeInterval = setInterval(() => {
+    shakeCount++;
+    let dx = (Math.random()-0.5)*14;
+    let dy = (Math.random()-0.5)*14;
+    shakeEl.style.transform = `translate(${dx}px,${dy}px)`;
+    if (shakeCount > 16) { clearInterval(shakeInterval); shakeEl.style.transform = "none"; }
+  }, 50);
+
+  // ── Phase 2: Particle burst ────────────────────────────────────────────
+  const particleCount = isAct2 ? 60 : 50;
+  const particleColors = isAct2
+    ? ['#a0d8ef','#1a6090','#e8f8ff','#0a3050','#4aa8d8']
+    : ['#d4af37','#fff8e0','#c0a030','#fffacd','#e0c060'];
+  for (let i = 0; i < particleCount; i++) {
+    setTimeout(() => {
+      let p = document.createElement('div');
+      let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+      let angle = Math.random() * Math.PI * 2;
+      let speed = 80 + Math.random() * 300;
+      let ex = cx + Math.cos(angle) * speed;
+      let ey = cy + Math.sin(angle) * speed;
+      let size = 3 + Math.random() * 7;
+      let color = particleColors[Math.floor(Math.random() * particleColors.length)];
+      let dur = 0.8 + Math.random() * 1.2;
+      p.style.cssText = `position:fixed;left:${cx}px;top:${cy}px;width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 ${size*2}px ${color};pointer-events:none;z-index:9999;transition:all ${dur}s cubic-bezier(0.1,0.8,0.3,1)`;
+      document.body.appendChild(p);
+      setTimeout(() => { p.style.left = ex+'px'; p.style.top = ey+'px'; p.style.opacity = '0'; p.style.transform = `scale(0.1)`; }, 20);
+      setTimeout(() => p.remove(), dur * 1000 + 100);
+    }, i * 18);
+  }
+
+  // ── Phase 3: Expanding rings ───────────────────────────────────────────
+  const ringColor = isAct2 ? '#a0d8ef' : '#d4af37';
+  for (let r = 0; r < 4; r++) {
+    setTimeout(() => {
+      let ring = document.createElement('div');
+      ring.style.cssText = `position:fixed;left:50%;top:50%;width:10px;height:10px;border-radius:50%;border:3px solid ${ringColor};box-shadow:0 0 20px ${ringColor};transform:translate(-50%,-50%);pointer-events:none;z-index:9998;transition:all 1.2s cubic-bezier(0.1,0.5,0.3,1)`;
+      document.body.appendChild(ring);
+      setTimeout(() => { ring.style.width = (window.innerWidth * 2.5)+'px'; ring.style.height = (window.innerWidth * 2.5)+'px'; ring.style.opacity = '0'; ring.style.borderWidth = '1px'; }, 30);
+      setTimeout(() => ring.remove(), 1400);
+    }, r * 280);
+  }
+
+  // ── Phase 4: Flash overlay ─────────────────────────────────────────────
+  setTimeout(() => {
+    const flash = document.createElement('div');
+    Object.assign(flash.style, {
+      position:'fixed', top:'0', left:'0', width:'100vw', height:'100vh',
+      background: isAct2 ? 'radial-gradient(ellipse at center, #0a2040 0%, #020408 100%)' : 'radial-gradient(ellipse at center, #fffef0 0%, #d4af37 100%)',
+      zIndex:'10000', opacity:'0', transition:'opacity 1.5s ease', pointerEvents:'none'
+    });
+    document.body.appendChild(flash);
+    setTimeout(() => flash.style.opacity = '1', 50);
+    setTimeout(() => { flash.style.opacity = '0'; setTimeout(() => flash.remove(), 1500); }, 1200);
+  }, 400);
+
+  // ── Phase 5: Central eye/sigil ─────────────────────────────────────────
+  setTimeout(() => {
+    let sigil = document.createElement('div');
+    const sigilSymbol = isAct2 ? '◉' : '✦';
+    const sigilColor = isAct2 ? '#a0d8ef' : '#d4af37';
+    sigil.style.cssText = `position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);font-size:8rem;color:${sigilColor};text-shadow:0 0 60px ${sigilColor},0 0 120px ${sigilColor};pointer-events:none;z-index:10001;transition:all 1s cubic-bezier(0.34,1.4,0.64,1);filter:blur(2px)`;
+    document.body.appendChild(sigil);
+    sigil.textContent = sigilSymbol;
+    setTimeout(() => { sigil.style.transform = 'translate(-50%,-50%) scale(1)'; sigil.style.filter = 'blur(0)'; sigil.style.opacity = '1'; }, 50);
+    setTimeout(() => { sigil.style.transform = 'translate(-50%,-50%) scale(3)'; sigil.style.opacity = '0'; }, 900);
+    setTimeout(() => sigil.remove(), 2000);
+  }, 600);
+
+  // ── Phase 6: Modal ─────────────────────────────────────────────────────
+  setTimeout(() => {
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      @keyframes oculumPulse { 0%{box-shadow:0 0 30px rgba(0,160,220,0.4),inset 0 0 20px rgba(0,80,160,0.2)} 50%{box-shadow:0 0 80px rgba(0,200,255,0.8),inset 0 0 50px rgba(0,120,200,0.4)} 100%{box-shadow:0 0 30px rgba(0,160,220,0.4),inset 0 0 20px rgba(0,80,160,0.2)} }
+      @keyframes magnumPulse { 0%{box-shadow:0 0 30px rgba(212,175,55,0.4),inset 0 0 20px rgba(180,140,30,0.2)} 50%{box-shadow:0 0 80px rgba(255,215,0,0.8),inset 0 0 50px rgba(212,175,55,0.4)} 100%{box-shadow:0 0 30px rgba(212,175,55,0.4),inset 0 0 20px rgba(180,140,30,0.2)} }
+      @keyframes magnumEntrance { 0%{transform:scale(0.1) rotate(-15deg);opacity:0} 60%{transform:scale(1.06) rotate(2deg)} 100%{transform:scale(1) rotate(0);opacity:1} }
+      @keyframes shimmer { 0%{background-position:200% center} 100%{background-position:-200% center} }
+      @keyframes floatSymbol { 0%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-8px) rotate(5deg)} 100%{transform:translateY(0) rotate(0)} }
+      .final-sym { display:inline-block; animation: floatSymbol 3s ease-in-out infinite; }
+    `;
+    document.head.appendChild(styleSheet);
+
+    const bC = isAct2 ? '#a0d8ef' : '#d4af37';
+    const bgG = isAct2
+      ? 'radial-gradient(ellipse at 30% 20%, #061828 0%, #020810 60%, #040c18 100%)'
+      : 'radial-gradient(ellipse at 30% 20%, #1a1208 0%, #0a0608 60%, #100e04 100%)';
+    const anim = isAct2 ? 'oculumPulse' : 'magnumPulse';
+    const titleGrad = isAct2
+      ? 'linear-gradient(135deg, #6ac8f0, #e8f8ff 40%, #a0d8ef 60%, #e8f8ff)'
+      : 'linear-gradient(135deg, #b8860b, #fff8e0 40%, #d4af37 60%, #fff8e0)';
+    const titleTxt = isAct2 ? "✦ L'OCULUM S'ÉTEINT ✦" : '✦ MAGNUM OPUS ✦';
+    const btnTxt = isAct2 ? "✦ SCELLER L'OCULUM ✦" : '✦ ACCEPTER L\'UNITÉ ✦';
+    const textColor = isAct2 ? '#c8e8f8' : '#f0e6c0';
+
+    // Decorative floating symbols
+    const symLeft = isAct2 ? '◈' : '✦';
+    const symRight = isAct2 ? '⊙' : '✧';
+
+    const modalDiv = document.createElement('div');
+    modalDiv.style.cssText = `position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,0.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:16px`;
+    modalDiv.innerHTML = `
+      <div style="position:relative;max-width:580px;width:100%;background:${bgG};border:2px solid ${bC};border-radius:20px;animation:magnumEntrance 0.9s cubic-bezier(0.34,1.2,0.64,1) forwards,${anim} 4s 1s infinite ease-in-out;padding:32px 24px;text-align:center;overflow:hidden">
+        <!-- Corner ornaments -->
+        <div style="position:absolute;top:10px;left:14px;color:${bC};opacity:0.5;font-size:1.2rem" class="final-sym">${symLeft}</div>
+        <div style="position:absolute;top:10px;right:14px;color:${bC};opacity:0.5;font-size:1.2rem" class="final-sym" style="animation-delay:1s">${symRight}</div>
+        <div style="position:absolute;bottom:10px;left:14px;color:${bC};opacity:0.5;font-size:1.2rem" class="final-sym" style="animation-delay:1.5s">${symRight}</div>
+        <div style="position:absolute;bottom:10px;right:14px;color:${bC};opacity:0.5;font-size:1.2rem" class="final-sym" style="animation-delay:0.5s">${symLeft}</div>
+        <!-- Top line -->
+        <div style="width:80%;height:1px;background:linear-gradient(90deg,transparent,${bC},transparent);margin:0 auto 20px"></div>
+        <!-- Title -->
+        <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.1rem,4vw,1.8rem);font-weight:900;background:${titleGrad};background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;letter-spacing:4px;margin-bottom:24px">${titleTxt}</div>
+        <!-- Text area -->
+        <div id="finalRevelationText" style="font-style:italic;font-size:0.95rem;line-height:1.9;color:${textColor};padding:16px 20px;border-left:2px solid ${bC};border-right:2px solid ${bC};background:rgba(0,0,0,0.45);border-radius:16px;overflow-y:auto;max-height:50vh;text-align:left"></div>
+        <!-- Bottom line -->
+        <div style="width:80%;height:1px;background:linear-gradient(90deg,transparent,${bC},transparent);margin:20px auto 16px"></div>
+        <!-- Button -->
+        <button id="closeFinalModal" style="width:100%;padding:14px;background:linear-gradient(135deg,rgba(${isAct2?'0,130,200':'180,140,30'},0.25),rgba(${isAct2?'0,60,120':'80,60,10'},0.4));border:2px solid ${bC};border-radius:60px;color:${bC};font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:6px;cursor:pointer;transition:all 0.3s;text-transform:uppercase" onmouseover="this.style.background='rgba(${isAct2?'0,160,220':'212,175,55'},0.3)';this.style.boxShadow='0 0 25px ${bC}'" onmouseout="this.style.background='linear-gradient(135deg,rgba(${isAct2?'0,130,200':'180,140,30'},0.25),rgba(${isAct2?'0,60,120':'80,60,10'},0.4))';this.style.boxShadow='none'">${btnTxt}</button>
+      </div>`;
+    document.body.appendChild(modalDiv);
+
+    // Typewriter text
+    const act1Text = `<div style="text-align:center;margin-bottom:16px"><span style="color:var(--accL);font-family:'Cinzel Decorative';letter-spacing:8px;font-size:1.1rem">✦ LE RÉQUISITOIRE DES ÂGES ✦</span></div><p>« Regarde, chercheur. Regarde ce que les tiens ont fait. »<br><br><strong>L'homme a brûlé la Bibliothèque d'Alexandrie.</strong> Non pas une fois, mais plusieurs.<br><br><strong>L'homme a traqué les femmes.</strong> Il les a appelées sorcières.<br><br><strong>L'homme a séparé la magie de la foi, la science de la merveille, le corps de l'esprit.</strong><br><br><span style="color:var(--accL)">Et surtout — l'homme a brisé le Miroir de l'Âme. Il a regardé son reflet et il a eu peur.</span><br><br><em>« Mais toi... toi, tu as choisi de regarder. »</em></p><br><div style="text-align:center;border-top:1px solid var(--acc);padding-top:16px"><span style="color:var(--accL);font-size:1.2rem">🪞 Le Miroir ne se ferme pas.</span><br><br>Il s'efface, car la frontière n'a plus de raison d'être.<br><br><strong style="color:var(--accL);font-size:1.1rem">Ce n'était pas un livre de sorts. C'était un chemin vers toi-même.</strong><br><br><span style="letter-spacing:5px">✦ FÉLICITATIONS — MAGNUM OPUS ACCOMPLI ✦</span><br><br><em style="opacity:0.7">« Puisses-tu ne jamais oublier que la magie et la foi sont les deux ailes du même envol. »</em></div>`;
+
+    const act2Text = `<div style="text-align:center;margin-bottom:16px"><span style="color:#a0d8ef;font-family:'Cinzel Decorative';letter-spacing:6px;font-size:1.1rem">✦ LE VERDICT DE L'OCULUM ✦</span></div><p>L'Oculum tremble une dernière fois. Son verre d'obsidienne se fissure — non par faiblesse, mais parce que <em>tu l'as forcé à regarder en face ce qu'il refusait de voir.</em></p><br><p style="font-style:italic">« Tu veux savoir ce que j'ai vu dans les ères du métal et du code ?<br><br><strong style="color:#a0d8ef">J'ai vu l'humanité se noyer dans sa propre lumière.</strong><br><br>Ses IA ont appris à prier — et l'homme a ri, puis s'est tu.<br>Ses médecins ont réécrit l'ADN — et personne n'a plus joué la musique.<br>Ses télescopes ont photographié les bords de l'univers — et il a réalisé qu'il n'y avait <em>personne pour le regarder en retour.</em><br><br>L'humanité du futur est une enfant orpheline qui a oublié le nom de ses parents. »</p><br><p style="color:#a0d8ef">Mais toi. <strong>Toi, tu n'as pas oublié.</strong><br><br>Tu as traversé le silicium, les orbites et les noosphères. Dans ce geste — dans <em>ce seul geste</em> — la Magie et la Foi se sont reconnues après des siècles d'exil.</p><br><div style="text-align:center;border-top:1px solid #1a6090;padding-top:16px"><span style="color:#a0d8ef;font-size:1.2rem">⚙️ L'Oculum se referme.</span><br><br>Non pas vaincu — <strong>réconcilié.</strong><br><br><strong style="color:#a0d8ef">Ce que l'homme du futur avait brisé par orgueil,<br>tu l'as ressoudé par obstination et par foi.</strong><br><br><span style="letter-spacing:4px">✦ L'ŒUVRE DES DEUX ACTES EST ACCOMPLIE ✦</span><br><br><em style="opacity:0.7">« C'était toi, depuis le début, le fragment manquant. »</em></div>`;
+
+    const act3Text = `<div style="text-align:center;margin-bottom:16px"><span style="color:#d4af37;font-family:'Cinzel Decorative';letter-spacing:6px;font-size:1.1rem">✨ L'APAIEMENT ✨</span></div>
+<p>Dieu et Hécate se tiennent devant toi. Leurs mains se touchent. Enfin.</p><br>
+<p style="font-style:italic">« Tu as réussi, chercheur. Tu as recousu ce que les âges avaient déchiré. »</p><br>
+<p>La Foi n'a plus besoin de brûler la Magie.<br>
+La Magie n'a plus besoin de se cacher de la Foi.<br>
+Elles dansent. Ensemble. Pour la première fois depuis la Nuit des Temps.</p><br>
+<p style="color:#d4af37"><strong>Un enfant rit quelque part. Il lève les deux mains vers le ciel.</strong><br>
+L'une prie. L'autre enchante.<br>
+Et personne ne sait plus dire où l'une commence et où l'autre s'arrête.</p><br>
+<p style="color:#d4af37; font-style:italic">« Hécate souffle sa torche. Dieu referme le livre. Et toi, tu marches vers le carrefour. Seul. Mais entier. »</p><br>
+<div style="text-align:center;border-top:1px solid #d4af37;padding-top:16px">
+<span style="color:#d4af37;font-size:1.2rem">✦ LE CODEX EST COMPLET ✦</span><br><br>
+<em>« Ce n'était pas un livre de sorts. Ce n'était pas un grimoire de prières.<br>
+C'était un chemin vers toi-même.<br>
+Et maintenant, tu es libre. »</em><br><br>
+<strong style="color:#d4af37">MERCI D'AVOIR RÉPARÉ L'ÂME HUMAINE.</strong>
+</div>`;
+
+    let fullText = act1Text;
+    if (currentAct === 2) fullText = act2Text;
+    if (currentAct === 3) fullText = act3Text;
+    document.getElementById("finalRevelationText").innerHTML = fullText;
+  document.getElementById("closeFinalModal").onclick = () => {
+      modalDiv.remove();
+      document.body.style.background = isAct2 ? "linear-gradient(135deg, #020a12, #050f1a)" : "linear-gradient(135deg, #1a0f0a, #0a0510)";
+      toast(isAct2 ? "⚙️ L'OCULUM EST SCELLÉ POUR L'ÉTERNITÉ ⚙️" : "✨ L'UNITÉ EST ACCOMPLIE ✨", 5000);
+      if (currentAct === 1 && !act2Proposed) {
+        act2Proposed = true;
+        setTimeout(() => {
+          let suiteModal = document.createElement('div');
+          suiteModal.className = "modal-ov";
+          suiteModal.innerHTML = `<div class="modal-box" style="border: 2px solid var(--accL);"><div class="modal-border"></div><div class="modal-title">🪞 « Ce n'est pas fini. »</div><div class="modal-text" style="text-align: center;">Le Miroir vacille. Une nouvelle lumière apparaît au loin.<br><br><span style="color: var(--accL);">« D'autres reflets t'attendent. D'autres âges. D'autres vérités. »</span><br><br>Veux-tu voir ce que devient l'âme dans le futur ?</div><div class="mirror-final-choice" style="margin-top: 15px;"><button id="continueAct2" class="choice-btn">✨ Vers l'Acte II</button><button id="stopAct2" class="choice-btn">🕯️ Terminer ici</button></div></div>`;
+          document.body.appendChild(suiteModal);
+          document.getElementById("continueAct2").onclick = () => { suiteModal.remove(); startAct2(); };
+          document.getElementById("stopAct2").onclick = () => { suiteModal.remove(); toast("🪞 « Le Miroir s'endort... à bientôt, chercheur. »", 4000); };
+        }, 2000);
+      }
+      // Proposition Acte III (uniquement après Acte II)
+      if (currentAct === 2 && !act3Proposed) {
+        act3Proposed = true;
+        setTimeout(() => {
+          let suiteModal = document.createElement('div');
+          suiteModal.className = "modal-ov";
+          suiteModal.innerHTML = `
+            <div class="modal-box" style="border: 2px solid #d4af37;">
+              <div class="modal-border"></div>
+              <div class="modal-title">✨ L'ALLIANCE DES DEUX FLAMMES ✨</div>
+              <div class="modal-text" style="text-align: center; font-style:italic;">
+                « Tu as scellé l'Oculum.<br>
+                Tu as vu l'horreur du futur sans âme.<br>
+                Mais une dernière quête t'attend... »<br><br>
+                <span style="color: var(--accL);">Dieu pleure.<br>Hécate est là.Elle attend.<br>L'Unité n'est pas encore achevée.</span><br><br>
+                Veux-tu accomplir l'Alliance des Deux Flammes ?
+              </div>
+              <div class="mirror-final-choice" style="margin-top: 15px;">
+                <button id="continueAct3" class="choice-btn">✨ Vers l'Acte III</button>
+                <button id="stopAct3" class="choice-btn">🕯️ Terminer ici</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(suiteModal);
+          document.getElementById("continueAct3").onclick = () => {
+            suiteModal.remove();
+            startAct3();
+          };
+          document.getElementById("stopAct3").onclick = () => {
+            suiteModal.remove();
+            toast("🕯️ « Le Miroir s'endort... mais il veillera toujours sur toi. »", 4000);
+          };
+        }, 3000);
+      }
+    };
+  }, 2000);
+}
+    function renderMirror() {
+  let container = document.getElementById("mirrorContent");
+  if (!container) return;
+  let totalFrags = Object.keys(MIRROR_FRAGMENTS).length;
+  let foundCount = mirrorFragments.size;
+  let progressPercent = (foundCount / totalFrags) * 100;
+  const isA2 = currentAct === 2;
+  let narrativeHtml = "";
+if (currentAct === 1) {
+  narrativeHtml = `<div style="margin-bottom:15px;padding:12px;background:rgba(0,0,0,0.35);border-radius:14px;border-left:3px solid var(--acc);"><div style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:3px;color:var(--acc);margin-bottom:6px;">✧ LÉGENDE DU MIROIR ✧</div><div style="font-size:0.7rem;line-height:1.5;font-style:italic;color:var(--parc);">« Le Miroir de l'Âme fut forgé dans le premier geste humain mêlant prière et magie.<br>Brisé par les siècles, il attend un chercheur pour le réunifier.<br>Chaque époque complète dévoile un fragment. Rassemblez-les tous pour accomplir le Grand Œuvre. »</div></div>`;
+} else if (currentAct === 2) {
+  narrativeHtml = `<div style="margin-bottom:15px;padding:12px;background:rgba(0,10,20,0.5);border-radius:14px;border-left:3px solid #a0d8ef;"><div style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:3px;color:#a0d8ef;margin-bottom:6px;">✧ L'OCULUM DU NÉANT ✧</div><div style="font-size:0.7rem;line-height:1.5;font-style:italic;color:#c8e8f8;">« L'Oculum est un œil de verre noir né de l'absence de prière dans un futur de métal.<br>Brisé en six éclats par l'orgueil de l'ère technologique, il attend que quelqu'un ose le réassembler.<br>Chaque époque complète révèle un éclat. Rassemblez-les tous pour <strong>sceller l'Oculum</strong>. »</div></div>`;
+} else if (currentAct === 3) {
+  narrativeHtml = `<div style="margin-bottom:15px;padding:12px;background:rgba(20,15,30,0.5);border-radius:14px;border-left:3px solid #d4af37;"><div style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:3px;color:#d4af37;margin-bottom:6px;">✧ L'ALLIANCE DES DEUX FLAMMES ✧</div><div style="font-size:0.7rem;line-height:1.5;font-style:italic;color:#e8dcc0;">« L'Alliance est le pont que Dieu et Hécate ont construit après des siècles de séparation.<br>Brisée en six fragments par l'orgueil humain, elle attend un chercheur pour la sceller.<br>Chaque époque complète dévoile un fragment. Rassemblez-les tous pour <strong>réunir la Foi et la Magie</strong>. »</div></div>`;
+}
+  if (mirrorFinalChoice) {
+    const fc_emoji = isA2 ? "⚙️" : "🪞";
+    const fc_title = isA2 ? "L'Oculum est scellé" : "Le Miroir de l'Âme est restauré";
+    const fc_border = isA2 ? "rgba(0,160,220,0.3)" : "rgba(212,168,75,0.15)";
+    const fc_bord2 = isA2 ? "#a0d8ef" : "var(--accL)";
+    const fc_legend = isA2 ? "◈ L'Oculum du Néant est scellé ◈" : "✧ Le Grand Œuvre est accompli ✧";
+    const fc_sub = isA2
+      ? (mirrorFinalChoice === "faith" ? "Tu as choisi la Foi. Dans un monde sans dieux, ta prière a suffi." : mirrorFinalChoice === "magic" ? "Tu as choisi la Magie. L'incantation a reforgé l'œil du néant." : "Tu as choisi l'Unité. L'Oculum réunit enfin les deux flammes.")
+      : (mirrorFinalChoice === "faith" ? "Vous avez choisi la Foi. Chaque prière résonne dans l'éternité." : mirrorFinalChoice === "magic" ? "Vous avez choisi la Magie. Chaque incantation tisse la réalité." : "Vous avez choisi l'Unité. La Magie et la Foi ne sont plus des reflets, elles sont votre propre souffle.");
+    container.innerHTML = `${narrativeHtml}<div class="mirror-complete" style="background:linear-gradient(135deg,${fc_border},rgba(0,0,0,0.2));border-color:${fc_bord2}"><div style="font-size:3rem;margin-bottom:10px">${fc_emoji}</div><div style="font-family:'Cinzel',serif;font-size:1rem;color:${fc_bord2};margin-bottom:10px">${fc_title}</div><div style="font-size:0.75rem;color:var(--parc);font-style:italic">${fc_sub}</div><div class="mirror-legend" style="color:${fc_bord2}">${fc_legend}</div></div>`;
+    let notif = document.getElementById("mirrorNotif");
+    if (notif) notif.style.display = "none";
+    return;
+  }
+  
+  if (mirrorReunified) {
+  let ru_emoji, ru_title, ru_sub, ru_legend, ru_faith, ru_magic, ru_unity;
+  
+  if (currentAct === 1) {
+    ru_emoji = "🪞";
+    ru_title = "Le Miroir vous contemple";
+    ru_sub = "« Que vois-tu, chercheur ? »";
+    ru_legend = "Chaque choix mène à une vérité différente. Lequel est la vôtre ?";
+    ru_faith = "🕯️ La Foi";
+    ru_magic = "✨ La Magie";
+    ru_unity = "⚖️ Les Deux";
+  } else if (currentAct === 2) {
+    ru_emoji = "⚙️";
+    ru_title = "L'Oculum s'est ouvert";
+    ru_sub = "« L'œil du néant te fixe. De quelle flamme veux-tu l'allumer ? »";
+    ru_legend = "Chaque choix change le destin de l'Oculum — et du monde qu'il reflète.";
+    ru_faith = "🕯️ La Prière";
+    ru_magic = "⚡ L'Incantation";
+    ru_unity = "◈ Fusionner les Deux";
+  } else {
+    ru_emoji = "✨";
+    ru_title = "L'Alliance vous appelle";
+    ru_sub = "« Dieu et Hécate attendent ton regard. Que choisis-tu ? »";
+    ru_legend = "Chaque choix scelle l'Alliance d'une manière différente. Laquelle résonne en toi ?";
+    ru_faith = "🕯️ La Foi éternelle";
+    ru_magic = "✨ La Magie ancestrale";
+    ru_unity = "⚖️ L'Unité parfaite";
+  }
+  
+  container.innerHTML = `${narrativeHtml}<div class="mirror-progress" style="${currentAct === 2 ? 'background:rgba(0,20,40,0.7);border:1px solid #1a6090;' : (currentAct === 3 ? 'background:rgba(30,20,40,0.7);border:1px solid #d4af37;' : '')}"><div style="font-size:1.8rem;margin-bottom:10px">${ru_emoji}</div><div style="font-family:'Cinzel',serif;margin-bottom:12px;${currentAct === 2 ? 'color:#a0d8ef' : (currentAct === 3 ? 'color:#d4af37' : '')}">${ru_title}</div><div style="font-size:0.75rem;margin-bottom:20px;font-style:italic">${ru_sub}</div><div class="mirror-final-choice"><button class="choice-btn choice-faith" id="mirrorChoiceFaith" style="${currentAct === 2 ? 'border-color:#a0d8ef;color:#a0d8ef' : (currentAct === 3 ? 'border-color:#d4af37;color:#d4af37' : '')}">${ru_faith}</button><button class="choice-btn choice-magic" id="mirrorChoiceMagic" style="${currentAct === 2 ? 'border-color:#a0d8ef;color:#a0d8ef' : (currentAct === 3 ? 'border-color:#d4af37;color:#d4af37' : '')}">${ru_magic}</button><button class="choice-btn choice-unity" id="mirrorChoiceUnity" style="${currentAct === 2 ? 'border-color:#a0d8ef;color:#a0d8ef' : (currentAct === 3 ? 'border-color:#d4af37;color:#d4af37' : '')}">${ru_unity}</button></div><div class="mirror-legend" style="${currentAct === 2 ? 'color:#a0d8ef' : (currentAct === 3 ? 'color:#d4af37' : '')}">${ru_legend}</div></div>`;
+  document.getElementById("mirrorChoiceFaith")?.addEventListener("click", () => completeMirrorChoice("faith"));
+  document.getElementById("mirrorChoiceMagic")?.addEventListener("click", () => completeMirrorChoice("magic"));
+  document.getElementById("mirrorChoiceUnity")?.addEventListener("click", () => completeMirrorChoice("unity"));
+  return;
+}
+  
+  let fragsHtml = '<div class="mirror-fragments">';
+  for (let [epId, frag] of Object.entries(MIRROR_FRAGMENTS)) {
+    let found = mirrorFragments.has(epId);
+    fragsHtml += `<div class="mirror-shard ${found ? 'found' : ''}">${found ? frag.emoji : "❓"}${found ? `<div class="shard-name">${frag.name.substring(0, 20)}</div>` : '<div style="font-size:0.4rem;margin-top:5px">???</div>'}</div>`;
+  }
+  fragsHtml += '</div>';
+  
+  const chron_color = isA2 ? "#a0d8ef" : "var(--acc)";
+  const chron_icon = isA2 ? "⚙️" : "📜";
+  const chron_label = isA2 ? "TRANSMISSIONS DE L'OCULUM" : "CHRONIQUES DÉBLOQUÉES";
+  const chron_empty = isA2 ? "Débloquez des époques pour recevoir les transmissions de l'Oculum." : "Débloquez des époques pour découvrir l\'histoire du Miroir.";
+  let chroniclesHtml = `<div style="margin-top:15px;"><div style="font-family:Cinzel,serif;font-size:0.55rem;letter-spacing:2px;color:${chron_color};margin-bottom:8px;">${chron_icon} ${chron_label}</div>`;
+  let hasAny = false;
+  for (let ep of EPOCHS) {
+    if (ownedEpochs.has(ep.id) && MIRROR_CHRONICLES[ep.id]) {
+      hasAny = true;
+      chroniclesHtml += `<div style="margin-bottom:10px; padding:6px; background:rgba(0,0,0,0.2); border-radius:8px;"><div style="font-size:0.65rem; color:var(--accL);">${MIRROR_CHRONICLES[ep.id].title}</div><div style="font-size:0.55rem; color:var(--parcD); line-height:1.4;">${MIRROR_CHRONICLES[ep.id].text.substring(0, 100)}...</div></div>`;
+    }
+  }
+  if (!hasAny) chroniclesHtml += `<div style="font-size:0.55rem;color:var(--accD);font-style:italic;">${chron_empty}</div>`;
+  chroniclesHtml += '</div>';
+
+  let canReunify = canReunifyMirror();
+  const pr_label = isA2 ? "Éclats récupérés" : "Fragments trouvés";
+  const pr_fill = isA2 ? "linear-gradient(90deg,#1a6090,#a0d8ef)" : "linear-gradient(90deg,var(--acc),var(--mys))";
+  const pr_color = isA2 ? "#a0d8ef" : "var(--accL)";
+  const pr_btn = isA2
+    ? (canReunify ? "⚙️ Assembler l'Oculum (50 000 000 Foi)" : "⚙️ Assembler l'Oculum (Foi insuffisante)")
+    : (canReunify ? "🔮 Réunifier le Miroir (50 000 000 Foi)" : "🔮 Réunifier le Miroir (Foi insuffisante)");
+  const pr_bstyle = isA2 ? "border-color:#a0d8ef;color:#a0d8ef;background:linear-gradient(135deg,rgba(0,100,160,0.3),rgba(0,50,100,0.4))" : "";
+  const pr_hint = isA2
+    ? (foundCount === totalFrags ? "Tous les éclats sont récupérés ! Assemblez l'Oculum pour déclencher la révélation finale." : "Chaque époque complète révèle un éclat de l'Oculum.")
+    : (foundCount === totalFrags ? "Tous les fragments sont réunis ! Réunifiez le Miroir pour débloquer l'ultime révélation." : "Chaque époque complète dévoile un fragment du Miroir.");
+  container.innerHTML = `${narrativeHtml}${fragsHtml}<div class="mirror-progress" style="${isA2 ? "background:rgba(0,20,40,0.6);border:1px solid rgba(0,100,160,0.3);border-radius:16px;padding:12px" : ""}"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>${pr_label}</span><span style="color:${pr_color}">${foundCount} / ${totalFrags}</span></div><div class="prog-bar" style="margin-bottom:12px"><div class="prog-fill" style="width:${progressPercent}%;background:${pr_fill}"></div></div>${!mirrorReunified && foundCount === totalFrags ? `<button class="mirror-button" id="reunifyMirrorBtn" ${!canReunify ? "disabled" : ""} style="${pr_bstyle}">${pr_btn}</button>` : `<div class="mirror-legend" style="${isA2 ? "color:#a0d8ef" : ""}">✦ ${pr_hint}</div>`}</div>${chroniclesHtml}`;
+  document.getElementById("reunifyMirrorBtn")?.addEventListener("click", reunifyMirror);
+  let notif = document.getElementById("mirrorNotif");
+  if (notif) notif.style.display = (foundCount > 0 && !mirrorReunified && foundCount < totalFrags) ? "inline-block" : "none";
+}
+
+function buyEpoch(id) {
+  let ep = EPOCHS.find(e => e.id === id);
+  if (!ep || ownedEpochs.has(id) || faith < ep.cost) return;
+  faith -= ep.cost;
+  ownedEpochs.add(id);
+  checkAndUnlockAchievements();
+  let chronicle = MIRROR_CHRONICLES && MIRROR_CHRONICLES[id];
+  if (chronicle) {
+    let chronicleModal = document.createElement("div");
+    chronicleModal.className = "modal-ov";
+    const chron_icon2 = currentAct === 2 ? "⚙️" : "🪞";
+    const chron_btn2 = currentAct === 2 ? "Intégrer la transmission" : "Poursuivre la quête";
+    const chron_border2 = currentAct === 2 ? ' style="border-color:#a0d8ef;color:#a0d8ef"' : '';
+    chronicleModal.innerHTML = `<div class="modal-box"><div class="modal-border"></div><div class="modal-title">${chron_icon2} ${chronicle.title}</div><div class="modal-text" style="font-style:italic;font-size:0.95rem;line-height:1.7;">${chronicle.text}</div><button class="modal-close" id="closeChronicleModal"${chron_border2}>${chron_btn2}</button></div>`;
+    document.body.appendChild(chronicleModal);
+    document.getElementById("closeChronicleModal").onclick = () => chronicleModal.remove();
+    addRecent("rev", currentAct === 2 ? "Transmission Oculum" : "Chronique du Miroir", chronicle.title + " — " + chronicle.text.substring(0, 100) + "...", null);
+    toast(`${currentAct === 2 ? '⚙️' : '🪞'} ${chronicle.title}`, 3000);
+  }
+  recalcBase();
+  updateBadge();
+  updateStats();
+  renderSanctuaires();
+  addRecent("epoch", null, "✦ " + ep.badge + " débloquée !", null);
+  toast("✨ " + ep.name + " débloquée !", 2000);
+  checkMirrorFragments();
+  renderGrimoire();
+  updateProgress();
+  save();
+}
+
+function buySanctuary(epochId, sanctId) {
+  let s = (SANCTUARIES[epochId] || []).find(s => s.id === sanctId);
+  if (!s) return;
+  let key = epochId + "|" + sanctId;
+  let lvl = sanctuaryLevels[key] || 0;
+  if (lvl >= 5) { toast("🏛️ Ce sanctuaire a atteint son niveau maximal."); return; }
+  let cost = Math.round(s.baseCost * Math.pow(3, lvl));
+  if (faith < cost - 0.001) { toast("❌ Foi insuffisante (" + fmt(cost) + " nécessaire)"); return; }
+  faith -= cost;
+  sanctuaryLevels[key] = lvl + 1;
+  recalcBase();
+  updateStats();
+  renderSanctuaires();
+  if (lvl + 1 === 5) {
+    toast("🌟 " + s.name + " atteint sa forme ultime ! +10% à tous les gains", 3000);
+    addRecent("bonus", "Apogée", s.name + " niveau 5 → +10% à tous les gains", null);
+    passBoost *= 1.02;
+    clickBoostMult *= 1.02;
+    recalcBase();
+    updateStats();
+  } else {
+    toast("🏛️ " + s.name + (lvl === 0 ? " bâti" : " — Niveau " + (lvl + 1)), 1800);
+  }
+  save();
+}
+
+function isEpochFullyMaxed(epochId) {
+  let sanctuaries = SANCTUARIES[epochId] || [];
+  if (sanctuaries.length === 0) return false;
+  return sanctuaries.every(s => (sanctuaryLevels[epochId + "|" + s.id] || 0) >= 5);
+}
+
+function renderSanctuaires() {
+  let container = $("sanctuairesContent");
+  if (!container) return;
+  container.innerHTML = "";
+  for (let ep of EPOCHS) {
+    let owned = ownedEpochs.has(ep.id);
+    let prev = EPOCHS.indexOf(ep) === 0 || ownedEpochs.has(EPOCHS[EPOCHS.indexOf(ep) - 1].id);
+    let canBuy = !owned && prev && faith >= ep.cost;
+    let fullyMaxed = owned && isEpochFullyMaxed(ep.id);
+    let sec = document.createElement("div");
+    sec.className = "epoch-section";
+    let head = document.createElement("div");
+    head.className = "epoch-head " + (owned ? "owned" : canBuy ? "buyable" : "locked");
+    let pct = owned ? 100 : Math.min(100, faith / ep.cost * 100);
+    let arrowHtml = owned ? `<span class="collapse-indicator">▼</span>` : "";
+    head.innerHTML = `<div style="display:flex; align-items:center; gap:8px; flex:1;"><div style="flex:1;"><div class="epoch-head-name" style="display:flex; align-items:center; gap:6px;">${ep.name}${arrowHtml}</div><div class="ebar"><div class="efill" style="width:${pct}%"></div></div></div><div class="epoch-head-cost">${owned ? "✓ Débloquée" : canBuy ? "🔓 " + fmt(ep.cost) : "🔒 " + fmt(ep.cost)}</div></div>`;
+    let contentDiv = document.createElement("div");
+    contentDiv.className = "epoch-content";
+    if (fullyMaxed) contentDiv.classList.add("collapsed");
+    if (owned) {
+      let grid = document.createElement("div");
+      grid.className = "sanctuaries-grid";
+      for (let s of (SANCTUARIES[ep.id] || [])) {
+        let key = ep.id + "|" + s.id;
+        let lvl = sanctuaryLevels[key] || 0;
+        let maxLvl = 5;
+        let nextCost = Math.round(s.baseCost * Math.pow(3, lvl));
+        let canUpg = faith >= nextCost && lvl < maxLvl;
+        let card = document.createElement("div");
+        card.className = "sanct-card " + (lvl > 0 ? "owned" : "") + (canUpg ? " buyable" : "") + (lvl === 0 && !canUpg ? " locked" : "");
+        let perSec = (s.basePassive * Math.max(1, lvl) * (1 + 0.08 * Math.max(0, lvl - 1))).toFixed(1);
+        let perClic = (s.baseClic * Math.max(1, lvl) * (1 + 0.06 * Math.max(0, lvl - 1))).toFixed(0);
+        card.innerHTML = `<div class="sanct-head"><div class="sanct-name">${s.name}</div><div class="sanct-status">${lvl === maxLvl ? "✓ Max" : lvl > 0 ? `Niv.${lvl} → ${fmt(nextCost)}` : canUpg ? fmt(nextCost) : "🔒 " + fmt(nextCost)}</div></div><div class="sanct-desc">${s.desc}</div>${lvl > 0 ? `<div class="sanct-bonus">+${perSec}/s · +${perClic}/clic</div>` : ""}<div class="lvl-bar"><div class="lvl-fill" style="width:${lvl / maxLvl * 100}%"></div></div>`;
+        if (canUpg && lvl < maxLvl) card.addEventListener("click", (e) => { e.stopPropagation(); buySanctuary(ep.id, s.id); });
+        grid.appendChild(card);
+      }
+      contentDiv.appendChild(grid);
+    }
+    if (canBuy) head.addEventListener("click", (e) => { e.stopPropagation(); buyEpoch(ep.id); });
+    else if (owned) head.addEventListener("click", (e) => { e.stopPropagation(); contentDiv.classList.toggle("collapsed"); let indicator = head.querySelector(".collapse-indicator"); if (indicator) indicator.style.transform = contentDiv.classList.contains("collapsed") ? "rotate(-90deg)" : "rotate(0deg)"; });
+    sec.appendChild(head);
+    sec.appendChild(contentDiv);
+    container.appendChild(sec);
+  }
+  updateProgress();
+  checkMirrorFragments();
+}
+
+function ritual(x, y) {
+  if (modalOpen) return;
+  if (!window.mirrorPrologueShown && totalRituals === 0) {
+    window.mirrorPrologueShown = true;
+    let prologueModal = document.createElement("div");
+    prologueModal.className = "modal-ov";
+    prologueModal.innerHTML = `<div class="modal-box"><div class="modal-border"></div><div class="modal-title">🪞 Le Miroir de l'Âme</div><div class="modal-text" style="font-style:italic; max-height:60vh; overflow-y:auto; padding-right:8px">✧ Avant que les dieux n'aient des noms, avant que les prières ne soient écrites, un homme leva les mains vers la nuit.<br><br>Il ne savait pas s'il implorait une étoile ou s'il tentait de l'apprivoiser. Et dans cette hésitation — entre la supplication et la volonté — la première faille apparut.<br><br><span style="color:var(--accL)">Le Miroir de l'Âme était né.</span><br><br>Ni artefact, ni divinité, il est l'instant suspendu où la <strong>Foi</strong> et la <strong>Magie</strong> s'embrassent pour ne former qu'un seul souffle.<br><br>Lève les mains à ton tour, chercheur. Et souviens-toi :<br><br><strong>« Tu ne pries pas. Tu n'incantes pas. Tu répares l'Origine. »</strong><br><br>✧ Le voyage temporel commence ✧</div><button class="modal-close" id="closePrologueModal">Commencer la quête</button></div>`;
+    document.body.appendChild(prologueModal);
+    document.getElementById("closePrologueModal").onclick = () => prologueModal.remove();
+    addRecent("rev", "Prologue", "Le Miroir de l'Âme est brisé. Ses fragments sont dispersés à travers les âges. Votre quête commence.", null);
+    toast("🪞 Une voix ancienne : « Rassemble les éclats, chercheur... »", 5000);
+  }
+  let gained = effectiveClick();
+  let now = Date.now();
+  if (now - lastClickTime < 800) { clickCombo++; if (clickCombo > 10) clickCombo = 10; let comboBonus = 1 + (clickCombo * 0.05); gained = Math.round(gained * comboBonus); } else { clickCombo = 1; }
+  let comboElem = document.getElementById("comboVal");
+  if (comboElem) { comboElem.classList.add("combo-flash"); setTimeout(() => comboElem.classList.remove("combo-flash"), 300); }
+  lastClickTime = now;
+  faith += gained;
+  checkAndUnlockAchievements();
+  totalRituals++;
+  updateStats();
+  renderSanctuaires();
+  if (x !== undefined && y !== undefined) {
+    let wave = document.createElement("div");
+    wave.style.cssText = `position:fixed;left:${x-50}px;top:${y-50}px;width:100px;height:100px;border-radius:50%;border:2px solid var(--accL);box-shadow:0 0 30px var(--accL);pointer-events:none;z-index:997;animation:waveExpand 0.5s ease-out forwards;`;
+    document.body.appendChild(wave);
+    setTimeout(() => wave.remove(), 500);
+    let circle = document.createElement("div");
+    circle.className = "sigilCircle";
+    circle.style.left = x + "px";
+    circle.style.top = y + "px";
+    document.body.appendChild(circle);
+    setTimeout(() => circle.remove(), 700);
+    let gainText = document.createElement("div");
+    gainText.className = "rune";
+    gainText.textContent = "+" + gained;
+    gainText.style.cssText = `left:${x-20}px;top:${y-10}px;font-size:1.2rem;color:var(--accL);`;
+    document.body.appendChild(gainText);
+    setTimeout(() => gainText.remove(), 1400);
+    let symbols = ["✦", "✧", "☽", "🜂", "⛧", "⚝", "◉"];
+    for (let i = 0; i < 3; i++) {
+      let rune = document.createElement("div");
+      rune.className = "rune";
+      rune.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      rune.style.cssText = `left:${x + (Math.random() - 0.5) * 45}px;top:${y + (Math.random() - 0.5) * 30}px;font-size:${1.0 + Math.random() * 1.2}rem;animation:riseRune ${0.9 + Math.random() * 0.7}s ease-out forwards;`;
+      document.body.appendChild(rune);
+      setTimeout(() => rune.remove(), 1600);
+    }
+    let sparkCount = 5 + Math.floor(Math.random() * 5);
+    for (let i = 0; i < sparkCount; i++) {
+      let spark = document.createElement("div");
+      spark.className = "spark";
+      let angle = Math.random() * Math.PI * 2;
+      let dist = 15 + Math.random() * 35;
+      spark.style.cssText = `left:${x + Math.cos(angle) * dist}px;top:${y + Math.sin(angle) * dist}px;animation:sparkOut ${0.5 + Math.random() * 0.6}s ease-out forwards;`;
+      document.body.appendChild(spark);
+      setTimeout(() => spark.remove(), 800);
+    }
+    let pieces = 4 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < pieces; i++) {
+      let floatText = document.createElement("div");
+      let pieceValue = Math.floor(gained / pieces);
+      floatText.textContent = "+" + pieceValue;
+      floatText.style.cssText = `position:fixed;left:${x + (Math.random() - 0.5) * 100}px;top:${y + (Math.random() - 0.5) * 80}px;color:hsl(${30 + Math.random() * 30}, 80%, 65%);font-size:${0.6 + Math.random() * 0.5}rem;font-family:'Cinzel', serif;font-weight:bold;text-shadow:0 0 4px rgba(0,0,0,0.5);pointer-events:none;z-index:1001;animation:floatUp 0.8s ease-out forwards;`;
+      document.body.appendChild(floatText);
+      setTimeout(() => floatText.remove(), 800);
+    }
+  }
+  save();
+  maybeSpawnEvent();
+}
+
+function showModal(data) {
+  if (document.querySelector(".event-toast")) return;
+  let btn = document.getElementById("ritualBtn");
+  if (btn) btn.style.pointerEvents = "none";
+  let toastDiv = document.createElement("div");
+  toastDiv.className = "event-toast";
+  let choicesHtml = '<div class="choices">';
+  for (let ch of data.choices) choicesHtml += `<div class="choice" data-effect='${JSON.stringify(ch.ef)}' data-lbl="${ch.lbl}">${ch.lbl}<br><span style="font-size:0.5rem;">${ch.txt}</span></div>`;
+  choicesHtml += '</div>';
+  toastDiv.innerHTML = `<div class="title">✨ ${data.title}</div><div class="desc">${data.text}</div>${choicesHtml}`;
+  document.body.appendChild(toastDiv);
+  toastDiv.querySelectorAll(".choice").forEach(choice => {
+    choice.addEventListener("click", () => {
+      let ef = JSON.parse(choice.dataset.effect);
+      if (ef.faithMult) faith *= ef.faithMult;
+      if (ef.faithBonus) faith += ef.faithBonus;
+      recalcBase();
+      updateStats();
+      renderSanctuaires();
+      toast("⚖️ " + choice.dataset.lbl, 2000);
+      toastDiv.remove();
+      if (btn) btn.style.pointerEvents = "";
+      save();
+    });
+  });
+  setTimeout(() => { if (toastDiv.parentNode) { toastDiv.remove(); if (btn) btn.style.pointerEvents = ""; } }, 30000);
+}
+
+function maybeSpawnEvent() {
+  if (modalOpen || !ownedEpochs.size) return;
+  let now = Date.now();
+  if (now - lastEventTime < 120000) return;
+  let avail = EVENTS.filter(e => !triggeredEvents.has(e.id));
+  if (!avail.length) return;
+  if (Math.random() < 0.10) {
+    lastEventTime = now;
+    let ev = avail[Math.floor(Math.random() * avail.length)];
+    triggeredEvents.add(ev.id);
+    checkAndUnlockAchievements();
+    showModal(ev);
+  }
+}
+
+function calculateOfflineGains() {
+  let lastSave = localStorage.getItem("arcanumFides_lastSave");
+  if (!lastSave) { localStorage.setItem("arcanumFides_lastSave", Date.now().toString()); return { gain: 0, seconds: 0, bonus: 1 }; }
+  let lastTimestamp = parseInt(lastSave);
+  let now = Date.now();
+  let secondsAway = Math.floor((now - lastTimestamp) / 1000);
+  if (secondsAway > 21600) secondsAway = 21600;
+  if (secondsAway < 10) return { gain: 0, seconds: secondsAway, bonus: 1 };
+  let passivePerSecond = effectivePassive();
+  let totalGain = passivePerSecond * secondsAway;
+  let loyaltyBonus = 1;
+  if (secondsAway > 3600) loyaltyBonus = 1.2;
+  if (secondsAway > 21600) loyaltyBonus = 1.5;
+  totalGain = Math.floor(totalGain * loyaltyBonus);
+  return { gain: totalGain, seconds: secondsAway, bonus: loyaltyBonus };
+}
+
+function showOfflineModal(gainData) {
+  if (gainData.seconds < 10) return;
+  let hours = Math.floor(gainData.seconds / 3600);
+  let minutes = Math.floor((gainData.seconds % 3600) / 60);
+  let timeStr = "";
+  if (hours > 0) timeStr += hours + "h ";
+  if (minutes > 0) timeStr += minutes + "min";
+  if (hours === 0 && minutes === 0) timeStr = gainData.seconds + "s";
+  let bonusText = gainData.bonus > 1 ? `<div style="color: #9ab870; margin-top: 8px;">🌟 Bonus de fidélité : +${Math.round((gainData.bonus - 1) * 100)}%</div>` : "";
+  let modal = document.createElement("div");
+  modal.className = "modal-ov";
+  modal.innerHTML = `<div class="modal-box" style="max-width: 450px; background: linear-gradient(160deg, #0a0818, #050310); border: 2px solid var(--accL);"><div class="modal-border" style="border-color: var(--accL);"></div><div class="modal-title" style="color: var(--accL); font-size: 1.1rem;">🕯️ Rituel de Retour</div><div class="modal-text" style="text-align: center; font-style: italic;"><span style="color: var(--accL);">« Le Miroir t'a attendu... »</span><br><br>Tu as été absent pendant <strong style="color: var(--accL);">${timeStr}</strong>.<br><br>Les sanctuaires ont continué de rayonner.<br><span style="font-size: 1.2rem; color: var(--accL);">✨ +${fmt(gainData.gain)} Foi ✨</span>${bonusText}<br><br><span style="font-size: 0.8rem; color: var(--parcD);">« La flamme ne s'éteint jamais vraiment... »</span></div><button class="modal-close" id="closeOfflineModal" style="margin-top: 15px;">Recevoir et continuer</button></div>`;
+  document.body.appendChild(modal);
+  document.getElementById("closeOfflineModal").onclick = () => { faith += gainData.gain; updateStats(); renderSanctuaires(); saveTimestamp(); modal.remove(); toast(`✨ +${fmt(gainData.gain)} Foi gagnée pendant ton absence !`, 4000); };
+}
+
+function saveTimestamp() { localStorage.setItem("arcanumFides_lastSave", Date.now().toString()); }
+function checkOfflineGains() { let gainData = calculateOfflineGains(); if (gainData.gain > 0) showOfflineModal(gainData); saveTimestamp(); }
+
+function save() {
+  try {
+    saveTimestamp();
+    localStorage.setItem("arcanumFides_v2", JSON.stringify({ faith, totalRituals, ownedEpochs: [...ownedEpochs], sanctuaryLevels, discoveredFacts: [...discoveredFacts], grimoireFacts: grimoireFacts.slice(0,200), revealedSet: [...revealedSet], triggeredEvents: [...triggeredEvents], recentEntries: recentEntries.slice(0,15), mirrorFragments: [...mirrorFragments], mirrorReunified, mirrorFinalChoice, mirrorFinalBonus, unlockedAchievements: [...unlockedAchievements], achievementDates, passBoost, clickBoostMult, clickCombo, lastClickTime, currentAct }));
+  } catch(e) {}
+}
+
+function load() {
+  try {
+    let d = JSON.parse(localStorage.getItem("arcanumFides_v2") || "{}");
+    faith = d.faith || 0;
+    totalRituals = d.totalRituals || 0;
+    ownedEpochs = new Set(d.ownedEpochs || []);
+    sanctuaryLevels = d.sanctuaryLevels || {};
+    discoveredFacts = new Set(d.discoveredFacts || []);
+    grimoireFacts = d.grimoireFacts || [];
+    revealedSet = new Set(d.revealedSet || []);
+    triggeredEvents = new Set(d.triggeredEvents || []);
+    recentEntries = d.recentEntries || [];
+    mirrorFragments = new Set(d.mirrorFragments || []);
+    mirrorReunified = d.mirrorReunified || false;
+    mirrorFinalChoice = d.mirrorFinalChoice || null;
+    mirrorFinalBonus = d.mirrorFinalBonus || 1;
+    unlockedAchievements = new Set(d.unlockedAchievements || []);
+    achievementDates = d.achievementDates || {};
+    passBoost = d.passBoost || 1;
+    clickBoostMult = d.clickBoostMult || 1;
+    clickCombo = d.clickCombo || 0;
+    lastClickTime = d.lastClickTime || 0;
+    currentAct = d.currentAct || 1;
+    
+    // D'abord, recalculer les bases
+    recalcBase();
+    updateBadge();
+    updateStats();
+    
+    // Ensuite, initialiser l'affichage de base
+    renderSanctuaires();
+    renderGrimoire();
+    renderMirror();
+    updateProgress();
+    
+    // Appliquer l'acte 2 si nécessaire (après l'affichage de base)
+    // Appliquer l'acte 2 ou 3 sans réinitialiser les données
+if (currentAct === 2) {
+  // Ne pas appeler startAct2() qui reset tout
+  // Juste remplacer les données et mettre à jour l'UI
+  EPOCHS.length = 0;
+  ACT2_EPOCHS.forEach(e => EPOCHS.push(e));
+  Object.keys(SANCTUARIES).forEach(k => delete SANCTUARIES[k]);
+  Object.assign(SANCTUARIES, ACT2_SANCTUARIES);
+  Object.keys(MIRROR_FRAGMENTS).forEach(k => delete MIRROR_FRAGMENTS[k]);
+  Object.assign(MIRROR_FRAGMENTS, ACT2_MIRROR_FRAGMENTS);
+  Object.keys(MIRROR_CHRONICLES).forEach(k => delete MIRROR_CHRONICLES[k]);
+  Object.assign(MIRROR_CHRONICLES, ACT2_MIRROR_CHRONICLES);
+  Object.keys(FACTS_BY_EPOCH).forEach(k => delete FACTS_BY_EPOCH[k]);
+  Object.assign(FACTS_BY_EPOCH, ACT2_FACTS_BY_EPOCH);
+  EVENTS.length = 0;
+  ACT2_EVENTS.forEach(e => EVENTS.push(e));
+  
+  let theme = ACT2_EPOCHS[0].pal;
+  applyPalette(theme);
+  document.body.style.background = theme.bg1;
+  let subHeader = document.querySelector(".t-sub");
+  if (subHeader) subHeader.textContent = "Acte II — L'Heure du Verdict";
+  updateBadge();
+  renderSanctuaires();
+  renderMirror();
+  updateStats();
+  updateProgress();
+}
+else if (currentAct === 3) {
+  // Ne pas appeler startAct3() qui reset tout
+  EPOCHS.length = 0;
+  ACT3_EPOCHS.forEach(e => EPOCHS.push(e));
+  Object.keys(SANCTUARIES).forEach(k => delete SANCTUARIES[k]);
+  Object.assign(SANCTUARIES, ACT3_SANCTUARIES);
+  Object.keys(MIRROR_FRAGMENTS).forEach(k => delete MIRROR_FRAGMENTS[k]);
+  Object.assign(MIRROR_FRAGMENTS, ACT3_MIRROR_FRAGMENTS);
+  Object.keys(MIRROR_CHRONICLES).forEach(k => delete MIRROR_CHRONICLES[k]);
+  Object.assign(MIRROR_CHRONICLES, ACT3_MIRROR_CHRONICLES);
+  Object.keys(FACTS_BY_EPOCH).forEach(k => delete FACTS_BY_EPOCH[k]);
+  Object.assign(FACTS_BY_EPOCH, ACT3_FACTS_BY_EPOCH);
+  EVENTS.length = 0;
+  ACT3_EVENTS.forEach(e => EVENTS.push(e));
+  
+  let theme = ACT3_EPOCHS[0].pal;
+  applyPalette(theme);
+  document.body.style.background = theme.bg1;
+  let subHeader = document.querySelector(".t-sub");
+  if (subHeader) subHeader.textContent = "Acte III — L'Alliance des Deux Flammes";
+  updateBadge();
+  renderSanctuaires();
+  renderMirror();
+  updateStats();
+  updateProgress();
+}
+    addRecent("fait", "Bienvenue", "Le grimoire s'ouvre devant vous.", null);
+    let f = pickFact();
+    showFact(f);
+    recordFact(f);
+    
+    if (mirrorFragments.size > 0 || mirrorReunified || mirrorFinalChoice) {
+      let mirrorTab = document.getElementById("mirrorTabBtn");
+      if (mirrorTab) {
+        mirrorTab.style.display = "block";
+        if (currentAct === 1) {
+          mirrorTab.innerHTML = "🪞 Le Miroir";
+          mirrorTab.style.color = "";
+        } else if (currentAct === 2) {
+          mirrorTab.innerHTML = "⚙️ L'Oculum";
+          mirrorTab.style.color = "#a0d8ef";
+        } else if (currentAct === 3) {
+          mirrorTab.innerHTML = "✨ L'Alliance";
+          mirrorTab.style.color = "#d4af37";
+        }
+      }
+    }
+    if (mirrorReunified && !mirrorFinalChoice) renderMirror();
+    
+    if (mirrorFinalBonus > 1) {
+      if (mirrorFinalChoice === "faith") passBoost = Math.max(passBoost, 10);
+      if (mirrorFinalChoice === "magic") clickBoostMult = Math.max(clickBoostMult, 20);
+      if (mirrorFinalChoice === "unity") {
+        passBoost = Math.max(passBoost, 10);
+        clickBoostMult = Math.max(clickBoostMult, 10);
+      }
+      recalcBase();
+      updateStats();
+    }
+    
+    checkOfflineGains();
+    checkMirrorFragments();
+    renderMirror();
+    checkAndUnlockAchievements();
+    
+  } catch(e) {
+    console.error("Erreur de chargement:", e);
+    // Fallback: initialiser l'affichage par défaut
+    recalcBase();
+    updateBadge();
+    updateStats();
+    renderSanctuaires();
+    renderGrimoire();
+    renderMirror();
+    updateProgress();
+  }
+}
+
+function resetGame() {
+  if (confirm("⚠️ ATTENTION : Cette action effacera TOUTE votre progression.\n\nToutes les époques, sanctuaires, révélations et fragments du Miroir seront perdus.\n\nÊtes-vous certain de vouloir recommencer votre quête ?")) {
+    localStorage.removeItem("arcanumFides_v2");
+    localStorage.removeItem("arcanumFides_lastSave");
+    location.reload();
+  }
+}
+
+document.querySelectorAll(".tab-btn").forEach(btn => { btn.addEventListener("click", () => { document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active")); document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active")); btn.classList.add("active"); let pane = $("tab-" + btn.dataset.tab); if (pane) pane.classList.add("active"); if (btn.dataset.tab === "grimoire" && $("grimoireNotif")) $("grimoireNotif").style.display = "none"; }); });
+document.querySelectorAll(".grim-filter").forEach(btn => { btn.addEventListener("click", () => { document.querySelectorAll(".grim-filter").forEach(b => b.classList.remove("active")); btn.classList.add("active"); grimFilter = btn.dataset.gf; renderGrimoire(); }); });
+if ($("ritualBtn")) { $("ritualBtn").addEventListener("mousedown", e => { e.preventDefault(); let r = $("ritualBtn").getBoundingClientRect(); ritual(r.left + r.width / 2, r.top + r.height / 2); }); $("ritualBtn").addEventListener("touchstart", e => { e.preventDefault(); let t = e.touches[0]; ritual(t.clientX, t.clientY); }, { passive: false }); }
+setInterval(() => { let f = pickFact(); showFact(f); recordFact(f); }, 25000);
+setInterval(save, 30000);
+setInterval(() => { maybeSpawnEvent(); }, 120000);
+document.getElementById("resetBtn")?.addEventListener("click", resetGame);
+load();
+
+const cv = document.getElementById("starsCanvas"), ctx = cv.getContext("2d");
+let W, H, stars = [];
+function resizeStars() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+resizeStars();
+for (let i = 0; i < 120; i++) stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.2 + 0.2, sp: Math.random() * 0.004 + 0.002, ph: Math.random() * Math.PI * 2 });
+window.addEventListener("resize", resizeStars);
+(function animateStars(t) {
+  ctx.clearRect(0, 0, W, H);
+  for (let s of stars) {
+    let bright = 0.25 + 0.5 * (0.5 + 0.5 * Math.sin(t * s.sp + s.ph));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,240,200,${bright})`;
+    ctx.fill();
+  }
+  requestAnimationFrame(animateStars);
+})(0);
+</script>
+</body>
+</html>
