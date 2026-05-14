@@ -388,6 +388,8 @@ padding:8px;gap:6px}.stat-bar{padding:4px 10px;gap:4px}.sb-val{font-size:0.9rem}
 <script>
 let totalCliches = 0;
 let lastUpdate = 0;
+let permanentGrimoire = [];      // stocke TOUTES les révélations des 3 actes
+let permanentDiscovered = new Set();  // stocke les clés uniques
 function smoothUpdate(timestamp){
     if(!lastUpdate) lastUpdate = timestamp;
     let delta = Math.min(100, timestamp - lastUpdate);
