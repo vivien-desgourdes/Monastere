@@ -2565,19 +2565,28 @@ function buyCosmicRelic(id) {
     <button class="modal-close" id="closeRelicModal" style="margin-top:12px;border-color:#d4af37;color:#f0cc7a">Recevoir la Relique</button>
   </div>`;
   document.body.appendChild(modal);
-  document.getElementById("closeRelicModal").onclick = () => { modal.remove(); };
+  
   addRecent("rev", "Relique Cosmique", relic.name + " — " + relic.desc, "L'Au-delà de l'Alliance");
-  toast(relic.emoji + " " + relic.name + " acquise !", 4000);
-  checkAndUnlockAchievements();
-  save();
-  // Si c'est la dernière relique → écran de fin
+  toast(relic.emoji + " " + relic.name + " acquise !", 6000);
+  
+  // Si c'est la dernière relique → attendre que l'utilisateur ferme le modal
   if (ownedCosmicRelics.size === COSMIC_RELICS.length) {
-    setTimeout(() => {
-      let m = document.querySelector(".modal-ov");
-      if (m) m.remove();
-      showEndingScreen();
-    }, 3200);
+    let closeBtn = document.getElementById("closeRelicModal");
+    if (closeBtn) {
+      closeBtn.onclick = () => {
+        modal.remove();
+        // Petit délai pour laisser le toast finir et permettre la transition
+        setTimeout(() => {
+          showEndingScreen();
+        }, 1500);
+      };
+    }
+  } else {
+    // Comportement normal pour les reliques non-finales
+    document.getElementById("closeRelicModal").onclick = () => { modal.remove(); };
   }
+  
+  save();
 }
 
 function renderCosmicRelics(container) {
