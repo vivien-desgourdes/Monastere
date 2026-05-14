@@ -1056,6 +1056,13 @@ function recordFact(f) {
   if (!discoveredFacts.has(key)) {
     discoveredFacts.add(key);
     grimoireFacts.push({ ...f });
+    
+    // ← AJOUT : alimenter le grimoire permanent
+    if (!permanentDiscovered.has(key)) {
+      permanentDiscovered.add(key);
+      permanentGrimoire.push({ ...f, act: currentAct });
+    }
+    
     if ($("grimoireNotif")) $("grimoireNotif").style.display = "flex";
     addRecent(f.type, TYPE_LABELS[f.type], f.text, f.author);
     updateProgress();
@@ -1104,10 +1111,13 @@ function checkRevelations() {
 
 function renderGrimoire() {
   let filter = grimFilter;
-  let filtered = filter === "all" ? grimoireFacts : grimoireFacts.filter(f => { if (filter === "rev") return f.type === "rev"; return f.type === filter; });
-  let total = discoveredFacts.size + revealedSet.size;
+  let source = permanentGrimoire.length > 0 ? permanentGrimoire : grimoireFacts;
+  let filtered = filter === "all" ? source : source.filter(f => { if (filter === "rev") return f.type === "rev"; return f.type === filter; });
+  let total = permanentDiscovered.size;
+  
   if ($("grimTotal")) $("grimTotal").textContent = total + " révélation" + (total > 1 ? "s" : "") + " archivée" + (total > 1 ? "s" : "");
-  let container = $("grimScroll");
+  
+   let container = $("grimScroll");
   if (!container) return;
   if (!filtered.length) { container.innerHTML = '<div class="grim-empty">Aucune révélation de ce type.</div>'; return; }
   let grouped = {};
@@ -1148,9 +1158,9 @@ function startAct2() {
   mirrorFragments.clear();
   mirrorReunified = false;
   mirrorFinalChoice = null;
-  discoveredFacts.clear();
-  grimoireFacts = [];
-  revealedSet.clear();
+ // discoveredFacts.clear();
+ // grimoireFacts = [];
+//  revealedSet.clear();
   triggeredEvents.clear();
   faith = Math.max(10000, Math.floor(faith * 0.1));
   let theme = ACT2_EPOCHS[0].pal;
@@ -1219,9 +1229,9 @@ function startAct2() {
   mirrorFragments.clear();
   mirrorReunified = false;
   mirrorFinalChoice = null;
-  discoveredFacts.clear();
-  grimoireFacts = [];
-  revealedSet.clear();
+//  discoveredFacts.clear();
+//  grimoireFacts = [];
+//  revealedSet.clear();
   triggeredEvents.clear();
   faith = Math.max(5000000, Math.floor(faith * 0.2));
   
