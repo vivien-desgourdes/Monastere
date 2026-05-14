@@ -1015,6 +1015,7 @@ function updateStats() {
   if($("passiveVal")) $("passiveVal").textContent = fmt(effectivePassive()) + "/s";
   if($("ritualsCount")) $("ritualsCount").textContent = totalRituals;
   if($("comboVal")) $("comboVal").textContent = `×${clickCombo}`;
+  renderSanctuaires();
 }
 
 function updateBadge() {
