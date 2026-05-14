@@ -1789,7 +1789,23 @@ function startFinalDiaporama() {
       updateDiapo();
     } else if (currentPage === pages.length - 1) {
       modal.remove();
-      toast("✨ Le Codex Arcanorum est désormais complet. Merci, chercheur. ✨", 5000);
+      
+      // Rediriger vers l'onglet Sanctuaires
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("active"));
+      document.querySelector('[data-tab="sanctuaires"]').classList.add("active");
+      document.getElementById("tab-sanctuaires").classList.add("active");
+      
+      // Faire clignoter la section des reliques
+      setTimeout(() => {
+        let cosmicSection = document.querySelector(".cosmic-section");
+        if (cosmicSection) {
+          cosmicSection.style.animation = "guidePulse 0.8s ease-in-out 3";
+          cosmicSection.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 200);
+      
+      toast("✨ Rendez-vous dans l'onglet Sanctuaires pour l'Héritage Éternel ✨", 5000);
     }
   };
 
