@@ -693,9 +693,20 @@ apaiement: [
 };
     
     const ACT3_EVENTS = [
-  { id: "dieu_hecate", title: "⚖️ La Double Vision", text: "Dieu et Hécate t'apparaissent en même temps. L'un te tend une plume, l'autre une torche.", choices: [{ lbl: "Prendre la plume", txt: "+500 000 foi · Voie de la Foi", ef: { faithBonus: 500000 } }, { lbl: "Prendre la torche", txt: "+500 000 foi · Voie de la Magie", ef: { faithBonus: 500000 } }, { lbl: "Prendre les deux", txt: "+1 000 000 foi · Unité", ef: { faithBonus: 1000000 } }] },
-  { id: "enfant", title: "👶 Le Premier Rire", text: "Un enfant te sourit. Il ne pleure pas. Il t'ouvre les mains. Dans sa paume droite, une croix. Dans sa paume gauche, un pentacle.", choices: [{ lbl: "Pleurer", txt: "+200 000 foi", ef: { faithBonus: 200000 } }, { lbl: "Sourire", txt: "+200 000 foi", ef: { faithBonus: 200000 } }] },
-  { id: "dernier_choix", title: "🕯️ Le Seuil", text: "Devant toi, deux portes. L'une dit 'Foi', l'autre dit 'Magie'. Derrière toi, une troisième porte, ouverte, sans nom.", choices: [{ lbl: "Foi", txt: "Tu entres dans l'éternité", ef: {} }, { lbl: "Magie", txt: "Tu entres dans le rêve", ef: {} }, { lbl: "Retourner en arrière", txt: "Tu choisis l'Unité", ef: {} }] }
+  { id: "dieu_hecate", title: "⚖️ La Double Vision", text: "Dieu et Hécate t'apparaissent en même temps. L'un te tend une plume, l'autre une torche.", choices: [
+    { lbl: "Prendre la plume", txt: "+50 G foi · Voie de la Foi", ef: { faithBonus: 50000000000 } },
+    { lbl: "Prendre la torche", txt: "+50 G foi · Voie de la Magie", ef: { faithBonus: 50000000000 } },
+    { lbl: "Prendre les deux", txt: "+150 G foi · Unité", ef: { faithBonus: 150000000000 } }
+  ] },
+  { id: "enfant", title: "👶 Le Premier Rire", text: "Un enfant te sourit. Il ne pleure pas. Il t'ouvre les mains. Dans sa paume droite, une croix. Dans sa paume gauche, un pentacle.", choices: [
+    { lbl: "Pleurer", txt: "+100 G foi", ef: { faithBonus: 100000000000 } },
+    { lbl: "Sourire", txt: "+100 G foi", ef: { faithBonus: 100000000000 } }
+  ] },
+  { id: "dernier_choix", title: "🕯️ Le Seuil", text: "Devant toi, deux portes. L'une dit 'Foi', l'autre dit 'Magie'. Derrière toi, une troisième porte, ouverte, sans nom.", choices: [
+    { lbl: "Foi", txt: "+500 G foi", ef: { faithBonus: 500000000000 } },
+    { lbl: "Magie", txt: "+500 G foi", ef: { faithBonus: 500000000000 } },
+    { lbl: "Retourner en arrière", txt: "+1000 G foi · Unité", ef: { faithBonus: 1000000000000 } }
+  ] }
 ];
        
 // ==================== ÉTAT ====================
