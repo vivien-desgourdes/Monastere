@@ -1097,17 +1097,36 @@ function showFact(f) {
 
 function checkRevelations() {
   let found = discoveredFacts.size;
+  let totalRevelations = REVELATIONS.length;
+  let currentMax = Math.max(...REVELATIONS.map(r => r.at), 0);
+  
+  // Vérifier chaque révélation
   for (let rev of REVELATIONS) {
     if (!revealedSet.has(rev.at) && found >= rev.at) {
       revealedSet.add(rev.at);
-      grimoireFacts.push({ type: "rev", epochId: "rev", cat: "Révélation", text: rev.title + " — " + rev.text, author: null });
+      grimoireFacts.push({ type: "rev", epochId: "rev", text: rev.title + " — " + rev.text });
       if ($("grimoireNotif")) $("grimoireNotif").style.display = "flex";
       renderGrimoire();
       updateProgress();
       addRecent("rev", "Révélation", rev.title + " — " + rev.text, null);
-      toast("🌟 Nouvelle révélation !", 2000);
+      toast("🌟 Nouvelle révélation : " + rev.title, 4000);
     }
   }
+  
+  // SI on a dépassé 45 faits et que la dernière révélation n'est pas débloquée
+  if (found >= 45 && !revealedSet.has(45)) {
+    revealedSet.add(45);
+    let lastRev = REVELATIONS.find(r => r.at === 45);
+    if (lastRev) {
+      grimoireFacts.push({ type: "rev", epochId: "rev", text: lastRev.title + " — " + lastRev.text });
+      renderGrimoire();
+      updateProgress();
+      addRecent("rev", "Révélation finale", lastRev.title + " — " + lastRev.text, null);
+      toast("✨ RÉVÉLATION ULTIME DÉBLOQUÉE ! ✨", 6000);
+    }
+  }
+  
+  updateProgress();
 }
 
 function renderGrimoire() {
