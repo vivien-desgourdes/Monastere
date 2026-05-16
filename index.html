@@ -2254,10 +2254,15 @@ const MILESTONE_TOASTS = (s, lvl) => {
 };
 
 function sanctCost(s, lvl) {
-  // Niveaux 0-4 : ×3 par niveau (comportement original)
-  // Niveaux 5+ : ×4 par niveau (plus exigeant)
   if (lvl < 5) return Math.round(s.baseCost * Math.pow(3, lvl));
-  return Math.round(s.baseCost * Math.pow(3, 4) * Math.pow(4, lvl - 4));
+  
+  // Niveau 5 = coût normal
+  // Niveaux 6-10 = +50% par niveau au lieu de ×4
+  let lvl5Cost = Math.round(s.baseCost * Math.pow(3, 4));
+  if (lvl === 5) return lvl5Cost;
+  
+  // Pour les niveaux 6-10, augmentation de 50% par niveau
+  return Math.round(lvl5Cost * Math.pow(1.5, lvl - 5));
 }
 
 function buySanctuary(epochId, sanctId) {
@@ -2265,6 +2270,11 @@ function buySanctuary(epochId, sanctId) {
   if (!s) return;
   let key = epochId + "|" + sanctId;
   let lvl = sanctuaryLevels[key] || 0;
+
+     if (lvl >= 10) {
+    toast("✨ Ce sanctuaire a atteint sa perfection absolue (niveau 10).", 2000);
+    return;
+  }
   let cost = sanctCost(s, lvl);
   if (faith < cost - 0.001) { toast("❌ Foi insuffisante (" + fmt(cost) + " nécessaire)"); return; }
   faith -= cost;
