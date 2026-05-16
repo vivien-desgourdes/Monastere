@@ -2184,7 +2184,7 @@ if (currentAct === 1) {
   const pr_label = isA2 ? "Éclats récupérés" : "Fragments trouvés";
   const pr_fill = isA2 ? "linear-gradient(90deg,#1a6090,#a0d8ef)" : "linear-gradient(90deg,var(--acc),var(--mys))";
   const pr_color = isA2 ? "#a0d8ef" : "var(--accL)";
-  const reunifyCostFmt = fmt(mirrorReunifyCost());
+  const reunifyCostFmt = "NIVEAU 10";
   const pr_btn = isA2
   ? (canReunify ? `⚙️ Assembler l'Oculum (TOUS NIVEAU 10 requis)` : "⚙️ Assembler l'Oculum (sanctuaires niveau 10 requis)")
   : (currentAct === 3
@@ -2192,9 +2192,9 @@ if (currentAct === 1) {
       : (canReunify ? `🔮 Réunifier le Miroir (TOUS NIVEAU 10 requis)` : "🔮 Réunifier le Miroir (sanctuaires niveau 10 requis)"));
        const pr_bstyle = isA2 ? "border-color:#a0d8ef;color:#a0d8ef;background:linear-gradient(135deg,rgba(0,100,160,0.3),rgba(0,50,100,0.4))" : "";
   const pr_hint = isA2
-    ? (foundCount === totalFrags ? "Tous les éclats sont récupérés ! Assemblez l'Oculum pour déclencher la révélation finale." : "Chaque époque complète révèle un éclat de l'Oculum.")
-    : (foundCount === totalFrags ? "Tous les fragments sont réunis ! Réunifiez le Miroir pour débloquer l'ultime révélation." : "Chaque époque complète dévoile un fragment du Miroir.");
-  container.innerHTML = `${narrativeHtml}${fragsHtml}<div class="mirror-progress" style="${isA2 ? "background:rgba(0,20,40,0.6);border:1px solid rgba(0,100,160,0.3);border-radius:16px;padding:12px" : ""}"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>${pr_label}</span><span style="color:${pr_color}">${foundCount} / ${totalFrags}</span></div><div class="prog-bar" style="margin-bottom:12px"><div class="prog-fill" style="width:${progressPercent}%;background:${pr_fill}"></div></div>${!mirrorReunified && foundCount === totalFrags ? `<button class="mirror-button" id="reunifyMirrorBtn" ${!canReunify ? "disabled" : ""} style="${pr_bstyle}">${pr_btn}</button>` : `<div class="mirror-legend" style="${isA2 ? "color:#a0d8ef" : ""}">✦ ${pr_hint}</div>`}</div>${chroniclesHtml}`;
+  ? (foundCount === totalFrags ? "Tous les fragments sont récupérés ! Passez tous vos sanctuaires au niveau 10 pour assembler l'Oculum." : "Chaque époque complète (sanctuaires niveau 5) révèle un éclat de l'Oculum.")
+  : (foundCount === totalFrags ? "Tous les fragments sont réunis ! Passez tous vos sanctuaires au niveau 10 pour réunifier le Miroir." : "Chaque époque complète (sanctuaires niveau 5) dévoile un fragment du Miroir.");
+       container.innerHTML = `${narrativeHtml}${fragsHtml}<div class="mirror-progress" style="${isA2 ? "background:rgba(0,20,40,0.6);border:1px solid rgba(0,100,160,0.3);border-radius:16px;padding:12px" : ""}"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>${pr_label}</span><span style="color:${pr_color}">${foundCount} / ${totalFrags}</span></div><div class="prog-bar" style="margin-bottom:12px"><div class="prog-fill" style="width:${progressPercent}%;background:${pr_fill}"></div></div>${!mirrorReunified && foundCount === totalFrags ? `<button class="mirror-button" id="reunifyMirrorBtn" ${!canReunify ? "disabled" : ""} style="${pr_bstyle}">${pr_btn}</button>` : `<div class="mirror-legend" style="${isA2 ? "color:#a0d8ef" : ""}">✦ ${pr_hint}</div>`}</div>${chroniclesHtml}`;
   document.getElementById("reunifyMirrorBtn")?.addEventListener("click", reunifyMirror);
   let notif = document.getElementById("mirrorNotif");
   if (notif) notif.style.display = (foundCount > 0 && !mirrorReunified && foundCount < totalFrags) ? "inline-block" : "none";
