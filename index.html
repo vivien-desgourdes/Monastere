@@ -1589,20 +1589,25 @@ if (newFragment && found === totalFrags && !mirrorReunified) {
   }
 }
 
-function mirrorReunifyCost() {
-  if (currentAct === 3) return 5000000000;
-  return 50000000;
-}
-
 function canReunifyMirror() {
   // Vérifier que TOUS les sanctuaires de TOUTES les époques sont niveau 10
   let allMaxed = true;
   for (let ep of EPOCHS) {
-    if (!isEpochFullyMaxed(ep.id)) {
-      allMaxed = false;
-      break;
+    let sanctList = SANCTUARIES[ep.id] || [];
+    for (let s of sanctList) {
+      let key = ep.id + "|" + s.id;
+      if ((sanctuaryLevels[key] || 0) < 10) {
+        allMaxed = false;
+        break;
+      }
     }
+    if (!allMaxed) break;
   }
+  
+  return mirrorFragments.size === Object.keys(MIRROR_FRAGMENTS).length && 
+         !mirrorReunified && 
+         allMaxed;
+}
   
   return mirrorFragments.size === Object.keys(MIRROR_FRAGMENTS).length && 
          !mirrorReunified && 
