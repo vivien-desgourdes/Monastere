@@ -1608,11 +1608,7 @@ function canReunifyMirror() {
          !mirrorReunified && 
          allMaxed;
 }
-  
-  return mirrorFragments.size === Object.keys(MIRROR_FRAGMENTS).length && 
-         !mirrorReunified && 
-         allMaxed; // ← plus de condition de Foi
-}
+   
 
 function reunifyMirror() {
   if (!canReunifyMirror()) return;
