@@ -1595,12 +1595,22 @@ function mirrorReunifyCost() {
 }
 
 function canReunifyMirror() {
-  return mirrorFragments.size === Object.keys(MIRROR_FRAGMENTS).length && !mirrorReunified && faith >= mirrorReunifyCost();
+  // Vérifier que TOUS les sanctuaires de TOUTES les époques sont niveau 10
+  let allMaxed = true;
+  for (let ep of EPOCHS) {
+    if (!isEpochFullyMaxed(ep.id)) {
+      allMaxed = false;
+      break;
+    }
+  }
+  
+  return mirrorFragments.size === Object.keys(MIRROR_FRAGMENTS).length && 
+         !mirrorReunified && 
+         allMaxed; // ← plus de condition de Foi
 }
 
 function reunifyMirror() {
   if (!canReunifyMirror()) return;
-  faith -= mirrorReunifyCost();
   mirrorReunified = true;
   checkAndUnlockAchievements();
   updateStats();
