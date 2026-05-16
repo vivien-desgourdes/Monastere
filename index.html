@@ -2181,11 +2181,11 @@ if (currentAct === 1) {
   const pr_color = isA2 ? "#a0d8ef" : "var(--accL)";
   const reunifyCostFmt = fmt(mirrorReunifyCost());
   const pr_btn = isA2
-    ? (canReunify ? `⚙️ Assembler l'Oculum (${reunifyCostFmt} Foi)` : "⚙️ Assembler l'Oculum (Foi insuffisante)")
-    : (currentAct === 3
-        ? (canReunify ? `✨ Sceller l'Alliance (${reunifyCostFmt} Foi)` : "✨ Sceller l'Alliance (Foi insuffisante)")
-        : (canReunify ? `🔮 Réunifier le Miroir (${reunifyCostFmt} Foi)` : "🔮 Réunifier le Miroir (Foi insuffisante)"));
-  const pr_bstyle = isA2 ? "border-color:#a0d8ef;color:#a0d8ef;background:linear-gradient(135deg,rgba(0,100,160,0.3),rgba(0,50,100,0.4))" : "";
+  ? (canReunify ? `⚙️ Assembler l'Oculum (TOUS NIVEAU 10 requis)` : "⚙️ Assembler l'Oculum (sanctuaires niveau 10 requis)")
+  : (currentAct === 3
+      ? (canReunify ? `✨ Sceller l'Alliance (TOUS NIVEAU 10 requis)` : "✨ Sceller l'Alliance (sanctuaires niveau 10 requis)")
+      : (canReunify ? `🔮 Réunifier le Miroir (TOUS NIVEAU 10 requis)` : "🔮 Réunifier le Miroir (sanctuaires niveau 10 requis)"));
+       const pr_bstyle = isA2 ? "border-color:#a0d8ef;color:#a0d8ef;background:linear-gradient(135deg,rgba(0,100,160,0.3),rgba(0,50,100,0.4))" : "";
   const pr_hint = isA2
     ? (foundCount === totalFrags ? "Tous les éclats sont récupérés ! Assemblez l'Oculum pour déclencher la révélation finale." : "Chaque époque complète révèle un éclat de l'Oculum.")
     : (foundCount === totalFrags ? "Tous les fragments sont réunis ! Réunifiez le Miroir pour débloquer l'ultime révélation." : "Chaque époque complète dévoile un fragment du Miroir.");
