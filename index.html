@@ -1131,7 +1131,7 @@ const $ = id => document.getElementById(id);
 const TOTAL_REVELATIONS_POSSIBLES = Object.values(FACTS_BY_EPOCH).reduce((a,b) => a + b.length, 0) + REVELATIONS.length;
 
 const ACHIEVEMENTS = {
-  first_ritual: { name: "🕯️ Pèlerin", desc: "Accomplir votre premier rituel.", reward: "+50000000000 foi", check: () => totalRituals >= 1 },
+  first_ritual: { name: "🕯️ Pèlerin", desc: "Accomplir votre premier rituel.", reward: "+50 foi", check: () => totalRituals >= 1 },
   ten_rituals: { name: "✨ Ferveur", desc: "Accomplir 10 rituels.", reward: "+200 foi", check: () => totalRituals >= 10 },
   hundred_rituals: { name: "🔥 Dévotion", desc: "Accomplir 100 rituels.", reward: "+1000 foi", check: () => totalRituals >= 100 },
   thousand_rituals: { name: "⚡ Archonte des gestes", desc: "Accomplir 1 000 rituels.", reward: "+5000 foi", check: () => totalRituals >= 1000 },
@@ -1142,11 +1142,11 @@ const ACHIEVEMENTS = {
   five_epochs: { name: "📜 Historien", desc: "Débloquer 5 époques.", reward: "+5000 foi", check: () => ownedEpochs.size >= 5 },
   all_epochs: { name: "🌌 Polymathe", desc: "Débloquer toutes les époques.", reward: "+5000000 foi", check: () => ownedEpochs.size === EPOCHS.length },
   first_sanctuary: { name: "🏛️ Bâtisseur", desc: "Construire votre premier sanctuaire.", reward: "+100 foi", check: () => Object.keys(sanctuaryLevels).length >= 1 },
-  max_sanctuary: { name: "⭐ Sanctuaire parfait", desc: "Élever un sanctuaire au niveau 5.", reward: "+500 foi", check: () => Object.values(sanctuaryLevels).some(lvl => lvl >= 5) },
+  max_sanctuary: { name: "⭐ Sanctuaire parfait", desc: "Élever un sanctuaire au niveau 5.", reward: "+1000 foi", check: () => Object.values(sanctuaryLevels).some(lvl => lvl >= 5) },
   legendary_sanctuary: { name: "💜 Sanctuaire Légendaire", desc: "Élever un sanctuaire au niveau 10.", reward: "+500000 foi", check: () => Object.values(sanctuaryLevels).some(lvl => lvl >= 10) },
   all_max_sanctuaries: { name: "✨ Grand Architecte", desc: "Améliorer tous les sanctuaires au niveau 5.", reward: "+50000 foi", check: () => isAllSanctuariesMax() },
   first_fragment: { name: "🪞 Éveillé", desc: "Trouver votre premier fragment du Miroir.", reward: "+10000 foi", check: () => mirrorFragments.size >= 1 },
-  five_fragments: { name: "🌀 Fragmenté", desc: "Trouver 5 fragments du Miroir.", reward: "+20000 foi", check: () => mirrorFragments.size >= 5 },
+  five_fragments: { name: "🌀 Fragmenté", desc: "Trouver 5 fragments du Miroir.", reward: "+50000 foi", check: () => mirrorFragments.size >= 5 },
   all_fragments: { name: "✦ Collecteur d'âmes", desc: "Trouver tous les fragments du Miroir.", reward: "+200000 foi", check: () => mirrorFragments.size === Object.keys(MIRROR_FRAGMENTS).length },
   reunified: { name: "🪞 Réunificateur", desc: "Réunifier le Miroir de l'Âme.", reward: "+1000000 foi", check: () => mirrorReunified === true },
   final_choice: { name: "⚖️ Archonte de l'Unicité", desc: "Choisir la voie de l'Unité.", reward: "+5000000 foi", check: () => mirrorFinalChoice === "unity" },
