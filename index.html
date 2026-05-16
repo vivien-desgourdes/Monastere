@@ -955,7 +955,12 @@ function updateProgress() {
   if($("globalProgFill")) $("globalProgFill").style.width = pct + "%";
   if($("globalProgLbl")) $("globalProgLbl").textContent = cappedFound + " / " + TOTAL_REVELATIONS_POSSIBLES + " révélations";
 }
-
+function isEpochFullyMaxed(epochId) {
+  let sanctuaries = SANCTUARIES[epochId] || [];
+  // Niveau 10 requis pour la RÉUNIFICATION
+  return sanctuaries.every(s => (sanctuaryLevels[epochId + "|" + s.id] || 0) >= 10);
+}
+   
 function fmt(n) {
   if (n === undefined || n === null) return "0";
   if (n >= 1e15) return (n / 1e15).toFixed(2) + "P";
