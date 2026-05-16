@@ -2684,7 +2684,7 @@ function renderSanctuaires() {
   let container = $("sanctuairesContent");
   if (!container) return;
   container.innerHTML = "";
-
+renderActProgress();
   // ── Bandeau de guidage Miroir ───────────────────────────────────────────
   let allBaseDone = ownedEpochs.size > 0 && [...ownedEpochs].every(epId => {
     return (SANCTUARIES[epId] || []).every(s => (sanctuaryLevels[epId + "|" + s.id] || 0) >= 5);
@@ -2814,6 +2814,63 @@ function renderSanctuaires() {
   checkMirrorFragments();
 }
 
+function renderActProgress() {
+  let container = $("sanctuairesContent");
+  if (!container) return;
+  
+  let totalSanctuaries = 0;
+  let sanctuariesAtLevel5 = 0;
+  let sanctuariesAtLevel10 = 0;
+  
+  for (let ep of EPOCHS) {
+    let sanctList = SANCTUARIES[ep.id] || [];
+    for (let s of sanctList) {
+      totalSanctuaries++;
+      let key = ep.id + "|" + s.id;
+      let lvl = sanctuaryLevels[key] || 0;
+      if (lvl >= 5) sanctuariesAtLevel5++;
+      if (lvl >= 10) sanctuariesAtLevel10++;
+    }
+  }
+  
+  let allAtLevel5 = totalSanctuaries > 0 && sanctuariesAtLevel5 === totalSanctuaries;
+  let pctLevel5 = totalSanctuaries > 0 ? (sanctuariesAtLevel5 / totalSanctuaries) * 100 : 0;
+  let pctLevel10 = totalSanctuaries > 0 ? (sanctuariesAtLevel10 / totalSanctuaries) * 100 : 0;
+  
+  let progressDiv = document.createElement("div");
+  progressDiv.id = "actProgressBar";
+  progressDiv.style.cssText = "margin-bottom: 15px; padding: 10px; background: rgba(212,168,75,0.08); border-radius: 12px; text-align: center;";
+  
+  if (allAtLevel5 && sanctuariesAtLevel10 < totalSanctuaries) {
+    // Phase 2 : tous les fragments sont débloqués, reste à monter au niveau 10
+    progressDiv.innerHTML = `
+      <div style="font-family:'Cinzel',serif; font-size:0.55rem; color:#b8a060; margin-bottom:6px;">⭐ FRAGMENTS OBTENUS — VERS LA RÉUNIFICATION ⭐</div>
+      <div class="prog-bar" style="margin: 5px 0;"><div class="prog-fill" style="width:${pctLevel10}%; background: linear-gradient(90deg, #b8a060, var(--acc));"></div></div>
+      <div style="font-size:0.55rem; color:var(--accD);">${sanctuariesAtLevel10} / ${totalSanctuaries} sanctuaires niveau 10</div>
+      <div style="font-size:0.5rem; color:#b8a060; margin-top:5px;">✧ Objectif : niveau 10 sur chaque sanctuaire ✧</div>
+    `;
+  } else {
+    // Phase 1 : débloquer les fragments (niveau 5)
+    progressDiv.innerHTML = `
+      <div style="font-family:'Cinzel',serif; font-size:0.55rem; color:var(--accL); margin-bottom:6px;">✦ PROGRESSION VERS LES FRAGMENTS ✦</div>
+      <div class="prog-bar" style="margin: 5px 0;"><div class="prog-fill" style="width:${pctLevel5}%; background: linear-gradient(90deg, var(--ember), var(--acc));"></div></div>
+      <div style="font-size:0.55rem; color:var(--accD);">${sanctuariesAtLevel5} / ${totalSanctuaries} sanctuaires niveau 5</div>
+      <div style="font-size:0.5rem; color:var(--accD); margin-top:5px;">✧ Niveau 5 = débloque un fragment du Miroir ✧</div>
+    `;
+  }
+  
+  // Supprimer l'ancienne barre si elle existe
+  let oldBar = document.getElementById("actProgressBar");
+  if (oldBar) oldBar.remove();
+  
+  // Insérer en haut du container
+  if (container.firstChild) {
+    container.insertBefore(progressDiv, container.firstChild);
+  } else {
+    container.appendChild(progressDiv);
+  }
+}
+   
 function ritual(x, y) {
   if (modalOpen) return;
   if (!window.mirrorPrologueShown && totalRituals === 0) {
