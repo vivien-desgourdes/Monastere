@@ -677,6 +677,7 @@ function smoothUpdate(timestamp){
         let gain = effectivePassive() * (delta / 1000);
         faith += gain;
         updateStatsDisplay();
+     renderSanctuaires();
     }
     lastUpdate = timestamp;
     requestAnimationFrame(smoothUpdate);
