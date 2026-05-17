@@ -3337,5 +3337,3 @@ window.addEventListener("resize", resizeStars);
   }
   requestAnimationFrame(animateStars);
 })(0);
-    <script src="data.js"></script>
-<script src="script.js"></script>
