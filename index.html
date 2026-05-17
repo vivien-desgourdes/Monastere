@@ -1376,9 +1376,25 @@ function recordFact(f) {
 }
 
 function pickFact() {
-  let pool = [...FACTS_BY_EPOCH.start];
-  for (let id of ownedEpochs) if (FACTS_BY_EPOCH[id]) pool = pool.concat(FACTS_BY_EPOCH[id]);
-  if (pool.length === 0) pool = FACTS_BY_EPOCH.start;
+  let pool = [];
+  
+  // Ajouter les faits de "start" (toujours disponibles)
+  if (FACTS_BY_EPOCH.start && FACTS_BY_EPOCH.start.length) {
+    pool.push(...FACTS_BY_EPOCH.start);
+  }
+  
+  // Ajouter les faits des époques débloquées
+  for (let id of ownedEpochs) {
+    if (FACTS_BY_EPOCH[id] && FACTS_BY_EPOCH[id].length) {
+      pool.push(...FACTS_BY_EPOCH[id]);
+    }
+  }
+  
+  // Sécurité : si pool est vide, on met une fact générique
+  if (pool.length === 0) {
+    return { type: "fait", text: "Le silence est aussi une révélation...", author: "Le Miroir" };
+  }
+  
   let idx;
   do { idx = Math.floor(Math.random() * pool.length); } while (idx === lastFactIdx && pool.length > 1);
   lastFactIdx = idx;
@@ -3368,57 +3384,67 @@ function load() {
     updateProgress();
     
     if (currentAct === 2) {
-      EPOCHS.length = 0;
-      ACT2_EPOCHS.forEach(e => EPOCHS.push(e));
-      Object.keys(SANCTUARIES).forEach(k => delete SANCTUARIES[k]);
-      Object.assign(SANCTUARIES, ACT2_SANCTUARIES);
-      Object.keys(MIRROR_FRAGMENTS).forEach(k => delete MIRROR_FRAGMENTS[k]);
-      Object.assign(MIRROR_FRAGMENTS, ACT2_MIRROR_FRAGMENTS);
-      Object.keys(MIRROR_CHRONICLES).forEach(k => delete MIRROR_CHRONICLES[k]);
-      Object.assign(MIRROR_CHRONICLES, ACT2_MIRROR_CHRONICLES);
-      Object.keys(FACTS_BY_EPOCH).forEach(k => delete FACTS_BY_EPOCH[k]);
-      Object.assign(FACTS_BY_EPOCH, ACT2_FACTS_BY_EPOCH);
-      EVENTS.length = 0;
-      ACT2_EVENTS.forEach(e => EVENTS.push(e));
-      
-      let theme = ACT2_EPOCHS[0].pal;
-      applyPalette(theme);
-      document.body.style.background = theme.bg1;
-      let subHeader = document.querySelector(".t-sub");
-      if (subHeader) subHeader.textContent = "Acte II — L'Heure du Verdict";
-      updateBadge();
-      renderSanctuaires();
-      renderMirror();
-      updateStats();
-      updateProgress();
-      
-      setTimeout(() => { checkOfflineGains(); saveTimestamp(); }, 100);
-    }
-    else if (currentAct === 3) {
-      EPOCHS.length = 0;
-      ACT3_EPOCHS.forEach(e => EPOCHS.push(e));
-      Object.keys(SANCTUARIES).forEach(k => delete SANCTUARIES[k]);
-      Object.assign(SANCTUARIES, ACT3_SANCTUARIES);
-      Object.keys(MIRROR_FRAGMENTS).forEach(k => delete MIRROR_FRAGMENTS[k]);
-      Object.assign(MIRROR_FRAGMENTS, ACT3_MIRROR_FRAGMENTS);
-      Object.keys(MIRROR_CHRONICLES).forEach(k => delete MIRROR_CHRONICLES[k]);
-      Object.assign(MIRROR_CHRONICLES, ACT3_MIRROR_CHRONICLES);
-      Object.keys(FACTS_BY_EPOCH).forEach(k => delete FACTS_BY_EPOCH[k]);
-      Object.assign(FACTS_BY_EPOCH, ACT3_FACTS_BY_EPOCH);
-      EVENTS.length = 0;
-      ACT3_EVENTS.forEach(e => EVENTS.push(e));
-      
-      let theme = ACT3_EPOCHS[0].pal;
-      applyPalette(theme);
-      document.body.style.background = theme.bg1;
-      let subHeader = document.querySelector(".t-sub");
-      if (subHeader) subHeader.textContent = "Acte III — L'Alliance des Deux Flammes";
-      updateBadge();
-      renderSanctuaires();
-      renderMirror();
-      updateStats();
-      updateProgress();
-      
+  EPOCHS.length = 0;
+  ACT2_EPOCHS.forEach(e => EPOCHS.push(e));
+  Object.keys(SANCTUARIES).forEach(k => delete SANCTUARIES[k]);
+  Object.assign(SANCTUARIES, ACT2_SANCTUARIES);
+  
+  // FUSION Acte 1 + Acte 2
+  const merged = {};
+  Object.assign(merged, ACT1_FACTS_BY_EPOCH);
+  Object.assign(merged, ACT2_FACTS_BY_EPOCH);
+  Object.keys(FACTS_BY_EPOCH).forEach(k => delete FACTS_BY_EPOCH[k]);
+  Object.assign(FACTS_BY_EPOCH, merged);
+  
+  Object.keys(MIRROR_FRAGMENTS).forEach(k => delete MIRROR_FRAGMENTS[k]);
+  Object.assign(MIRROR_FRAGMENTS, ACT2_MIRROR_FRAGMENTS);
+  Object.keys(MIRROR_CHRONICLES).forEach(k => delete MIRROR_CHRONICLES[k]);
+  Object.assign(MIRROR_CHRONICLES, ACT2_MIRROR_CHRONICLES);
+  EVENTS.length = 0;
+  ACT2_EVENTS.forEach(e => EVENTS.push(e));
+  
+  let theme = ACT2_EPOCHS[0].pal;
+  applyPalette(theme);
+  document.body.style.background = theme.bg1;
+  let subHeader = document.querySelector(".t-sub");
+  if (subHeader) subHeader.textContent = "Acte II — L'Heure du Verdict";
+  updateBadge();
+  renderSanctuaires();
+  renderMirror();
+  updateStats();
+  updateProgress();
+} else if (currentAct === 3) {
+  EPOCHS.length = 0;
+  ACT3_EPOCHS.forEach(e => EPOCHS.push(e));
+  Object.keys(SANCTUARIES).forEach(k => delete SANCTUARIES[k]);
+  Object.assign(SANCTUARIES, ACT3_SANCTUARIES);
+  
+  // FUSION Acte 1 + Acte 2 + Acte 3
+  const merged = {};
+  Object.assign(merged, ACT1_FACTS_BY_EPOCH);
+  Object.assign(merged, ACT2_FACTS_BY_EPOCH);
+  Object.assign(merged, ACT3_FACTS_BY_EPOCH);
+  Object.keys(FACTS_BY_EPOCH).forEach(k => delete FACTS_BY_EPOCH[k]);
+  Object.assign(FACTS_BY_EPOCH, merged);
+  
+  Object.keys(MIRROR_FRAGMENTS).forEach(k => delete MIRROR_FRAGMENTS[k]);
+  Object.assign(MIRROR_FRAGMENTS, ACT3_MIRROR_FRAGMENTS);
+  Object.keys(MIRROR_CHRONICLES).forEach(k => delete MIRROR_CHRONICLES[k]);
+  Object.assign(MIRROR_CHRONICLES, ACT3_MIRROR_CHRONICLES);
+  EVENTS.length = 0;
+  ACT3_EVENTS.forEach(e => EVENTS.push(e));
+  
+  let theme = ACT3_EPOCHS[0].pal;
+  applyPalette(theme);
+  document.body.style.background = theme.bg1;
+  let subHeader = document.querySelector(".t-sub");
+  if (subHeader) subHeader.textContent = "Acte III — L'Alliance des Deux Flammes";
+  updateBadge();
+  renderSanctuaires();
+  renderMirror();
+  updateStats();
+  updateProgress();
+   
       setTimeout(() => { checkOfflineGains(); saveTimestamp(); }, 100);
     }
     
