@@ -632,8 +632,6 @@ header{text-align:center;position:relative;z-index:1;padding:4px 0}
   </div>
 </div>
 <script>
-   let truncated = f.text.length > 180;
-$("factTxt").setAttribute("data-truncated", truncated);
 let totalCliches = 0;
 let lastUpdate = 0;
 let permanentGrimoire = [];      // stocke TOUTES les révélations des 3 actes
@@ -1655,7 +1653,15 @@ function showFact(f) {
   box.style.opacity = "0";
   setTimeout(() => {
     if ($("factType")) { $("factType").textContent = TYPE_LABELS[f.type] || f.type; $("factType").className = "fact-type " + (TYPE_CSS[f.type] || "tf"); }
-    if ($("factTxt")) { $("factTxt").textContent = f.text; $("factTxt").className = "fact-txt" + (f.type === "citation" ? " cit" : ""); }
+    if ($("factTxt")) { 
+    let textEl = $("factTxt");
+    textEl.textContent = f.text; 
+    textEl.className = "fact-txt" + (f.type === "citation" ? " cit" : "");
+    
+    // Gestion de la troncature
+    let isTruncated = f.text.length > 180;
+    textEl.setAttribute("data-truncated", isTruncated);
+}
     if ($("factAuth")) $("factAuth").textContent = f.author ? "— " + f.author : "";
     box.style.opacity = "1";
   }, 170);
