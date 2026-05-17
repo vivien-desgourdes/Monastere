@@ -3591,6 +3591,9 @@ function renderActProgress() {
 }
    
 function ritual(x, y) {
+   if (window.navigator && window.navigator.vibrate) {
+    window.navigator.vibrate(50);  // 50 millisecondes
+  }
   if (modalOpen) return;
   if (!window.mirrorPrologueShown && totalRituals === 0) {
     window.mirrorPrologueShown = true;
