@@ -11,6 +11,70 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
+   /* Défi quotidien */
+.daily-card {
+  background: linear-gradient(135deg, rgba(212,168,75,0.12), rgba(100,80,160,0.08));
+  border: 1px solid rgba(212,168,75,0.35);
+  border-radius: 40px;
+  padding: 8px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  animation: dailyPulse 2s ease-in-out infinite;
+}
+.daily-card.completed {
+  background: rgba(106,170,106,0.15);
+  border-color: #6aaa6a;
+  cursor: default;
+  animation: none;
+}
+.daily-card:not(.completed):hover {
+  background: rgba(212,168,75,0.22);
+  border-color: var(--acc);
+  transform: scale(1.01);
+}
+.daily-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 3px;
+  color: var(--accL);
+  margin-bottom: 4px;
+}
+.daily-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.daily-bar {
+  flex: 1;
+  height: 3px;
+  background: rgba(212,168,75,0.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.daily-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ember), var(--acc));
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+.daily-reward {
+  font-size: 0.45rem;
+  color: #9ab870;
+  font-family: 'Cinzel', serif;
+  margin-top: 5px;
+}
+.daily-countdown {
+  font-size: 0.45rem;
+  color: var(--accD);
+  font-family: monospace;
+  margin-top: 3px;
+}
+@keyframes dailyPulse {
+  0%, 100% { box-shadow: 0 0 0px rgba(212,168,75,0); }
+  50% { box-shadow: 0 0 12px rgba(212,168,75,0.3); }
+}
 *{box-sizing:border-box;user-select:none;margin:0;padding:0}
 body{background:#07050e;font-family:'IM Fell English',Georgia,serif;color:#f4e9cc;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:12px;gap:10px;transition:background 1.4s}
 :root{--acc:#d4a84b;--accL:#f0cc7a;--accD:#7a5a22;--ember:#c05c1a;--bg1:#07050e;--bg2:#0f0c1c;--parc:#f4e9cc;--parcD:#c9b98a;--mys:#7a5ab0;--border:rgba(212,168,75,0.28);--glow:rgba(212,120,30,0.28)}
@@ -291,6 +355,7 @@ header{text-align:center;position:relative;z-index:1;padding:4px 0}
 <div style="text-align:center;font-size:.55rem;color:var(--accD);font-family:'Cinzel',serif;letter-spacing:2px;margin-top:4px"><span id="ritualsCount">0</span> rituels accomplis</div>
 <div class="prog-row"><div class="prog-bar"><div class="prog-fill" id="globalProgFill" style="width:0%"></div></div><div class="prog-lbl" id="globalProgLbl">0 / 0 révélations</div></div>
 </div>
+   <div id="dailyChallengeContainer" style="margin-top: 12px;"></div>
 <div class="panel" style="margin-top:8px; max-height:180px; overflow:hidden; display:flex; flex-direction:column">
 <div class="panel-title" style="font-size:0.5rem; letter-spacing:2px">⚡ Dernières Révélations</div>
 <div id="recentScroll" style="overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:4px; scrollbar-width:thin; padding-right:3px; font-size:0.6rem"></div>
@@ -3348,6 +3413,167 @@ function save() {
   } catch(e) {}
 }
 
+ // ==================== DÉFI QUOTIDIEN ====================
+let dailyChallenge = {
+  active: true,
+  targetRituals: 0,
+  startTime: 0,
+  claimed: false,
+  reward: 0
+};
+
+function initDailyChallenge() {
+  let lastReset = localStorage.getItem("arcanum_dailyReset");
+  let today = new Date().toDateString();
+  
+  if (lastReset !== today) {
+    // Nouveau défi du jour
+    let baseTarget = 15 + Math.floor(Math.random() * 35); // entre 15 et 50
+    dailyChallenge = {
+      active: true,
+      targetRituals: baseTarget,
+      startTime: Date.now(),
+      claimed: false,
+      reward: 0
+    };
+    localStorage.setItem("arcanum_dailyReset", today);
+    localStorage.setItem("arcanum_daily", JSON.stringify({
+      target: dailyChallenge.targetRituals,
+      startTime: dailyChallenge.startTime,
+      claimed: false
+    }));
+  } else {
+    let saved = localStorage.getItem("arcanum_daily");
+    if (saved) {
+      let d = JSON.parse(saved);
+      dailyChallenge = {
+        active: true,
+        targetRituals: d.target,
+        startTime: d.startTime,
+        claimed: d.claimed || false,
+        reward: 0
+      };
+    } else {
+      // fallback
+      dailyChallenge.targetRituals = 25;
+      dailyChallenge.startTime = Date.now();
+      dailyChallenge.claimed = false;
+    }
+  }
+  
+  // Calculer la récompense (basée sur la puissance passive du joueur)
+  updateDailyReward();
+}
+
+function updateDailyReward() {
+  let baseReward = Math.max(5000, Math.floor(effectivePassive() * 60 * 3));
+  dailyChallenge.reward = baseReward;
+}
+
+function checkDailyChallenge() {
+  let container = document.getElementById("dailyChallengeContainer");
+  if (!container) return;
+  
+  updateDailyReward();
+  
+  if (dailyChallenge.claimed) {
+    container.innerHTML = `
+      <div class="daily-card completed" style="cursor:default;">
+        <div class="daily-title">✅ DÉFI RELEVÉ ✅</div>
+        <div class="daily-reward">+${fmt(dailyChallenge.reward)} Foi</div>
+        <div class="daily-countdown">Reviens demain pour un nouveau défi</div>
+      </div>
+    `;
+    return;
+  }
+  
+  let elapsed = (Date.now() - dailyChallenge.startTime) / 1000 / 60; // minutes
+  let remainingMinutes = Math.max(0, 10 - elapsed);
+  let remainingRituals = Math.max(0, dailyChallenge.targetRituals - totalRituals);
+  let progressPercent = (totalRituals / dailyChallenge.targetRituals) * 100;
+  
+  let canComplete = (totalRituals >= dailyChallenge.targetRituals && elapsed < 10);
+  
+  if (canComplete && !dailyChallenge.claimed) {
+    // Défi réussi !
+    dailyChallenge.claimed = true;
+    faith += dailyChallenge.reward;
+    updateStats();
+    saveDailyChallenge();
+    toast(`✨ DÉFI RÉUSSI ! +${fmt(dailyChallenge.reward)} Foi ✨`, 5000);
+    
+    // Animation de succès
+    let confetti = document.createElement("div");
+    confetti.style.cssText = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:4rem;z-index:9999;pointer-events:none;animation:floatUp 1s ease-out forwards;";
+    confetti.textContent = "🏆";
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 1000);
+    
+    container.innerHTML = `
+      <div class="daily-card completed" style="cursor:default;">
+        <div class="daily-title">✅ DÉFI RELEVÉ ✅</div>
+        <div class="daily-reward">+${fmt(dailyChallenge.reward)} Foi</div>
+        <div class="daily-countdown">Reviens demain pour un nouveau défi</div>
+      </div>
+    `;
+    save();
+    return;
+  }
+  
+  let timeDisplay = "";
+  if (elapsed < 10) {
+    let secLeft = Math.floor((10 - elapsed) * 60);
+    let minLeft = Math.floor(secLeft / 60);
+    let secLeftOnly = secLeft % 60;
+    timeDisplay = `⏱️ ${minLeft}:${secLeftOnly.toString().padStart(2,'0')} restant`;
+  } else {
+    timeDisplay = `⏰ Temps écoulé · Découvre demain`;
+  }
+  
+  let statusText = remainingRituals > 0 ? `${remainingRituals} rituel${remainingRituals > 1 ? 's' : ''} restant${remainingRituals > 1 ? 's' : ''}` : "Prêt à valider !";
+  
+  container.innerHTML = `
+    <div class="daily-card ${canComplete ? 'ready' : ''}" id="dailyCard">
+      <div class="daily-title">⚡ DÉFI DU MIROIR ⚡</div>
+      <div style="font-size:0.55rem; color:var(--parcD);">Accomplis ${dailyChallenge.targetRituals} rituels en 10 minutes</div>
+      <div class="daily-progress">
+        <div class="daily-bar"><div class="daily-fill" style="width:${Math.min(100, progressPercent)}%"></div></div>
+        <span style="font-size:0.5rem; color:var(--accL);">${totalRituals}/${dailyChallenge.targetRituals}</span>
+      </div>
+      <div class="daily-reward">🎁 Récompense : +${fmt(dailyChallenge.reward)} Foi</div>
+      <div class="daily-countdown">${timeDisplay}</div>
+      ${remainingRituals > 0 ? `<div style="font-size:0.45rem; color:var(--accD); margin-top:3px;">${statusText}</div>` : '<div style="font-size:0.45rem; color:#9ab870; margin-top:3px;">✨ Clique pour valider ! ✨</div>'}
+    </div>
+  `;
+  
+  // Ajouter l'événement de clic pour valider manuellement
+  let card = document.getElementById("dailyCard");
+  if (card && canComplete) {
+    card.onclick = () => {
+      if (totalRituals >= dailyChallenge.targetRituals && elapsed < 10 && !dailyChallenge.claimed) {
+        dailyChallenge.claimed = true;
+        faith += dailyChallenge.reward;
+        updateStats();
+        saveDailyChallenge();
+        toast(`✨ DÉFI RÉUSSI ! +${fmt(dailyChallenge.reward)} Foi ✨`, 5000);
+        checkDailyChallenge(); // refresh
+        save();
+      }
+    };
+  }
+}
+
+function saveDailyChallenge() {
+  localStorage.setItem("arcanum_daily", JSON.stringify({
+    target: dailyChallenge.targetRituals,
+    startTime: dailyChallenge.startTime,
+    claimed: dailyChallenge.claimed
+  }));
+}
+
+// Appeler initDailyChallenge() dans load()
+// Appeler checkDailyChallenge() régulièrement
+setInterval(() => { if(!modalOpen) checkDailyChallenge(); }, 2000);  
 function load() {
   try {
     let d = JSON.parse(localStorage.getItem("arcanumFides_v2") || "{}");
@@ -3382,6 +3608,8 @@ function load() {
     renderGrimoire();
     renderMirror();
     updateProgress();
+     initDailyChallenge();
+checkDailyChallenge();
     
     if (currentAct === 2) {
   EPOCHS.length = 0;
