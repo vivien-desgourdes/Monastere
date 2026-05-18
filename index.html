@@ -4028,8 +4028,8 @@ function _updateComboUI(combo, isDecay) {
       let pct = Math.min(100, Math.log2(combo) / Math.log2(40) * 100);
       fill.style.width = pct + "%";
       fill.style.background = combo >= 20
-        ? "linear-gradient(90deg,#ff2200,#ff7700)"
-        : combo >= 10
+        ? "linear-gradient(90deg,#f0cc7a,#d4af37)"
+             : combo >= 10
           ? "linear-gradient(90deg,#cc4400,#ff9933)"
           : "linear-gradient(90deg,#c05c1a,#f0cc7a)";
     } else {
