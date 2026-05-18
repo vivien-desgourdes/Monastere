@@ -3661,23 +3661,29 @@ function ritual(x, y) {
   let comboBonus = 1 + Math.min(clickCombo * 0.05, 2.0);
   gained = Math.round(gained * comboBonus);
   lastClickTime = now;
-
-  // Reset du timer de décroissance automatique
-  if (window._comboDecayTimer) clearTimeout(window._comboDecayTimer);
-  window._comboDecayTimer = setTimeout(() => {
-    // Décroissance progressive toutes les 200ms
-    function decayStep() {
-      if (clickCombo <= 1) {
-        clickCombo = 1;
-        _updateComboUI(1, true);
-        return;
-      }
-      clickCombo = Math.max(1, clickCombo - 1);
-      _updateComboUI(clickCombo, false);
-      window._comboDecayTimer = setTimeout(decayStep, 200);
+ 
+  // Reset du timer de décroissance — CHUTE EXPONENTIELLE
+if (window._comboDecayTimer) clearTimeout(window._comboDecayTimer);
+window._comboDecayTimer = setTimeout(() => {
+  function decayStep() {
+    if (clickCombo <= 1) {
+      clickCombo = 1;
+      _updateComboUI(1, true);
+      return;
     }
-    decayStep();
-  }, 900);
+    
+    // ❗ CHUTE RADICALE : plus le combo est haut, plus on perd vite
+    let loss = Math.max(1, Math.floor(clickCombo * 0.25));  // Perd 25% du combo actuel, minimum 1
+    clickCombo = Math.max(1, clickCombo - loss);
+    
+    _updateComboUI(clickCombo, false);
+    
+    // Accélération de la fréquence si combo encore élevé
+    let nextDelay = clickCombo > 10 ? 40 : (clickCombo > 5 ? 60 : 100);
+    window._comboDecayTimer = setTimeout(decayStep, nextDelay);
+  }
+  decayStep();
+}, 300);  // Délai avant la première chute : 300 ms (très court)
 
   _updateComboUI(clickCombo, prevCombo > clickCombo);
 
