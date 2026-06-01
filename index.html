@@ -3702,7 +3702,30 @@ function renderActProgress() {
     container.appendChild(progressDiv);
   }
 }
-   
+function _scheduleComboDecay() {
+  if (comboDecayInterval) clearInterval(comboDecayInterval);
+  
+  comboDecayInterval = setInterval(() => {
+    if (clickCombo <= 1) {
+      clearInterval(comboDecayInterval);
+      comboDecayInterval = null;
+      clickCombo = 1;
+      _updateComboUI(clickCombo, clickCombo);
+      return;
+    }
+    
+    let loss = Math.max(1, Math.floor(clickCombo * COMBO_DECAY_RATE));
+    let oldCombo = clickCombo;
+    clickCombo = Math.max(1, clickCombo - loss);
+    _updateComboUI(clickCombo, oldCombo);
+    
+    if (clickCombo <= 1) {
+      clearInterval(comboDecayInterval);
+      comboDecayInterval = null;
+    }
+  }, COMBO_DECAY_DELAY);
+}
+ 
 function ritual(x, y) {
    if (window.navigator && window.navigator.vibrate) {
     window.navigator.vibrate(30);  // 30 millisecondes
@@ -3718,18 +3741,31 @@ function ritual(x, y) {
     addRecent("rev", "Prologue", "Le Miroir de l'Âme est brisé. Ses fragments sont dispersés à travers les âges. Votre quête commence.", null);
     toast("🪞 Une voix ancienne : « Rassemble les éclats, chercheur... »", 5000);
   }
-  let gained = effectiveClick();
-  let now = Date.now();
-  let prevCombo = clickCombo;
-  if (now - lastClickTime < 800) {
-    clickCombo++;
-  } else {
-    clickCombo = 1;
-  }
-  // Combo illimité : bonus plafonné à ×3 (au-delà de combo 20) pour ne pas briser l'équilibre
-  let comboBonus = 1 + Math.min(clickCombo * 0.05, 2.0);
-  gained = Math.round(gained * comboBonus);
-  lastClickTime = now;
+let gained = effectiveClick();
+let now = Date.now();
+let oldCombo = clickCombo;
+
+if (now - lastClickTime < 800) {
+  clickCombo++;
+} else {
+  clickCombo = 1;
+}
+
+// Bonus plafonné
+let comboBonus = 1 + Math.min(clickCombo * 0.05, COMBO_MAX_BONUS - 1);
+gained = Math.round(gained * comboBonus);
+
+lastClickTime = now;
+
+// Reset du timer de décroissance
+_scheduleComboDecay();
+
+// Animation du texte combo
+let comboElem = document.getElementById("comboVal");
+if (comboElem) {
+  comboElem.classList.add("combo-flash");
+  setTimeout(() => comboElem.classList.remove("combo-flash"), 300);
+}
  
   // Reset du timer de décroissance — CHUTE EXPONENTIELLE
 if (window._comboDecayTimer) clearTimeout(window._comboDecayTimer);
