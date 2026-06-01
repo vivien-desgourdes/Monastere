@@ -3774,44 +3774,7 @@ if (comboElem) {
   setTimeout(() => comboElem.classList.remove("combo-flash"), 300);
 }
  
-  // Reset du timer de décroissance — CHUTE EXPONENTIELLE
-if (window._comboDecayTimer) clearTimeout(window._comboDecayTimer);
-window._comboDecayTimer = setTimeout(() => {
-  function decayStep() {
-    if (clickCombo <= 1) {
-      clickCombo = 1;
-      _updateComboUI(1, true);
-      return;
-    }
-    
-    // ❗ CHUTE RADICALE : plus le combo est haut, plus on perd vite
-    let loss = Math.max(1, Math.floor(clickCombo * 0.25));  // Perd 25% du combo actuel, minimum 1
-    clickCombo = Math.max(1, clickCombo - loss);
-    
-    _updateComboUI(clickCombo, false);
-    
-    // Accélération de la fréquence si combo encore élevé
-    let nextDelay = clickCombo > 10 ? 40 : (clickCombo > 5 ? 60 : 100);
-    window._comboDecayTimer = setTimeout(decayStep, nextDelay);
-  }
-  decayStep();
-}, 300);  // Délai avant la première chute : 300 ms (très court)
 
-  _updateComboUI(clickCombo, prevCombo > clickCombo);
-
-  let comboElem = document.getElementById("comboVal");
-  if (comboElem) { comboElem.classList.add("combo-flash"); setTimeout(() => comboElem.classList.remove("combo-flash"), 300); }
-
-  // Tooltip sur paliers
-  if (x !== undefined && y !== undefined && clickCombo > 1 && (clickCombo % 5 === 0 || clickCombo === 2)) {
-    let tip = document.createElement("div");
-    tip.className = "combo-tip";
-    tip.textContent = clickCombo >= 20 ? "🔥 COMBO ×" + clickCombo + " !" : clickCombo >= 10 ? "⚡ COMBO ×" + clickCombo : "✦ COMBO ×" + clickCombo;
-    tip.style.left = (x - 55) + "px";
-    tip.style.top  = (y - 50) + "px";
-    document.body.appendChild(tip);
-    setTimeout(() => tip.remove(), 1100);
-  }
   faith += gained;
   checkAndUnlockAchievements();
   totalRituals++;
