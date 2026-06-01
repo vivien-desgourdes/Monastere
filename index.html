@@ -875,7 +875,7 @@ const SANCTUARIES = {
   modern: [{ id: "golddawn", name: "🌐 Loge Golden Dawn", desc: "Yeats invoque les anges.", baseCost: 120000, basePassive: 800.0, baseClic: 950.0 },{ id: "theosophie", name: "🕊️ Société Théosophique", desc: "Doctrine secrète universelle.", baseCost: 160000, basePassive: 1300.0, baseClic: 1550.0 },{ id: "teilhard", name: "⚛️ Chapelle Cosmique", desc: "Le Christ Oméga réconcilie matière et esprit.", baseCost: 200000, basePassive: 2200.0, baseClic: 2600.0 }],
   ultima: [{ id: "axis", name: "🌀 L'Axe du Monde", desc: "Là où tous les mondes se rencontrent.", baseCost: 200000, basePassive: 2000.0, baseClic: 2400.0 },{ id: "noosphere", name: "🌐 Noosphère", desc: "La pensée unique devient prière.", baseCost: 350000, basePassive: 3400.0, baseClic: 4000.0 },{ id: "kenosis", name: "✨ Kenosis", desc: "Le vide sacré accueille le divin.", baseCost: 600000, basePassive: 5500.0, baseClic: 6500.0 }]
 };
-   const FACTS_BY_EPOCH = {
+      const FACTS_BY_EPOCH = {
   start: [
     { type: "fait",    epochId: "start", text: "Dans toutes les cultures humaines, les premiers guérisseurs sont aussi les premiers prêtres.", author: "Mircea Eliade" },
     { type: "citation",epochId: "start", text: "Au commencement était le Verbe, et le Verbe était avec Dieu.", author: "Jean 1,1" },
@@ -974,29 +974,6 @@ const SANCTUARIES = {
     { type: "citation",epochId: "ultima", text: "Au bout du voyage, tu ne sauras pas si tu as prié ou jeté un sort. Tu sauras seulement que tu as tendu la main vers quelque chose de plus grand que toi. Et que ça a répondu.", author: "Le Miroir de l'Âme — Fragment Terminal" }
   ]
 };
-   const ACT1_FACTS_BY_EPOCH = JSON.parse(JSON.stringify(FACTS_BY_EPOCH));
-const REVELATIONS = [
-  { at: 3,  title: "🕯️ La Prière & le Sort",         text: "Prier et lancer un sort sont nés du même geste : lever les mains vers l'invisible." },
-  { at: 5,  title: "🌿 L'Herbe et l'Offrande",        text: "La première plante cueillie sous la pleine lune n'était ni médecine ni magie : c'était les deux à la fois. Le geste de soin et le geste sacré ne se distinguaient pas." },
-  { at: 7,  title: "📜 Les Mots qui Guérissent",       text: "Les premières formules magiques étaient aussi des prières de guérison. Le médecin et le prêtre ne faisaient qu'un." },
-  { at: 10, title: "☩ Le Verbe Créateur",              text: "'Fiat Lux' ('Que la lumière soit') est structurellement identique à une incantation : une parole qui crée le réel." },
-  { at: 12, title: "🔥 Le Feu Sacré",                  text: "Prométhée vola le feu des dieux. Mais dans les textes zoroastriens, ce même feu est la prière faite matière. Voler le sacré — ou le recevoir — est toujours le même acte de foi." },
-  { at: 14, title: "🌊 Les Eaux du Baptême",           text: "L'eau bénite et l'eau enchantée partagent le même rituel originel : plonger, rincer, renaître. Les sorcières aussi se purifiaient dans les rivières au solstice." },
-  { at: 17, title: "🜂 L'Alchimiste en Prière",        text: "Dans les laboratoires alchimiques, on commençait toujours par une prière. La transmutation était un acte sacré autant que chimique." },
-  { at: 20, title: "✡️ Le Sceau de Salomon",           text: "Symbole à la fois juif, chrétien et magique. Il protège, guérit et invoque. La frontière entre prière et sortilège n'a jamais existé ici." },
-  { at: 22, title: "🕊️ L'Ange et le Démon",           text: "Le mot 'démon' vient du grec 'daimôn' : un esprit intermédiaire, ni bon ni mauvais. C'est la peur qui l'a transformé en monstre. La magie parlait aux daimônes. La religion aussi, avant." },
-  { at: 25, title: "🌙 La Vierge et la Sorcière",      text: "On a brûlé les unes, sanctifié l'autre. Pourtant, les deux parlaient aux mêmes forces invisibles. Marie qui intercède et la guérisseuse qui murmure sont sœurs." },
-  { at: 27, title: "🎴 Les Tarots de l'Église",        text: "Les premières cartes de tarot étaient imprimées dans des ateliers franciscains. Les mêmes mains qui copiaient des évangiles dessinaient les arcanes. La frontière était dans les yeux du regardeur." },
-  { at: 30, title: "🔮 Le Miroir d'Hermès",            text: "Ce qui est en haut est comme ce qui est en bas. La prière monte, la magie descend. Elles se rencontrent au milieu, dans le cœur de celui qui croit." },
-  { at: 32, title: "🌀 Le Labyrinthe de Chartres",     text: "Le labyrinthe de la cathédrale de Chartres était un lieu de pèlerinage — et aussi un mandala de méditation magique. On y marchait à genoux. On y traçait des cercles. Les pèlerins ne faisaient pas la différence." },
-  { at: 35, title: "⚡ La Transe Partagée",             text: "L'IRM le confirme : prière profonde et état de transe chamanique activent exactement les mêmes zones du cerveau. La science, sans le vouloir, vient de fusionner les deux traditions." },
-  { at: 37, title: "📿 Le Chapelet & la Croix de Rune", text: "Compter ses prières sur un chapelet, tracer des runes sur une pierre — le geste est identique. Répétition, concentration, intention. La foi se grave dans le corps avant de toucher le ciel." },
-  { at: 40, title: "🌑 L'Éclipse et la Prophétie",     text: "À Babylone, une éclipse était à la fois un présage céleste (magie) et un message divin (foi). Les prêtres-astronomes lisaient le ciel sans distinguer les deux lectures. Aujourd'hui encore, certains pleurent en regardant le soleil disparaître." },
-  { at: 42, title: "🪞 Le Miroir Presque Entier",      text: "Tu approches du cœur du mystère. Chaque fragment que tu réunis est une blessure de l'humanité qui se referme. La Foi et la Magie ne combattent que dans les mots — jamais dans le geste." },
-  { at: 44, title: "🌿 Hildegard von Bingen",           text: "Abbesse, prophétesse, guérisseuse. Elle entendait la voix de Dieu et prescrivait des herbes magiques. L'Église l'a canonisée. Née cent ans plus tard, on l'aurait brûlée. Le même savoir, deux destins selon l'époque." },
-  { at: 47, title: "🧬 L'ADN et le Souffle",           text: "La biologie moderne découvre que certaines pratiques méditatives modifient l'expression des gènes. Prier — longuement, sincèrement — change littéralement ce que ton corps est. Les anciens appelaient ça un miracle. Les chercheurs appellent ça une épigénétique." },
-  { at: 50, title: "✨ L'Unité Retrouvée",              text: "Au commencement, elles étaient une. À la fin, elles le redeviennent. Pas par décret, pas par dogme — mais par toi. Par chaque geste, chaque fragment, chaque révélation arrachée à l'oubli. Pour toujours." }
-];
 const MIRROR_CHRONICLES = {
   paleo: { title: "❄️ L'Éveil du Geste", text: "« Regarde à travers mes fissures... Je me souviens d'une grotte où la main de l'homme se posa sur la roche pour la première fois. <br><br>Il souffla sur ses doigts, mêlant son souffle au sang de la terre. À cet instant, je n'étais pas encore brisé ; j'étais l'unité pure. Il ne savait pas s'il priait l'aurochs ou s'il l'enchantait. <br><br><strong>Il faisait les deux. Et j'étais le témoin de ce premier souffle.</strong> »" },
   neolith: { title: "🌾 La Mère et la Terre", text: "« Je sens encore la chaleur de ce premier sillon. Le paysan murmurait à la graine des mots que tu appellerais aujourd'hui des psaumes, ou des sorts. <br><br>Pour moi, c'était la même musique. La Terre-Mère écoutait, et je reflétais un monde où chaque geste était sacré. <br><br><strong>Je grandissais alors, nourri par cette foi qui n'avait pas encore de frontières.</strong> »" },
