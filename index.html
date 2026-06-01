@@ -37,7 +37,6 @@ header{text-align:center;position:relative;z-index:1;padding:4px 0}
 @media(max-width:600px){#tab-ritual{grid-template-columns:1fr}}
 .epoch-badge{background:rgba(212,168,75,0.09);border:1px solid rgba(212,168,75,0.25);border-radius:40px;padding:3px 11px;font-family:'Cinzel',serif;font-size:0.54rem;letter-spacing:2px;color:var(--accL);display:inline-block;margin-bottom:7px}
 .fact-box{background:rgba(15,12,28,0.85);border:1px solid var(--acc);box-shadow:0 0 20px rgba(212,168,75,0.15);position:relative;overflow:hidden;width:100%;max-width:600px;margin:10px auto;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:14px 18px;clip-path:polygon(2% 5%,98% 0%,100% 92%,3% 100%,0% 50%);backdrop-filter:blur(4px);
-  /* HAUTEUR FIXE — la zone de rituel ne bouge plus */
   height: 148px;
   min-height: 148px;
   max-height: 148px;
@@ -1626,7 +1625,7 @@ let clickCombo = 0;
 let lastClickTime = 0;
 let comboDecayInterval = null;
 let COMBO_DECAY_DELAY = 800;      // délai avant décroissance (ms)
-let COMBO_DECAY_RATE = 0.12;       // 12% de perte par tick
+let COMBO_DECAY_RATE = 0.08;       // 8% de perte par tick
 let COMBO_MAX_BONUS = 2.5;         // bonus max ×2.5
 let faith = 0, totalRituals = 0, baseClick = 1, basePassive = 0;
 let ownedEpochs = new Set(), sanctuaryLevels = {};
@@ -3735,7 +3734,7 @@ function _scheduleComboDecay() {
  
 function ritual(x, y) {
    if (window.navigator && window.navigator.vibrate) {
-    window.navigator.vibrate(30);  // 30 millisecondes
+    window.navigator.vibrate(30);
   }
   if (modalOpen) return;
   if (!window.mirrorPrologueShown && totalRituals === 0) {
@@ -3748,11 +3747,12 @@ function ritual(x, y) {
     addRecent("rev", "Prologue", "Le Miroir de l'Âme est brisé. Ses fragments sont dispersés à travers les âges. Votre quête commence.", null);
     toast("🪞 Une voix ancienne : « Rassemble les éclats, chercheur... »", 5000);
   }
+  
 let gained = effectiveClick();
 let now = Date.now();
 let oldCombo = clickCombo;
 
-if (now - lastClickTime < 800) {
+if (now - lastClickTime < 1000) {
   clickCombo++;
 } else {
   clickCombo = 1;
@@ -3764,17 +3764,26 @@ gained = Math.round(gained * comboBonus);
 
 lastClickTime = now;
 
-// Reset du timer de décroissance
-_scheduleComboDecay();
+// RÉINITIALISATION COMPLÈTE du timer de décroissance
+if (comboDecayInterval) clearInterval(comboDecayInterval);
+comboDecayInterval = null;
+
+// Ne lancer une nouvelle décroissance que si combo > 1
+if (clickCombo > 1) {
+  _scheduleComboDecay();
+}
 
 // Animation du texte combo
 let comboElem = document.getElementById("comboVal");
 if (comboElem) {
+  comboElem.textContent = "×" + clickCombo;
   comboElem.classList.add("combo-flash");
-  setTimeout(() => comboElem.classList.remove("combo-flash"), 300);
+  setTimeout(() => comboElem.classList.remove("combo-flash"), 200);
 }
- 
 
+// Mise à jour de l'UI combo
+_updateComboUI(clickCombo, oldCombo);
+ 
   faith += gained;
   checkAndUnlockAchievements();
   totalRituals++;
@@ -4096,11 +4105,13 @@ function _updateComboUI(combo, oldCombo) {
   let fill  = document.getElementById("comboMeterFill");
   let val   = document.getElementById("comboVal");
   
-  if (val) {
+  if (val && val.textContent !== "×" + combo) {
     val.textContent = "×" + combo;
-    
-    // Animation de perte de combo
-    if (oldCombo !== undefined && combo < oldCombo) {
+  }
+  
+  // Animation de perte de combo
+  if (oldCombo !== undefined && combo < oldCombo) {
+    if (val) {
       val.classList.add("combo-loss");
       setTimeout(() => val.classList.remove("combo-loss"), 300);
     }
@@ -4115,8 +4126,8 @@ function _updateComboUI(combo, oldCombo) {
   if (meter && fill) {
     if (combo >= 2) {
       meter.classList.add("visible");
-      // Progression logarithmique : 100% à combo 40
-      let pct = Math.min(100, (Math.log(combo) / Math.log(40)) * 100);
+      // Progression logarithmique : 100% à combo 30
+      let pct = Math.min(100, (Math.log(combo) / Math.log(30)) * 100);
       fill.style.width = pct + "%";
       
       let color;
