@@ -1617,6 +1617,10 @@ const ACT3_EVENTS = [
 // ==================== ÉTAT ====================
 let clickCombo = 0;
 let lastClickTime = 0;
+let comboDecayInterval = null;
+let COMBO_DECAY_DELAY = 800;      // délai avant décroissance (ms)
+let COMBO_DECAY_RATE = 0.12;       // 12% de perte par tick
+let COMBO_MAX_BONUS = 2.5;         // bonus max ×2.5
 let faith = 0, totalRituals = 0, baseClick = 1, basePassive = 0;
 let ownedEpochs = new Set(), sanctuaryLevels = {};
 let discoveredFacts = new Set(), grimoireFacts = [], recentEntries = [], revealedSet = new Set(), triggeredEvents = new Set();
