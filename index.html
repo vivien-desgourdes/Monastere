@@ -503,7 +503,14 @@ header{text-align:center;position:relative;z-index:1;padding:4px 0}
   50%{opacity:0.12}
   100%{transform:translateY(-30px) rotate(5deg);opacity:0.05}
 }
-
+.combo-loss {
+  animation: comboLoss 0.3s ease-out;
+}
+@keyframes comboLoss {
+  0% { transform: scale(1); text-shadow: 0 0 0px #ff6633; }
+  50% { transform: scale(0.9); text-shadow: 0 0 12px #ff3300; color: #ff6633; }
+  100% { transform: scale(1); text-shadow: 0 0 0px #ff6633; }
+}
 /* Fade-in commun */
 @keyframes titleFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
@@ -4120,29 +4127,40 @@ document.getElementById("tutoHelpBtnInner")?.addEventListener("click", () => {
 });
 
 // ═══ UI COMBO ═══
-function _updateComboUI(combo, isDecay) {
+function _updateComboUI(combo, oldCombo) {
   let block = document.getElementById("comboBlock");
   let meter = document.getElementById("comboMeter");
   let fill  = document.getElementById("comboMeterFill");
   let val   = document.getElementById("comboVal");
-  if (val) val.textContent = "×" + combo;
+  
+  if (val) {
+    val.textContent = "×" + combo;
+    
+    // Animation de perte de combo
+    if (oldCombo !== undefined && combo < oldCombo) {
+      val.classList.add("combo-loss");
+      setTimeout(() => val.classList.remove("combo-loss"), 300);
+    }
+  }
+  
   if (block) {
-    block.classList.toggle("combo-on",  combo >= 2);
+    block.classList.toggle("combo-on", combo >= 2);
     block.classList.toggle("combo-hot", combo >= 10);
     block.classList.toggle("combo-max", combo >= 20);
-    if (isDecay) { block.classList.add("combo-decay"); setTimeout(() => block.classList.remove("combo-decay"), 400); }
   }
+  
   if (meter && fill) {
     if (combo >= 2) {
       meter.classList.add("visible");
-      // Remplissage logarithmique : atteint 100% vers combo ~40
-      let pct = Math.min(100, Math.log2(combo) / Math.log2(40) * 100);
+      // Progression logarithmique : 100% à combo 40
+      let pct = Math.min(100, (Math.log(combo) / Math.log(40)) * 100);
       fill.style.width = pct + "%";
-      fill.style.background = combo >= 20
-        ? "linear-gradient(90deg,#f0cc7a,#d4af37)"
-             : combo >= 10
-          ? "linear-gradient(90deg,#cc4400,#ff9933)"
-          : "linear-gradient(90deg,#c05c1a,#f0cc7a)";
+      
+      let color;
+      if (combo >= 20) color = "linear-gradient(90deg, #f0cc7a, #ffaa44)";
+      else if (combo >= 10) color = "linear-gradient(90deg, #ff6633, #ffaa44)";
+      else color = "linear-gradient(90deg, #c05c1a, #f0cc7a)";
+      fill.style.background = color;
     } else {
       meter.classList.remove("visible");
       fill.style.width = "0%";
