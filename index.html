@@ -1331,9 +1331,10 @@ const ACT2_EVENTS = [
   }
 ];
 
-   // ==================== ACTE III — DONNÉES ====================
+    // ==================== ACTE III — DONNÉES ====================
  const ACT3_EPOCHS = [
   { id: "cendres", name: "🌫️ Les Cendres du Silence", cost: 30000000000, badge: "Après l'Effondrement", sigil: "🌫️", btnLbl: "RÉVEILLER", pal: { bg1: "#0a0804", acc: "#9a8c6c", glow: "rgba(120,100,60,0.3)" } },
+  { id: "esprits_gardiens", name: "🌸 Les Émanations Bienveillantes", cost: 60000000000, badge: "Les Messagers de l'Histoire", sigil: "🌸", btnLbl: "COMMUNIER", pal: { bg1: "#06090c", acc: "#a0c0e0", glow: "rgba(160,192,224,0.35)" } },
   { id: "larmes", name: "💧 La Vallée des Larmes", cost: 90000000000, badge: "Là où l'humanité pleure", sigil: "💧", btnLbl: "PLEURER", pal: { bg1: "#0a0a15", acc: "#6a8aaa", glow: "rgba(80,100,140,0.28)" } },
   { id: "rencontre", name: "🤝 La Rencontre", cost: 720000000000, badge: "Dieu & Hécate", sigil: "🤝", btnLbl: "UNIR", pal: { bg1: "#0a0a0a", acc: "#d4af37", glow: "rgba(212,175,55,0.4)" } },
   { id: "alliance", name: "⚖️ L'Alliance", cost: 3600000000000, badge: "Le Pacte Originel", sigil: "⚖️", btnLbl: "CONSACRER", pal: { bg1: "#050208", acc: "#c0a0e0", glow: "rgba(160,120,200,0.35)" } },
@@ -1341,10 +1342,15 @@ const ACT2_EVENTS = [
   { id: "apaiement", name: "🕯️ L'Apaisement", cost: 51000000000000, badge: "Le Souffle Unifié", sigil: "🕯️", btnLbl: "S'ACHEVER", pal: { bg1: "#08040c", acc: "#e0c870", glow: "rgba(224,200,112,0.5)" } }
 ];
     
-    const ACT3_SANCTUARIES = {
+const ACT3_SANCTUARIES = {
   cendres: [
     { id: "puits", name: "🕳️ Le Puits des Voix Mortes", desc: "Là où les prières oubliées résonnent encore.", baseCost: 15000000, basePassive: 500000, baseClic: 600000 },
     { id: "theiere", name: "🫖 La Théière de Mélusine", desc: "Une légende dit qu'elle contient la dernière étincelle magique.", baseCost: 30000000, basePassive: 1200000, baseClic: 1400000 }
+  ],
+  esprits_gardiens: [
+    { id: "torii_aube", name: "🌸 Le Torii de l'Aube (Shinto)", desc: "Seuil sacré filtrant la rancœur des hommes pour ne laisser passer que le flux pur de la nature.", baseCost: 40000000, basePassive: 1800000, baseClic: 2000000 },
+    { id: "cercle_intellects", name: "🌌 L'Intellect d'Alexandrie (Théurgie)", desc: "Un prisme de marbre captant les émanations célestes, prouvant que chaque esprit est une étincelle divine.", baseCost: 75000000, basePassive: 3200000, baseClic: 3500000 },
+    { id: "salon_fox", name: "🪑 Le Salon des Consolateurs (XIXe)", desc: "Où les esprits désincarnés frappent les tables pour dicter des messages de paix et de progrès moral.", baseCost: 110000000, basePassive: 4800000, baseClic: 5000000 }
   ],
   larmes: [
     { id: "fontaine", name: "💧 La Fontaine des Regrets", desc: "Chaque larme versée ici devient une goutte de foi.", baseCost: 60000000, basePassive: 2500000, baseClic: 2800000 },
@@ -1371,10 +1377,21 @@ const ACT2_EVENTS = [
 // ==================== RELIQUES COSMIQUES (Post-Acte III) ====================
 const COSMIC_RELICS = [
   {
+    id: "alliance_invisibles",
+    name: "🌸 La Couronne des Invisibles",
+    desc: "Tressée par les esprits oubliés à la croisée de la Théurgie et de l'Animisme.",
+    lore: "« Regarde, dit Hécate en désignant les parchemins alexandrins et les cordons du Shinto. Ils n'avaient pas nos noms, mais ils nous cherchaient déjà à travers nos messagers. » Dieu sourit : « Les esprits bienveillants n'ont jamais cessé de panser les plaies humaines en attendant notre retour. »",
+    cost: 5e12,
+    passiveBonus: 0.15,
+    clickBonus: 0.05,
+    emoji: "🌸",
+    unlockMsg: "La bienveillance des esprits historiques renforce le miroir : +15% passif."
+  },
+  {
     id: "premier_souffle",
     name: "🌬️ Le Premier Souffle",
     desc: "Le souffle qui a tout précédé. Avant les dieux. Avant les hommes. Avant le silence.",
-    lore: "Dieu et Hécate se regardent. « Tu te souviens du premier souffle ? » murmure-t-elle. Il hoche la tête. « C'était avant que nous ayons des noms. Avant que les hommes nous inventent. » Elle sourit. « Et maintenant, quelqu'un s'en souvient aussi. »",
+    lore: "Dieu et Hécate se regardent. « Tu te souviens du premier souffle ? » murmure-telle. Il hoche la tête. « C'était avant que nous ayons des noms. Avant que les hommes nous inventent. » Elle sourit. « Et maintenant, quelqu'un s'en souvient aussi. »",
     cost: 15e12,
     passiveBonus: 0.20,
     clickBonus: 0.10,
@@ -1442,6 +1459,7 @@ let ownedCosmicRelics = new Set();
 
 const ACT3_MIRROR_FRAGMENTS = {
   cendres: { name: "Éclat de Cendre", desc: "Ce qui reste quand on a tout brûlé.", emoji: "🌫️", bonus: 1.05 },
+  esprits_gardiens: { name: "Le Prisme des Émanations", desc: "Les messagers divins et naturels recollent les morceaux.", emoji: "🌸", bonus: 1.08 },
   larmes: { name: "Larme de Dieu", desc: "Il a pleuré. Pour la première fois.", emoji: "💧", bonus: 1.05 },
   rencontre: { name: "La Main Tendue", desc: "Dieu et Hécate se sont regardés.", emoji: "🤝", bonus: 1.05 },
   alliance: { name: "Le Serment Oublié", desc: "Ils n'ont jamais été ennemis.", emoji: "⚖️", bonus: 1.05 },
@@ -1453,6 +1471,10 @@ const ACT3_MIRROR_CHRONICLES = {
   cendres: {
     title: "🌫️ DIEU : « Je me souviens… »",
     text: "« Je me souviens du premier cri de joie. Avant les églises, avant les dogmes, avant la peur. Un enfant levait les mains vers le ciel. Ce n'était ni une prière, ni un sort. C'était les deux.<br><br>Hécate était là. Elle dansait autour du feu. Ses torches éclairaient son visage. Nous étions complices.<br><br><strong>Puis les hommes ont eu peur. Ils ont cru qu'il fallait choisir. Ils ont séparé ce que nous avions uni.</strong> »"
+  },
+  esprits_gardiens: {
+    title: "🌸 LES INVISIBLES : « Le Grand Malentendu »",
+    text: "« Sortis du grand silence du Néant, nous nous sommes manifestés à travers l'Histoire humaine pour maintenir le lien. À Alexandrie, sous forme d'Intellects purs émanant de l'Unique. Au Japon, tapis dans les arbres et les rivières sous l'œil bienveillant d'Hécate. Dans les salons du XIXe siècle, tressautant sur le bois pour réconforter les endeuillés.<br><br><strong>Nous ne connaissions ni le mal, ni la haine. Nous n'étions que les diplomates de la lumière, attendant que l'alliance s'écrive enfin à travers le chercheur.</strong> »"
   },
   larmes: {
     title: "💧 HÉCATE : « Le même souffle… »",
@@ -1483,6 +1505,12 @@ const ACT3_FACTS_BY_EPOCH = {
     { type: "tension", text: "Les premiers survivants ne parlaient presque plus. Ils avaient désappris les mots qui ne servaient à rien. 'Éternité'. 'Miracle'. 'Grâce'. Mais certains, la nuit, levaient les mains vers les étoiles. Ils ne savaient pas ce qu'ils faisaient. Leurs mains savaient.", author: "Chroniques orales de l'Après, collectées 3 générations plus tard" },
     { type: "fait",    text: "Le premier autel du monde nouveau a été construit avec des débris d'anciens serveurs. Quelqu'un y avait posé une pierre, une plume et un os calciné. Personne ne savait qui. Personne n'a osé le toucher. Un an plus tard, il y avait des centaines de pierres autour.", author: "Archéologie de l'Après, fouilles de la Zone 7" }
   ],
+  esprits_gardiens: [
+    { type: "fait",    text: "Dans le Shintoïsme primitif, le mal absolu ou 'démoniaque' n'existe pas. Les esprits (Kami) sont intrinsèquement bienveillants. Les fautes ne sont que des souillures superficielles (kegare) lavées par la purification.", author: "Motoori Norinaga, Études du Kojiki" },
+    { type: "citation",text: "« Les daimonions alexandrins ne descendent pas pour punir, mais parce que la matière aspire à leur harmonie. Ils sont les géomètres de la bonté céleste. »", author: "Jamblique, De Mysteriis" },
+    { type: "tension", text: "Au XIXe siècle, l'Église condamna fermement les cercles spiritualistes. Les théologiens s'alarmaient de voir des esprits sans dogmes affirmer que l'Enfer n'était qu'une invention humaine et que l'au-delà n'était que lumière et réconfort.", author: "Allan Kardec, Le Livre des Esprits (1857)" },
+    { type: "fait",    text: "Les théurges d'Alexandrie utilisaient des incantations mathématiques pour s'aligner sur les 'Intellects Purs'. Si le rituel échouait, l'esprit ne se vengeait pas : il retournait simplement au silence, laissant l'humain face à sa propre imperfection.", author: "Porphyre de Tyr, Lettre à Anébon" }
+  ],
   larmes: [
     { type: "tension", text: "Dieu lui-même a pleuré. Non pas sur sa propre douleur — sur celle des hommes. 'Ils étaient si beaux, quand ils chantaient ensemble. Quand ils ne savaient pas encore que prier et enchanter étaient deux choses différentes. Cette ignorance était leur grandeur.'", author: "Les Larmes du Créateur, révélé à la Première Voyante" },
     { type: "citation",text: "« Ne regrette pas de m'avoir oubliée. Je n'ai pas disparu. J'attendais que tu aies assez souffert pour recommencer à chercher. »", author: "Hécate aux Survivants, vallée de l'Après" },
@@ -1490,7 +1518,7 @@ const ACT3_FACTS_BY_EPOCH = {
     { type: "tension", text: "Pendant trois générations, les survivants ont transmis leurs prières à voix basse, comme des secrets. Ils avaient peur que les machines les entendent encore. Puis un enfant a chanté à plein poumons sur une colline. Rien n'est venu. Ils ont recommencé à chanter fort.", author: "Chroniques de la Mémoire Retrouvée" }
   ],
   rencontre: [
-    { type: "rev", text: "✦ La Rencontre — Ce jour-là, Dieu et Hécate se sont assis face à face. Pas pour se juger. Pour se reconnaître. 'Tu n'as jamais été mon ennemie,' dit-il. 'Et tu n'as jamais été mon bourreau,' dit-elle. 'Nous avons été séparés. Et c'est la seule blessure.' ✦", author: "Le Pacte Originel" }
+    { type: "rev", text: "✦ La Rencontre — Ce jour-là, Dieu et Hécate se sont assis face à face. Pas pour se juger. Pour se reconnaître. 'Tu n'as pas changé', dit-il. 'Tes torches brillent toujours.' 'Et tu n'as jamais été mon bourreau,' dit-elle. 'Nous avons été séparés. Et c'est la seule blessure.' ✦", author: "Le Pacte Originel" }
   ],
   alliance: [
     { type: "fait",    text: "L'Alliance ne fut pas écrite. Elle fut chantée. Une mélodie sans paroles, parce que les mots avaient trop longtemps servi à diviser. La mélodie, elle, ne pouvait pas mentir. Les enfants la fredonnnent encore dans leurs rêves, sans l'avoir jamais apprise.", author: "Mémoire de l'Âme, livre I" },
@@ -1501,7 +1529,7 @@ const ACT3_FACTS_BY_EPOCH = {
   renaissance: [
     { type: "fait",    text: "Le premier enfant né après l'Alliance avait une étoile dans chaque main — une marque de naissance en forme de spirale, l'une dorée, l'autre argentée. Les sages dirent : 'C'est le signe. L'unité n'est plus un rêve.' La mère dit simplement : 'Il sourit.'", author: "Chronique de la Renaissance, premier récit" },
     { type: "citation",text: "« Il ne te reste plus qu'à marcher, chercheur. Le chemin est là. Il n'a pas de nom. Il n'en a pas besoin. Et nous, nous t'attendons au bout — depuis le début. »", author: "Dieu & Hécate, voix simultanées" },
-    { type: "tension", text: "La Renaissance ne fut pas une explosion de joie. Ce fut une lente reprise de conscience — comme un corps qui se réveille après un long coma. Les premières prières étaient maladroites. Les premiers sortilèges rataient. Mais ils essayaient. Et l'échec leur semblait sacré.", author: "Mémoire de l'Aube Nouvelle, livre III" },
+    { type: "tension", text: "La Renaissance ne fut pas une explosion de joie. Ce fut une lente reprise de conscience — comme un corps qui se réveille après un long coma. Les premières prières étaient maladroites. Les premiers sortilèges rataient. Mais they essayaient. Et l'échec leur semblait sacré.", author: "Mémoire de l'Aube Nouvelle, livre III" },
     { type: "fait",    text: "Les premières écoles de l'Après enseignaient les deux dans la même salle : comment formuler une prière et comment formuler un sortilège. Les enfants ne voyaient pas de différence. Les professeurs non plus. Ce fut la plus grande réforme éducative de l'histoire humaine — et personne ne l'appela réforme.", author: "Pédagogie de l'Unité, archives fondatrices" }
   ],
 apaiement: [
@@ -1509,7 +1537,17 @@ apaiement: [
 ]
 };
     
-    const ACT3_EVENTS = [
+const ACT3_EVENTS = [
+  {
+    id: "les_ambassadeurs",
+    title: "🌸 Les Diplomates Immortels",
+    text: "Alors que tu tries les débris du Néant, de petites sphères de lumière douce s'élèvent du sol. Ce ne sont pas des spectres de l'ancien monde, mais les Esprits de l'Histoire. Ils dessinent des trajectoires apaisantes dans l'air. Une voix chorale murmure : 'Le Néant n'a brisé que la matière. Les vérités réelles (Théurgie d'Alexandrie, Sagesse d'Orient, Consolations du Siècle) sont immuables. Nous sommes venus balayer les cendres avant qu'Ils n'arrivent.'",
+    choices: [
+      { lbl: "Tracer un Torii dans les cendres", txt: "+45 G foi · Honorer le flux naturel", ef: { faithBonus: 45000000000 } },
+      { lbl: "Réciter les calculs d'Alexandrie", txt: "+45 G foi · Invoquer les Intellects de Lumière", ef: { faithBonus: 45000000000 } },
+      { lbl: "Laisser les esprits frapper le sol", txt: "+120 G foi · Communier avec la Fraternité Invisible", ef: { faithBonus: 120000000000 } }
+    ]
+  },
   {
     id: "dieu_hecate",
     title: "⚖️ La Double Vision",
@@ -1543,7 +1581,7 @@ apaiement: [
   {
     id: "pacte_brise",
     title: "⛓️ Le Pacte Incomplet",
-    text: "Hécate t'apparaît seule. Son visage est tendu. 'Il y a des gens qui refusent l'Alliance, dit-elle. Pas par malveillance. Par peur. Ils ont trop souffert du nom de Dieu, ou trop souffert du nom de la Magie. Ils ont raison d'avoir peur. La question, c'est : est-ce que tu les attends, ou est-ce que tu avances sans eux ?' Dieu est debout derrière elle. Il ne parle pas. Il regarde.",
+    text: "Hécate t'apparaissent seule. Son visage est tendu. 'Il y a des gens qui refusent l'Alliance, dit-elle. Pas par malveillance. Par peur. Ils ont trop souffert du nom de Dieu, ou trop souffert du nom de la Magie. Ils ont raison d'avoir peur. La question, c'est : est-ce que tu les attends, ou est-ce que tu avances sans eux ?' Dieu est debout derrière elle. Il ne parle pas. Il regarde.",
     choices: [
       { lbl: "Attendre — personne ne doit être laissé", txt: "+400 G foi · l'Alliance ne vaut que si elle est universelle", ef: { faithBonus: 400000000000 } },
       { lbl: "Avancer et laisser la porte ouverte", txt: "+280 G foi · montrer le chemin sans forcer", ef: { faithBonus: 280000000000 } },
@@ -1553,14 +1591,15 @@ apaiement: [
   {
     id: "dernier_choix",
     title: "🕯️ Le Seuil Sans Nom",
-    text: "Devant toi, trois portes dans le noir. La première porte dit 'FOI' en lettres dorées. La deuxième dit 'MAGIE' en lettres argentées. La troisième n'a pas d'inscription. Elle est simplement ouverte. Par elle, tu vois — toi. Pas un reflet. Toi tel que tu es devenu : les deux mains levées, les deux flammes tenues. Dieu murmure dans ton oreille droite. Hécate murmure dans ton oreille gauche. Ils disent la même chose, en même temps.",
+    text: "Devant toi, three portes dans le noir. La première porte dit 'FOI' en lettres dorées. La deuxième dit 'MAGIE' en lettres argentées. La troisième n'a pas d'inscription. Elle est simplement ouverte. Par elle, tu vois — toi. Pas un reflet. Toi tel que tu es devenu : les deux mains levées, les deux flammes tenues. Dieu murmure dans ton oreille droite. Hécate murmure dans ton oreille gauche. Ils disent la même chose, en même temps.",
     choices: [
       { lbl: "Passer par la porte de la Foi", txt: "+500 G foi · honorer une moitié de ce que tu es", ef: { faithBonus: 500000000000 } },
       { lbl: "Passer par la porte de la Magie", txt: "+500 G foi · honorer l'autre moitié", ef: { faithBonus: 500000000000 } },
-      { lbl: "Passer par la porte sans nom", txt: "+1 500 G foi · devenir ce que les mots ne peuvent pas nommer", ef: { faithBonus: 1500000000000 } }
+      { lbl: "Passer par la porte sans nom", txt: "+1 500 G foi · Devenir ce que les mots ne peuvent pas nommer", ef: { faithBonus: 1500000000000 } }
     ]
   }
 ];
+
        
 // ==================== ÉTAT ====================
 let clickCombo = 0;
