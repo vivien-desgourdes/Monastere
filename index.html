@@ -4387,7 +4387,32 @@ window.addEventListener("resize", resizeStars);
   }
   requestAnimationFrame(animateStars);
 })(0);
+  // FORCER un seul onglet actif
+(function fixTabs() {
+  // Cacher tous les panneaux sauf celui qui doit être actif
+  let allPanes = document.querySelectorAll('.tab-pane');
+  let activeFound = false;
   
+  allPanes.forEach(pane => {
+    // Si le panneau a la classe active ET que c'est le premier trouvé
+    if (pane.classList.contains('active') && !activeFound) {
+      activeFound = true;
+      pane.style.display = 'block';
+    } else {
+      pane.classList.remove('active');
+      pane.style.display = 'none';
+    }
+  });
+  
+  // Si aucun panneau actif, activer rituel
+  if (!activeFound) {
+    let ritualPane = document.getElementById('tab-ritual');
+    if (ritualPane) {
+      ritualPane.classList.add('active');
+      ritualPane.style.display = 'block';
+    }
+  }
+})();
 </script>
 </body>
 </html>
