@@ -4388,29 +4388,56 @@ window.addEventListener("resize", resizeStars);
   requestAnimationFrame(animateStars);
 })(0);
   // FORCER un seul onglet actif
+// CORRECTION DES ONGLETS (propre)
 (function fixTabs() {
-  // Cacher tous les panneaux sauf celui qui doit être actif
-  let allPanes = document.querySelectorAll('.tab-pane');
-  let activeFound = false;
+  let btns = document.querySelectorAll('.tab-btn');
+  let panes = document.querySelectorAll('.tab-pane');
   
-  allPanes.forEach(pane => {
-    // Si le panneau a la classe active ET que c'est le premier trouvé
-    if (pane.classList.contains('active') && !activeFound) {
-      activeFound = true;
-      pane.style.display = 'block';
-    } else {
+  function activateTab(tabId) {
+    // Cacher tous les panneaux
+    panes.forEach(pane => {
       pane.classList.remove('active');
       pane.style.display = 'none';
+    });
+    // Désactiver tous les boutons
+    btns.forEach(btn => btn.classList.remove('active'));
+    
+    // Activer le bon panneau
+    let target = document.getElementById(tabId);
+    if (target) {
+      target.classList.add('active');
+      target.style.display = 'block';
     }
+    
+    // Activer le bon bouton
+    let correspondingBtn = document.querySelector(`.tab-btn[data-tab="${tabId.replace('tab-', '')}"]`);
+    if (correspondingBtn) correspondingBtn.classList.add('active');
+  }
+  
+  // Ajouter l'événement à chaque bouton
+  btns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      let targetId = 'tab-' + this.dataset.tab;
+      activateTab(targetId);
+      
+      // Supprimer la notification du Grimoire
+      if (this.dataset.tab === 'grimoire' && document.getElementById('grimoireNotif')) {
+        document.getElementById('grimoireNotif').style.display = 'none';
+      }
+      
+      // Re-rendre l'onglet des succès
+      if (this.dataset.tab === 'achievements' && typeof renderAchievementsTab === 'function') {
+        renderAchievementsTab();
+      }
+    });
   });
   
-  // Si aucun panneau actif, activer rituel
-  if (!activeFound) {
-    let ritualPane = document.getElementById('tab-ritual');
-    if (ritualPane) {
-      ritualPane.classList.add('active');
-      ritualPane.style.display = 'block';
-    }
+  // Au chargement, activer l'onglet par défaut
+  let defaultBtn = document.querySelector('.tab-btn.active');
+  if (defaultBtn) {
+    activateTab('tab-' + defaultBtn.dataset.tab);
+  } else {
+    activateTab('tab-ritual');
   }
 })();
 </script>
