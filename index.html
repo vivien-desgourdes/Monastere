@@ -4488,5 +4488,96 @@ window.addEventListener("resize", resizeStars);
   }
 })();
 </script>
+<!-- Cœurs montants dans les crédits -->
+<script>
+(function floatingHearts() {
+  const creditsSection = document.querySelector('#tab-parchemin .panel');
+  if (!creditsSection) return;
+  
+  let heartInterval = null;
+  let isVisible = false;
+  
+  function createHeart() {
+    if (!isVisible) return;
+    
+    const heart = document.createElement('div');
+    heart.innerHTML = '❤️';
+    heart.style.cssText = `
+      position: absolute;
+      pointer-events: none;
+      font-size: ${12 + Math.random() * 16}px;
+      color: rgba(212, 120, 140, ${0.3 + Math.random() * 0.4});
+      filter: drop-shadow(0 0 4px rgba(212, 100, 120, 0.5));
+      z-index: 10;
+      left: ${20 + Math.random() * (creditsSection.clientWidth - 40)}px;
+      bottom: 10px;
+      opacity: 0;
+      animation: floatHeart ${2 + Math.random() * 2}s ease-out forwards;
+    `;
+    
+    // Ajout de l'animation keyframe si elle n'existe pas
+    if (!document.querySelector('#heart-keyframes')) {
+      const style = document.createElement('style');
+      style.id = 'heart-keyframes';
+      style.textContent = `
+        @keyframes floatHeart {
+          0% {
+            opacity: 0;
+            transform: translateY(0) scale(0.5);
+          }
+          20% {
+            opacity: 0.8;
+            transform: translateY(-10px) scale(1);
+          }
+          80% {
+            opacity: 0.6;
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-80px) scale(1.2);
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    creditsSection.style.position = 'relative';
+    creditsSection.style.overflow = 'visible';
+    creditsSection.appendChild(heart);
+    
+    setTimeout(() => heart.remove(), 4000);
+  }
+  
+  // Observer pour détecter quand l'onglet Parchemin est visible
+  const observer = new MutationObserver(() => {
+    const parcheminPane = document.getElementById('tab-parchemin');
+    const wasVisible = isVisible;
+    isVisible = parcheminPane && parcheminPane.classList.contains('active');
+    
+    if (isVisible && !heartInterval) {
+      heartInterval = setInterval(() => {
+        if (isVisible) createHeart();
+      }, 800);
+    } else if (!isVisible && heartInterval) {
+      clearInterval(heartInterval);
+      heartInterval = null;
+    }
+  });
+  
+  observer.observe(document.body, {
+    attributes: true,
+    subtree: true,
+    attributeFilter: ['class']
+  });
+  
+  // Vérification initiale
+  const parcheminPane = document.getElementById('tab-parchemin');
+  isVisible = parcheminPane && parcheminPane.classList.contains('active');
+  if (isVisible) {
+    heartInterval = setInterval(() => createHeart(), 800);
+  }
+})();
+</script>
+ 
 </body>
 </html>
