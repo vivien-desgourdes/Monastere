@@ -4491,8 +4491,15 @@ window.addEventListener("resize", resizeStars);
 <!-- Cœurs montants dans les crédits -->
 <script>
 (function floatingHearts() {
-  const creditsSection = document.querySelector('#tab-parchemin .panel');
-  if (!creditsSection) return;
+  // Chercher la div qui contient "Sceau des Crédits"
+  let creditsDiv = null;
+  for (let div of document.querySelectorAll('#tab-parchemin .panel > div')) {
+    if (div.innerText.includes('Sceau des Crédits') || div.innerText.includes('Codex Arcanorum')) {
+      creditsDiv = div;
+      break;
+    }
+  }
+  if (!creditsDiv) return;
   
   let heartInterval = null;
   let isVisible = false;
@@ -4500,52 +4507,59 @@ window.addEventListener("resize", resizeStars);
   function createHeart() {
     if (!isVisible) return;
     
+    const rect = creditsDiv.getBoundingClientRect();
+    const panelRect = creditsDiv.parentElement?.getBoundingClientRect();
+    if (!rect.width) return;
+    
     const heart = document.createElement('div');
     heart.innerHTML = '❤️';
+    
+    // Position relative à la div des crédits
+    const leftPos = 15 + Math.random() * (rect.width - 30);
+    
     heart.style.cssText = `
       position: absolute;
       pointer-events: none;
       font-size: ${12 + Math.random() * 16}px;
-      color: rgba(212, 120, 140, ${0.3 + Math.random() * 0.4});
+      color: rgba(212, 120, 140, ${0.3 + Math.random() * 0.5});
       filter: drop-shadow(0 0 4px rgba(212, 100, 120, 0.5));
-      z-index: 10;
-      left: ${20 + Math.random() * (creditsSection.clientWidth - 40)}px;
-      bottom: 10px;
+      z-index: 100;
+      left: ${leftPos}px;
+      top: ${rect.height - 10}px;
       opacity: 0;
-      animation: floatHeart ${2 + Math.random() * 2}s ease-out forwards;
+      animation: floatHeart ${1.8 + Math.random() * 1.5}s ease-out forwards;
     `;
     
-    // Ajout de l'animation keyframe si elle n'existe pas
-    if (!document.querySelector('#heart-keyframes')) {
-      const style = document.createElement('style');
-      style.id = 'heart-keyframes';
-      style.textContent = `
-        @keyframes floatHeart {
-          0% {
-            opacity: 0;
-            transform: translateY(0) scale(0.5);
-          }
-          20% {
-            opacity: 0.8;
-            transform: translateY(-10px) scale(1);
-          }
-          80% {
-            opacity: 0.6;
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(-80px) scale(1.2);
-          }
+    creditsDiv.style.position = 'relative';
+    creditsDiv.appendChild(heart);
+    
+    setTimeout(() => heart.remove(), 3500);
+  }
+  
+  // Ajout de l'animation keyframe
+  if (!document.querySelector('#heart-keyframes')) {
+    const style = document.createElement('style');
+    style.id = 'heart-keyframes';
+    style.textContent = `
+      @keyframes floatHeart {
+        0% {
+          opacity: 0;
+          transform: translateY(0) scale(0.6);
         }
-      `;
-      document.head.appendChild(style);
-    }
-    
-    creditsSection.style.position = 'relative';
-    creditsSection.style.overflow = 'visible';
-    creditsSection.appendChild(heart);
-    
-    setTimeout(() => heart.remove(), 4000);
+        15% {
+          opacity: 0.9;
+          transform: translateY(-8px) scale(1);
+        }
+        85% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-70px) scale(1.1);
+        }
+      }
+    `;
+    document.head.appendChild(style);
   }
   
   // Observer pour détecter quand l'onglet Parchemin est visible
@@ -4556,8 +4570,8 @@ window.addEventListener("resize", resizeStars);
     
     if (isVisible && !heartInterval) {
       heartInterval = setInterval(() => {
-        if (isVisible) createHeart();
-      }, 800);
+        if (isVisible && creditsDiv && creditsDiv.isConnected) createHeart();
+      }, 700);
     } else if (!isVisible && heartInterval) {
       clearInterval(heartInterval);
       heartInterval = null;
@@ -4574,10 +4588,11 @@ window.addEventListener("resize", resizeStars);
   const parcheminPane = document.getElementById('tab-parchemin');
   isVisible = parcheminPane && parcheminPane.classList.contains('active');
   if (isVisible) {
-    heartInterval = setInterval(() => createHeart(), 800);
+    heartInterval = setInterval(() => createHeart(), 700);
   }
 })();
 </script>
+
  
 </body>
 </html>
