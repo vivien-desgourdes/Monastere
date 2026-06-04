@@ -4164,7 +4164,41 @@ function load() {
     updateProgress();
   }
 }
+function showToast(text) {
 
+  let t = document.createElement("div");
+
+  t.textContent = text;
+
+  t.style.position = "fixed";
+  t.style.left = "50%";
+  t.style.bottom = "30px";
+  t.style.transform = "translateX(-50%)";
+  t.style.background = "rgba(20,20,20,.95)";
+  t.style.color = "#d4af37";
+  t.style.padding = "12px 20px";
+  t.style.border = "1px solid #d4af37";
+  t.style.borderRadius = "10px";
+  t.style.zIndex = "99999";
+  t.style.fontSize = "14px";
+  t.style.opacity = "0";
+  t.style.transition = "opacity .3s";
+
+  document.body.appendChild(t);
+
+  requestAnimationFrame(() => {
+    t.style.opacity = "1";
+  });
+
+  setTimeout(() => {
+    t.style.opacity = "0";
+
+    setTimeout(() => {
+      t.remove();
+    }, 300);
+
+  }, 2500);
+ }
 let resetArmed = false;
 
 function resetGame() {
@@ -4173,7 +4207,7 @@ function resetGame() {
     resetArmed = true;
 
     showToast(
-      "⚠️ Cliquez une seconde fois sur Réinitialiser pour confirmer."
+      "⚠️ Une seconde invocation effacera toute trace de votre passage."
     );
 
     setTimeout(() => {
