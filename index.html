@@ -1726,6 +1726,7 @@ let mirrorFinalBonus = 1;
 let lastEventTime = 0;
 let unlockedAchievements = new Set();
 let achievementDates = {};
+let cycles = 0;
 
 const $ = id => document.getElementById(id);
 const TOTAL_REVELATIONS_POSSIBLES = Object.values(FACTS_BY_EPOCH).reduce((a,b) => a + b.length, 0) + REVELATIONS.length;
@@ -4009,13 +4010,14 @@ function checkOfflineGains() { let gainData = calculateOfflineGains(); if (gainD
 function save() {
   try {
     saveTimestamp();
-    localStorage.setItem("arcanumFides_v2", JSON.stringify({ faith, totalRituals, ownedEpochs: [...ownedEpochs], sanctuaryLevels, discoveredFacts: [...discoveredFacts], grimoireFacts: grimoireFacts.slice(0,200), revealedSet: [...revealedSet], triggeredEvents: [...triggeredEvents], recentEntries: recentEntries.slice(0,15), mirrorFragments: [...mirrorFragments], mirrorReunified, mirrorFinalChoice, mirrorFinalBonus, unlockedAchievements: [...unlockedAchievements], achievementDates, passBoost, clickBoostMult, clickCombo, lastClickTime, currentAct, ownedCosmicRelics: [...ownedCosmicRelics], permanentGrimoire: permanentGrimoire.slice(0,500), permanentDiscovered: [...permanentDiscovered] }));
+    localStorage.setItem("arcanumFides_v2", JSON.stringify({ faith, totalRituals, ownedEpochs: [...ownedEpochs], sanctuaryLevels, discoveredFacts: [...discoveredFacts], grimoireFacts: grimoireFacts.slice(0,200), revealedSet: [...revealedSet], triggeredEvents: [...triggeredEvents], recentEntries: recentEntries.slice(0,15), mirrorFragments: [...mirrorFragments], mirrorReunified, mirrorFinalChoice, mirrorFinalBonus, unlockedAchievements: [...unlockedAchievements], achievementDates, passBoost, clickBoostMult, clickCombo, lastClickTime, currentAct, ownedCosmicRelics: [...ownedCosmicRelics], cycles, permanentGrimoire: permanentGrimoire.slice(0,500), permanentDiscovered: [...permanentDiscovered] }));
   } catch(e) {}
 }
 
 function load() {
   try {
     let d = JSON.parse(localStorage.getItem("arcanumFides_v2") || "{}");
+    cycles = d.cycles || 0;
     faith = d.faith || 0;
     totalRituals = d.totalRituals || 0;
     ownedEpochs = new Set(d.ownedEpochs || []);
@@ -4047,7 +4049,7 @@ function load() {
     renderGrimoire();
     renderMirror();
     updateProgress();
-    
+   
     if (currentAct === 2) {
   EPOCHS.length = 0;
   ACT2_EPOCHS.forEach(e => EPOCHS.push(e));
@@ -4607,6 +4609,80 @@ window.addEventListener("resize", resizeStars);
     heartInterval = setInterval(() => createHeart(), 700);
   }
 })();
+
+function renaissance(){
+
+  if(!confirm(
+`✦ CONTINUER À MÉDITER ✦
+
+Le monde recommencera.
+
+Vous perdrez :
+• Foi
+• Sanctuaires
+• Fragments du Miroir actuels
+• Progression des actes
+
+Vous conserverez :
+• Succès
+• Grimoire permanent
+• Découvertes permanentes
+
+Commencer un nouveau Cycle ?`
+  )) return;
+
+  cycles++;
+
+  // Ressources
+  faith = 0;
+  totalRituals = 0;
+  clickCombo = 0;
+  lastClickTime = 0;
+
+  passBoost = 1;
+  clickBoostMult = 1;
+  mirrorFinalBonus = 1;
+
+  // Progression
+  currentAct = 1;
+
+  // Structures
+  ownedEpochs.clear();
+  sanctuaryLevels = {};
+
+  discoveredFacts.clear();
+  grimoireFacts = [];
+  revealedSet.clear();
+  recentEntries = [];
+  triggeredEvents.clear();
+
+  mirrorFragments.clear();
+  mirrorReunified = false;
+  mirrorFinalChoice = null;
+
+  ownedCosmicRelics.clear();
+
+  // Retour au contenu de l'Acte I
+  EPOCHS.length = 0;
+  ACT1_EPOCHS.forEach(e => EPOCHS.push(e));
+
+  Object.keys(SANCTUARIES).forEach(k => delete SANCTUARIES[k]);
+  Object.assign(SANCTUARIES, ACT1_SANCTUARIES);
+
+  Object.keys(MIRROR_FRAGMENTS).forEach(k => delete MIRROR_FRAGMENTS[k]);
+  Object.assign(MIRROR_FRAGMENTS, ACT1_MIRROR_FRAGMENTS);
+
+  Object.keys(MIRROR_CHRONICLES).forEach(k => delete MIRROR_CHRONICLES[k]);
+  Object.assign(MIRROR_CHRONICLES, ACT1_MIRROR_CHRONICLES);
+
+  Object.keys(FACTS_BY_EPOCH).forEach(k => delete FACTS_BY_EPOCH[k]);
+  Object.assign(FACTS_BY_EPOCH, ACT1_FACTS_BY_EPOCH);
+
+  save();
+
+  location.reload();
+}
+ 
 </script>
 
  
