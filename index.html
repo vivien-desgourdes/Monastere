@@ -1,5 +1,5 @@
 <!-- succes ligne 1735 -->
-<!-- débug ligne 773-->
+<!-- débug ligne 4124 - 4140-->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -769,26 +769,6 @@ header{text-align:center;position:relative;z-index:1;padding:4px 0}
 </div>
   
 <script>
-
-const DEBUG_FINAL = true;
-
-if (DEBUG_FINAL) {
-    startAct3();
-
-    mirrorFragments = new Set(Object.keys(MIRROR_FRAGMENTS));
-
-    for (let ep of EPOCHS) {
-        (SANCTUARIES[ep.id] || []).forEach(s => {
-            sanctuaryLevels[ep.id + "|" + s.id] = 10;
-        });
-    }
-
-    mirrorReunified = true;
-
-    renderMirror();
-    renderSanctuaires();
-    updateStats();
-}
  
 
 let totalCliches = 0;
@@ -4138,7 +4118,28 @@ function load() {
    
       setTimeout(() => { checkOfflineGains(); saveTimestamp(); }, 100);
     }
-    
+
+const DEBUG_FINAL = true;
+
+if (DEBUG_FINAL) {
+    startAct3();
+
+    mirrorFragments = new Set(Object.keys(MIRROR_FRAGMENTS));
+
+    for (let ep of EPOCHS) {
+        (SANCTUARIES[ep.id] || []).forEach(s => {
+            sanctuaryLevels[ep.id + "|" + s.id] = 10;
+        });
+    }
+
+    mirrorReunified = true;
+
+    renderMirror();
+    renderSanctuaires();
+    updateStats();
+}
+
+ 
     addRecent("fait", "Bienvenue", "Le grimoire s'ouvre devant vous.", null);
     let f = pickFact();
     showFact(f);
