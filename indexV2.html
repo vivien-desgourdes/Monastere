@@ -1,1 +1,1101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Codex Arcanorum — Le Miroir de l'Âme</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#07050e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
 
+  /* ===== BASE & RESET ===== */
+  *{box-sizing:border-box;user-select:none;margin:0;padding:0}
+  body{background:#07050e;font-family:'IM Fell English',Georgia,serif;color:#f4e9cc;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:12px;gap:10px;transition:background 1.4s}
+  :root{--acc:#d4a84b;--accL:#f0cc7a;--accD:#7a5a22;--ember:#c05c1a;--bg1:#07050e;--bg2:#0f0c1c;--parc:#f4e9cc;--parcD:#c9b98a;--mys:#7a5ab0;--border:rgba(212,168,75,0.28);--glow:rgba(212,120,30,0.28)}
+  
+  /* ===== CLASSES GÉNÉRIQUES ===== */
+  /* Modals */
+  .modal-standard { border: 2px solid var(--acc); background: linear-gradient(160deg, #0a0818, #050310); }
+  .modal-oculum { border: 2px solid #a0d8ef; background: linear-gradient(160deg, #050f1a, #020408); box-shadow: 0 0 40px rgba(0,160,220,0.3); }
+  .modal-alliance { border: 2px solid #d4af37; background: linear-gradient(160deg, #1a1520, #0a0810); box-shadow: 0 0 30px rgba(212,175,55,0.2); }
+  .modal-ultimate { border: 3px solid #d4af37; background: linear-gradient(160deg, #1a1520, #0a0810); box-shadow: 0 0 60px rgba(212,175,55,0.6); animation: modalUltimatePulse 1.5s ease-in-out infinite; }
+  
+  .modal-title-gold { font-size: 1.2rem; letter-spacing: 4px; text-shadow: 0 0 10px #d4af37; color: var(--accL); }
+  .modal-title-oculum { color: #a0d8ef; text-shadow: 0 0 15px #a0d8ef; font-size: 1.2rem; letter-spacing: 4px; }
+  .modal-title-standard { color: var(--accL); font-size: 1.2rem; letter-spacing: 4px; }
+  
+  .modal-text-italic { font-style: italic; font-size: 0.95rem; line-height: 1.7; max-height: 55vh; overflow-y: auto; padding-right: 10px; }
+  .modal-text-glow { color: #e0d8f0; }
+  .modal-text-standard { color: var(--parc); }
+  
+  .modal-close-standard { margin-top: 12px; border-color: var(--acc); color: var(--accL); }
+  .modal-close-oculum { border-color: #a0d8ef; color: #a0d8ef; }
+  .modal-close-alliance { border-color: #d4af37; color: #d4af37; }
+  
+  /* Bannières */
+  .guide-banner { margin-bottom: 14px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--acc); background: rgba(212,168,75,0.08); text-align: center; font-size: 0.75rem; line-height: 1.6; color: var(--parc); cursor: pointer; animation: guidePulse 2s ease-in-out infinite; }
+  .guide-banner-title { font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 3px; color: var(--accL); margin-bottom: 6px; }
+  .cosmic-banner { margin-bottom: 14px; padding: 12px 16px; border-radius: 14px; border: 1px solid #d4af37; background: rgba(212,175,55,0.1); text-align: center; font-size: 0.72rem; line-height: 1.6; color: var(--parc); animation: guidePulse 2s ease-in-out infinite; }
+  
+  /* Progress bars */
+  .progress-container { margin: 5px 0; }
+  .progress-fill-gradient { background: linear-gradient(90deg, var(--ember), var(--acc)); border-radius: 3px; transition: width 0.4s; }
+  .progress-fill-gold { background: linear-gradient(90deg, #b8a060, var(--acc)); border-radius: 3px; transition: width 0.4s; }
+  .progress-fill-oculum { background: linear-gradient(90deg, #1a6090, #a0d8ef); border-radius: 3px; transition: width 0.4s; }
+  .progress-bar-bg { background: rgba(212,168,75,0.1); border-radius: 3px; overflow: hidden; }
+  
+  /* Utilitaires */
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .flex-center { display: flex; align-items: center; justify-content: center; }
+  .flex-wrap { flex-wrap: wrap; }
+  .text-center { text-align: center; }
+  .text-italic { font-style: italic; }
+  .text-small { font-size: 0.7rem; }
+  .text-xs { font-size: 0.55rem; }
+  .text-muted { color: var(--parcD); }
+  .text-accent { color: var(--accL); }
+  .text-oculum { color: #a0d8ef; }
+  .text-alliance { color: #d4af37; }
+  .mt-1 { margin-top: 4px; }
+  .mt-2 { margin-top: 8px; }
+  .mt-3 { margin-top: 12px; }
+  .mt-4 { margin-top: 16px; }
+  .mb-1 { margin-bottom: 4px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-3 { margin-bottom: 12px; }
+  .mb-4 { margin-bottom: 16px; }
+  .p-2 { padding: 8px; }
+  .p-3 { padding: 12px; }
+  .border-left-accent { border-left: 3px solid var(--acc); padding-left: 12px; }
+  .border-top-accent { border-top: 1px solid var(--border); padding-top: 16px; }
+  
+  /* Animations */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes modalUltimatePulse { 0%,100% { box-shadow: 0 0 30px rgba(212,175,55,0.3); } 50% { box-shadow: 0 0 70px rgba(212,175,55,0.8); } }
+  @keyframes guidePulse { 0%,100% { box-shadow: 0 0 8px rgba(212,168,75,0.2); border-color: rgba(212,168,75,0.4); } 50% { box-shadow: 0 0 22px rgba(212,168,75,0.5); border-color: var(--accL); } }
+  @keyframes floatHeart { 0% { opacity: 0; transform: translateY(0) scale(0.6); } 15% { opacity: 0.9; transform: translateY(-8px) scale(1); } 85% { opacity: 0.5; } 100% { opacity: 0; transform: translateY(-70px) scale(1.1); } }
+  @keyframes waveExpand { 0% { transform: scale(0.2); opacity: 0.8; } 100% { transform: scale(2); opacity: 0; } }
+  @keyframes riseRune { 0% { opacity: 0.9; transform: translateY(0) scale(0.8); filter: blur(0px); } 30% { opacity: 1; transform: translateY(-15px) scale(1); } 100% { opacity: 0; transform: translateY(-70px) scale(0.5); filter: blur(4px); } }
+  @keyframes sparkOut { 0% { opacity: 0.9; transform: scale(1); } 100% { opacity: 0; transform: scale(0.2) translateY(-20px); } }
+  @keyframes circlePulse { 0% { width: 0; height: 0; margin-left: 0; margin-top: 0; opacity: 0.8; } 50% { opacity: 0.5; } 100% { width: 90px; height: 90px; margin-left: -45px; margin-top: -45px; opacity: 0; } }
+  @keyframes comboGlow { 0% { text-shadow: 0 0 0px var(--accL); } 50% { text-shadow: 0 0 15px var(--accL); } 100% { text-shadow: 0 0 0px var(--accL); } }
+  @keyframes comboFire { 0% { transform: scale(1); } 100% { transform: scale(1.14); } }
+  @keyframes comboBurst { 0% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes comboTipAnim { 0% { opacity: 1; transform: translateY(0) scale(0.85); } 20% { opacity: 1; transform: translateY(-12px) scale(1.05); } 100% { opacity: 0; transform: translateY(-50px) scale(0.7); } }
+  @keyframes comboDecay { 0% { transform: scale(0.9); opacity: 0.6; } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes comboLoss { 0% { transform: scale(1); text-shadow: 0 0 0px #ff6633; } 50% { transform: scale(0.9); text-shadow: 0 0 12px #ff3300; color: #ff6633; } 100% { transform: scale(1); text-shadow: 0 0 0px #ff6633; } }
+  @keyframes mirrorShine { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
+  @keyframes shardGlow { 0%,100% { box-shadow: 0 0 5px rgba(212,168,75,0.3); } 50% { box-shadow: 0 0 18px rgba(212,168,75,0.7); } }
+  @keyframes completePulse { 0%,100% { border-color: rgba(212,168,75,0.4); background: rgba(212,168,75,0.08); } 50% { border-color: rgba(212,168,75,0.9); background: rgba(212,168,75,0.18); } }
+  @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes endTitleShimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  @keyframes endSymbolFloat { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
+  @keyframes endParticleDrift { 0% { transform: translateY(110vh); opacity: 0; } 8% { opacity: 0.8; } 88% { opacity: 0.2; } 100% { transform: translateY(-10vh); opacity: 0; } }
+  @keyframes ringRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes sigilPulse { 0%,100% { box-shadow: 0 0 0 2px rgba(212,168,75,0.3),0 0 30px rgba(212,100,30,0.35),0 0 60px rgba(212,100,30,0.1); } 50% { box-shadow: 0 0 0 4px rgba(212,168,75,0.5),0 0 50px rgba(212,100,30,0.6),0 0 100px rgba(212,100,30,0.25); } }
+  @keyframes titleFadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes titleShimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  @keyframes gemPulse { 0%,100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.4); opacity: 1; } }
+  @keyframes enterGlow { 0%,100% { box-shadow: 0 0 8px rgba(212,168,75,0.1); } 50% { box-shadow: 0 0 24px rgba(212,168,75,0.3),0 0 50px rgba(192,100,30,0.12); } }
+  @keyframes floatRune { 0% { transform: translateY(0) rotate(0deg); opacity: 0.05; } 50% { opacity: 0.12; } 100% { transform: translateY(-30px) rotate(5deg); opacity: 0.05; } }
+  @keyframes passiveFloat { 0% { opacity: 0; transform: translateY(0) scale(0.7); } 18% { opacity: 1; transform: translateY(-8px) scale(1); } 70% { opacity: 0.85; transform: translateY(-28px) scale(0.95); } 100% { opacity: 0; transform: translateY(-48px) scale(0.6); filter: blur(2px); } }
+  @keyframes passiveDot { 0% { opacity: 0; transform: translateY(0) scale(0); } 20% { opacity: 0.8; transform: translateY(-6px) scale(1); } 100% { opacity: 0; transform: translateY(-30px) scale(0.4); } }
+  @keyframes sanctPulse { 0%,100% { box-shadow: 0 0 0px rgba(212,168,75,0); } 50% { box-shadow: 0 0 10px rgba(212,168,75,0.22), inset 0 0 6px rgba(212,168,75,0.08); } }
+  @keyframes cosmicShine { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+  @keyframes oculumPulse { 0% { box-shadow: 0 0 30px rgba(0,160,220,0.4), inset 0 0 20px rgba(0,80,160,0.2); } 50% { box-shadow: 0 0 80px rgba(0,200,255,0.8), inset 0 0 50px rgba(0,120,200,0.4); } 100% { box-shadow: 0 0 30px rgba(0,160,220,0.4), inset 0 0 20px rgba(0,80,160,0.2); } }
+  @keyframes magnumPulse { 0% { box-shadow: 0 0 30px rgba(212,175,55,0.4), inset 0 0 20px rgba(180,140,30,0.2); } 50% { box-shadow: 0 0 80px rgba(255,215,0,0.8), inset 0 0 50px rgba(212,175,55,0.4); } 100% { box-shadow: 0 0 30px rgba(212,175,55,0.4), inset 0 0 20px rgba(180,140,30,0.2); } }
+  @keyframes magnumEntrance { 0% { transform: scale(0.1) rotate(-15deg); opacity: 0; } 60% { transform: scale(1.06) rotate(2deg); } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+  
+  .fade-in { animation: fadeIn 0.3s ease; }
+  .slide-up { animation: slideUp 0.35s ease; }
+  .combo-flash { animation: comboGlow 0.3s ease-out; }
+  .combo-burst { animation: comboBurst 0.22s ease-out; }
+  .combo-loss { animation: comboLoss 0.3s ease-out; }
+  
+  /* ===== RESTE DES STYLES ORIGINAUX ===== */
+  #starsCanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.45}
+  header{text-align:center;position:relative;z-index:1;padding:4px 0}
+  .t-main{font-family:'Cinzel Decorative',serif;font-size:clamp(1rem,3vw,1.8rem);background:linear-gradient(135deg,#f0cc7a,var(--ember) 50%,#f0cc7a);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:2px}
+  .t-sub{font-family:'Cinzel',serif;font-size:0.58rem;color:var(--accD);letter-spacing:4px;text-transform:uppercase;margin-top:2px}
+  .stat-bar{display:flex;align-items:center;background:rgba(0,0,0,0.5);border:1px solid var(--border);border-radius:40px;padding:6px 14px;width:100%;max-width:700px;z-index:1;justify-content:space-between}
+  .sb-block{text-align:center;flex:1}
+  .sb-val{font-family:'Cinzel',serif;font-size:1.3rem;color:var(--accL);text-shadow:0 0 8px var(--glow);display:block;line-height:1.1}
+  .sb-lbl{font-size:0.5rem;letter-spacing:2px;color:var(--accD);text-transform:uppercase}
+  .sb-div{width:1px;height:26px;background:var(--border)}
+  .tabs{display:flex;gap:4px;width:100%;max-width:900px;position:relative;z-index:2;flex-wrap:wrap}
+  .tab-btn{flex:1;padding:8px 3px;border:1px solid var(--border);background:rgba(0,0,0,0.4);border-radius:12px;font-family:'Cinzel',serif;font-size:0.63rem;letter-spacing:1px;color:var(--accD);cursor:pointer;text-align:center;transition:all 0.2s;position:relative}
+  .tab-btn.active{background:rgba(212,168,75,0.12);border-color:var(--acc);color:var(--accL)}
+  .tab-btn .notif{position:absolute;top:-4px;right:-4px;background:var(--ember);color:#fff;border-radius:50%;width:14px;height:14px;font-size:0.48rem;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif}
+  .tab-pane{display:none;width:100%;max-width:900px;z-index:1}
+  .tab-pane.active{display:block}
+  .panel{background:linear-gradient(160deg,var(--bg2),var(--bg1));border:1px solid var(--border);border-radius:18px;padding:14px;position:relative;overflow:hidden}
+  .panel::before{content:'';position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(212,168,75,0.04) 0%,transparent 50%);pointer-events:none}
+  .panel-title{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--acc);border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px}
+  #tab-ritual{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:600px){#tab-ritual{grid-template-columns:1fr}}
+  .epoch-badge{background:rgba(212,168,75,0.09);border:1px solid rgba(212,168,75,0.25);border-radius:40px;padding:3px 11px;font-family:'Cinzel',serif;font-size:0.54rem;letter-spacing:2px;color:var(--accL);display:inline-block;margin-bottom:7px}
+  .fact-box{background:rgba(15,12,28,0.85);border:1px solid var(--acc);box-shadow:0 0 20px rgba(212,168,75,0.15);position:relative;overflow:hidden;width:100%;max-width:600px;margin:10px auto;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:14px 18px;clip-path:polygon(2% 5%,98% 0%,100% 92%,3% 100%,0% 50%);backdrop-filter:blur(4px);height:148px;min-height:148px;max-height:148px}
+  .fact-box::after{content:"";position:absolute;top:-50%;left:-150%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(255,255,255,0.1),transparent);transform:rotate(45deg);animation:mirrorShine 8s cubic-bezier(0.4,0,0.6,1) infinite;pointer-events:none}
+  .fact-txt{display:block;width:100%;word-break:normal;overflow-wrap:anywhere}
+  .fact-type{font-family:'Cinzel',serif;font-size:0.48rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:2px;flex-shrink:0}
+  .fact-type.tf{color:var(--ember)}.fact-type.tc{color:var(--mys)}.fact-type.tt{color:#6a9a6a}
+  .fact-inner{overflow:hidden;flex:1;display:flex;align-items:center;width:100%}
+  .fact-txt{font-size:0.76rem;line-height:1.42;color:var(--parc);font-style:italic;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;width:100%;word-break:break-word}
+  .fact-txt.cit{font-size:0.8rem;color:#e0d8f4;-webkit-line-clamp:4}
+  .fact-auth{font-size:0.52rem;color:var(--accD);margin-top:3px;font-family:'Cinzel',serif;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+  .ritual-wrap{display:flex;justify-content:center;margin:8px 0}
+  .ritual-btn{width:126px;height:126px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 35% 30%,#f5cc7a,#a04010 60%,#6a2a08);animation:pglow 3.2s ease-in-out infinite;transition:transform 0.06s;outline:none}
+  .ritual-btn:active{transform:scale(0.92);animation:none}
+  .ritual-inner{width:100%;height:100%;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;pointer-events:none}
+  .ritual-btn .sigil{font-size:1.85rem;filter:drop-shadow(0 0 6px rgba(255,220,120,0.6))}
+  .ritual-btn .blbl{font-family:'Cinzel',serif;font-size:0.46rem;letter-spacing:3px;color:#fff9e8}
+  @keyframes pglow{0%,100%{box-shadow:0 0 0 2px rgba(212,168,75,0.4),0 0 0 5px rgba(212,168,75,0.07),0 10px 25px rgba(0,0,0,0.7),0 0 18px var(--glow),inset 0 1px 2px rgba(255,240,180,0.4)}50%{box-shadow:0 0 0 3px rgba(240,200,100,0.7),0 0 0 11px rgba(212,168,75,0.12),0 10px 25px rgba(0,0,0,0.7),0 0 42px var(--glow),inset 0 1px 2px rgba(255,240,180,0.4)}}
+  .prog-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .prog-bar{flex:1;height:3px;background:rgba(212,168,75,0.1);border-radius:3px;overflow:hidden}
+  .prog-fill{height:100%;background:linear-gradient(90deg,var(--ember),var(--acc));border-radius:3px;transition:width 0.4s}
+  .prog-lbl{font-family:'Cinzel',serif;font-size:0.5rem;color:var(--accD);white-space:nowrap}
+  .epoch-section{background:rgba(0,0,0,0.28);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px}
+  .epoch-head{padding:9px 13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:rgba(212,168,75,0.05)}
+  .epoch-head-name{font-family:'Cinzel',serif;font-size:0.72rem;color:var(--accL);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .epoch-head-cost{font-family:'Cinzel',serif;font-size:0.58rem;color:var(--accD)}
+  .epoch-head.owned .epoch-head-cost{color:#6aaa6a}
+  .epoch-head.locked{opacity:0.3;cursor:default}
+  .ebar{height:2px;background:rgba(212,168,75,0.08);border-radius:2px;margin-top:5px;overflow:hidden;width:100%}
+  .efill{height:100%;background:linear-gradient(90deg,var(--ember),var(--acc));border-radius:2px;transition:width 0.3s}
+  .sanctuaries-grid{padding:8px;display:flex;flex-direction:column;gap:6px}
+  .sanct-card{background:rgba(0,0,0,0.3);border:1px solid rgba(212,168,75,0.14);border-radius:10px;padding:8px 10px;transition:all 0.15s}
+  .sanct-card.buyable{border-color:rgba(212,168,75,0.45);cursor:pointer;background:rgba(212,168,75,0.05)}
+  .sanct-card.buyable:hover{border-color:var(--acc);background:rgba(212,168,75,0.1);transform:translateX(2px)}
+  .sanct-card.locked{opacity:0.60}
+  .sanct-head{display:flex;justify-content:space-between;align-items:flex-start;gap:5px}
+  .sanct-name{font-family:'Cinzel',serif;font-size:0.7rem;color:var(--accL)}
+  .sanct-status{font-family:'Cinzel',serif;font-size:0.56rem;color:var(--accD)}
+  .sanct-card.owned .sanct-status{color:#6aaa6a}
+  .sanct-desc{font-size:0.63rem;color:var(--parcD);margin-top:2px;font-style:italic}
+  .sanct-bonus{font-size:0.58rem;color:#9ab870;margin-top:3px;font-family:'Cinzel',serif}
+  .lvl-bar{height:2px;background:rgba(212,168,75,0.08);border-radius:2px;margin-top:4px;overflow:hidden}
+  .lvl-fill{height:100%;background:linear-gradient(90deg,#6a9a6a,#9ab870);border-radius:2px;transition:width 0.3s}
+  .grim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px}
+  .grim-total{font-family:'Cinzel',serif;font-size:0.58rem;color:var(--accD)}
+  .grim-filters{display:flex;gap:5px}
+  .grim-filter{background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-family:'Cinzel',serif;font-size:0.52rem;color:var(--accD);cursor:pointer}
+  .grim-filter.active{background:rgba(212,168,75,0.14);border-color:var(--acc);color:var(--accL)}
+  .grim-epoch-section{margin-bottom:12px}
+  .grim-epoch-title{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--acc);border-bottom:1px solid var(--border);padding-bottom:4px;margin-bottom:7px;display:flex;justify-content:space-between}
+  .grim-count{font-size:0.52rem;color:var(--accD)}
+  .grim-entry{background:rgba(0,0,0,0.32);border-radius:10px;padding:10px 12px;margin-bottom:6px;animation:slideIn 0.25s ease;border-left:3px solid transparent}
+  @keyframes slideIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+  .grim-entry.tf{border-left-color:var(--ember);background:rgba(74,48,128,0.15)}
+  .grim-entry.tc{border-left-color:var(--mys);background:rgba(100,80,160,0.12)}
+  .grim-entry.tt{border-left-color:#6a9a6a;background:rgba(40,80,40,0.15)}
+  .grim-entry.rev{border-left-color:#5a8ac0;background:rgba(30,50,90,0.28)}
+  .ge-type{font-family:'Cinzel',serif;font-size:0.48rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:3px}
+  .ge-type.tf{color:var(--ember)}.ge-type.tc{color:var(--mys)}.ge-type.tt{color:#6a9a6a}.ge-type.rev{color:#5a8ac0}
+  .ge-text{font-size:0.78rem;line-height:1.52;color:var(--parc);font-style:italic}
+  .ge-text.cit{font-size:0.84rem;color:#e0d8f4}
+  .ge-auth{font-size:0.56rem;color:var(--accD);margin-top:3px;font-family:'Cinzel',serif}
+  .grim-empty{font-size:0.72rem;color:var(--accD);font-style:italic;text-align:center;padding:20px;opacity:0.6}
+  .grim-scroll{max-height:60vh;overflow-y:auto;scrollbar-width:thin;padding-right:4px}
+  .modal-ov{position:fixed;inset:0;z-index:2000;background:rgba(2,1,8,0.84);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;animation:fadein 0.3s ease}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .modal-box{background:linear-gradient(160deg,#100e20,#080614);border-radius:18px;padding:24px 22px;max-width:520px;width:100%;position:relative}
+  .modal-border{position:absolute;inset:0;border-radius:18px;border:1px solid rgba(212,168,75,0.48);pointer-events:none}
+  .modal-title{font-family:'Cinzel',serif;font-size:1.15rem;color:var(--accL);margin-bottom:12px;text-align:center;letter-spacing:3px}
+  .modal-text{font-style:italic;font-size:0.95rem;line-height:1.7;max-height:55vh;overflow-y:auto;padding-right:10px}
+  .modal-close{display:block;width:100%;background:rgba(212,168,75,0.1);border:1px solid var(--border);border-radius:40px;padding:8px;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:3px;color:var(--accL);cursor:pointer;text-align:center;transition:all 0.2s}
+  .modal-close:hover{background:rgba(212,168,75,0.2);border-color:var(--acc);color:var(--accL)}
+  .toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%) translateY(14px);background:rgba(18,13,32,0.97);border:1px solid var(--acc);border-radius:40px;padding:6px 18px;font-family:'Cinzel',serif;font-size:0.63rem;color:var(--accL);opacity:0;transition:all 0.3s;pointer-events:none;z-index:1000;white-space:nowrap}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .passive-float{position:absolute;pointer-events:none;z-index:900;font-family:'Cinzel',serif;font-size:0.62rem;font-weight:bold;color:#f0cc7a;text-shadow:0 0 6px rgba(212,168,75,0.9);white-space:nowrap;animation:passiveFloat 1.5s ease-out forwards}
+  .passive-dot{position:absolute;pointer-events:none;z-index:899;width:3px;height:3px;border-radius:50%;background:radial-gradient(circle,#f0cc7a,#c07820);animation:passiveDot 1.2s ease-out forwards}
+  .sanct-card.active-passive{animation:sanctPulse 2.4s ease-in-out infinite}
+  .achieve-notif{position:fixed;bottom:80px;right:20px;background:linear-gradient(135deg,#0a0818,#050310);border:2px solid var(--acc);border-radius:12px;padding:12px 18px;max-width:280px;z-index:2001;opacity:0;transition:opacity 0.3s ease;animation:slideInRight 0.4s ease-out forwards;box-shadow:0 0 30px rgba(212,168,75,0.4)}
+  .cosmic-section{background:linear-gradient(160deg,rgba(20,10,40,0.9),rgba(5,2,15,0.95));border:1px solid rgba(212,175,55,0.5);border-radius:18px;overflow:hidden;margin-bottom:12px;box-shadow:0 0 30px rgba(212,175,55,0.08)}
+  .cosmic-header{padding:12px 16px;background:linear-gradient(90deg,rgba(212,175,55,0.1),rgba(100,80,160,0.1));border-bottom:1px solid rgba(212,175,55,0.25);text-align:center}
+  .cosmic-title{font-family:'Cinzel Decorative',serif;font-size:0.72rem;letter-spacing:4px;background:linear-gradient(135deg,#f0cc7a,#d4af37,#c0a8e8);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cosmic-subtitle{font-size:0.52rem;color:rgba(212,175,55,0.6);letter-spacing:2px;margin-top:3px;font-family:'Cinzel',serif}
+  .cosmic-grid{padding:10px;display:flex;flex-direction:column;gap:8px}
+  .cosmic-card{border-radius:14px;padding:12px 14px;border:1px solid rgba(212,175,55,0.2);background:rgba(0,0,0,0.4);transition:all 0.2s;position:relative;overflow:hidden}
+  .cosmic-card.owned{border-color:rgba(212,175,55,0.55);background:linear-gradient(135deg,rgba(212,175,55,0.08),rgba(100,80,160,0.12));box-shadow:0 0 15px rgba(212,175,55,0.12)}
+  .cosmic-card.buyable{border-color:rgba(212,175,55,0.45);cursor:pointer;background:rgba(212,175,55,0.05);transition:all 0.2s ease}
+  .cosmic-card.buyable:hover{border-color:#d4af37;background:rgba(212,175,55,0.1);transform:translateX(2px);box-shadow:0 0 20px rgba(212,175,55,0.2)}
+  .cosmic-card.locked{opacity:0.32}
+  .cosmic-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .cosmic-name{font-family:'Cinzel',serif;font-size:0.7rem;color:#f0cc7a;display:flex;align-items:center;gap:6px}
+  .cosmic-cost{font-family:'Cinzel',serif;font-size:0.56rem;color:rgba(212,175,55,0.7);white-space:nowrap}
+  .cosmic-card.owned .cosmic-cost{color:#9ab870}
+  .cosmic-desc{font-size:0.6rem;color:var(--parcD);margin-top:4px;font-style:italic;line-height:1.4}
+  .cosmic-bonus{font-size:0.55rem;color:#c0a8e8;margin-top:5px;font-family:'Cinzel',serif;letter-spacing:1px}
+  .cosmic-lore{font-size:0.56rem;color:rgba(240,230,200,0.55);margin-top:6px;font-style:italic;line-height:1.4;border-left:2px solid rgba(212,175,55,0.25);padding-left:8px;display:none}
+  .cosmic-card.owned .cosmic-lore{display:block;color:rgba(240,230,200,0.75)}
+  .cosmic-shine{position:absolute;inset:0;background:linear-gradient(45deg,transparent 30%,rgba(212,175,55,0.06) 50%,transparent 70%);pointer-events:none;animation:cosmicShine 6s ease-in-out infinite}
+  .cosmic-progress{display:flex;align-items:center;gap:6px;margin-top:6px}
+  .cosmic-prog-bar{flex:1;height:2px;background:rgba(212,175,55,0.1);border-radius:2px;overflow:hidden}
+  .cosmic-prog-fill{height:100%;background:linear-gradient(90deg,#7a5ab0,#d4af37);border-radius:2px;transition:width 0.4s}
+  .mirror-fragments{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0;justify-content:center}
+  .mirror-shard{width:65px;height:65px;background:rgba(212,168,75,0.1);border:1px solid rgba(212,168,75,0.3);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.6rem;transition:all 0.2s;position:relative}
+  .mirror-shard.found{background:rgba(212,168,75,0.25);border-color:var(--acc);box-shadow:0 0 12px rgba(212,168,75,0.4);animation:shardGlow 2s ease-in-out infinite}
+  .mirror-shard.found .shard-name{font-size:0.45rem;color:var(--accL);margin-top:4px;text-align:center}
+  .mirror-shard:not(.found){opacity:0.4;filter:grayscale(0.5)}
+  .mirror-progress{background:rgba(0,0,0,0.4);border-radius:20px;padding:12px;margin:12px 0;text-align:center}
+  .mirror-button{background:linear-gradient(135deg,rgba(212,168,75,0.2),rgba(100,80,160,0.3));border:2px solid var(--acc);border-radius:60px;padding:14px 24px;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:4px;color:var(--accL);cursor:pointer;width:100%;margin:15px 0;transition:all 0.2s}
+  .mirror-button:hover:not(:disabled){background:rgba(212,168,75,0.35);transform:scale(1.02);box-shadow:0 0 20px var(--glow)}
+  .mirror-button:disabled{opacity:0.4;cursor:not-allowed}
+  .mirror-legend{font-size:0.65rem;color:var(--parcD);font-style:italic;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);text-align:center}
+  .mirror-complete{background:linear-gradient(135deg,rgba(212,168,75,0.15),rgba(100,80,160,0.2));border-radius:16px;padding:18px;margin:15px 0;text-align:center;border:1px solid rgba(212,168,75,0.5);animation:completePulse 1.8s ease-in-out infinite}
+  .mirror-final-choice{display:flex;gap:12px;margin:15px 0;flex-wrap:wrap}
+  .choice-btn{flex:1;background:rgba(0,0,0,0.5);border:1px solid var(--border);border-radius:40px;padding:12px 8px;font-family:'Cinzel',serif;font-size:0.7rem;cursor:pointer;transition:all 0.2s;color:var(--parc)}
+  .choice-btn:hover{border-color:var(--acc);background:rgba(212,168,75,0.15)}
+  .choice-faith{border-left-color:#c0a8f0}.choice-magic{border-left-color:var(--ember)}.choice-unity{border-left-color:var(--acc)}
+  .rune{position:fixed;pointer-events:none;z-index:1000;font-family:'Cinzel Decorative',serif;font-size:1.8rem;font-weight:bold;white-space:nowrap;animation:riseRune 1.4s ease-out forwards}
+  .spark{position:fixed;pointer-events:none;z-index:999;width:3px;height:3px;border-radius:50%;background:radial-gradient(circle,#f0cc7a,#d4783a);animation:sparkOut 0.8s ease-out forwards}
+  .sigilCircle{position:fixed;pointer-events:none;z-index:998;border-radius:50%;border:1px solid rgba(212,168,75,0.6);box-shadow:0 0 12px rgba(212,168,75,0.4),inset 0 0 8px rgba(212,168,75,0.2);animation:circlePulse 0.7s ease-out forwards}
+  .event-toast{position:fixed;bottom:80px;right:20px;width:280px;background:linear-gradient(135deg,#0a0818,#050310);border:2px solid var(--acc);border-radius:12px;padding:12px;z-index:2001;animation:slideInRight 0.3s ease-out;cursor:pointer}
+  .event-toast .title{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--accL);margin-bottom:8px}
+  .event-toast .desc{font-size:0.7rem;color:var(--parc);margin-bottom:10px}
+  .event-toast .choices{display:flex;gap:8px}
+  .event-toast .choice{flex:1;background:rgba(212,168,75,0.15);border:1px solid var(--border);border-radius:8px;padding:6px;font-size:0.6rem;text-align:center;cursor:pointer}
+  .event-toast .choice:hover{background:rgba(212,168,75,0.3);border-color:var(--acc)}
+  .combo-tip{position:fixed;pointer-events:none;z-index:1002;font-family:'Cinzel',serif;font-size:0.68rem;font-weight:bold;color:#ffaa44;text-shadow:0 0 8px rgba(255,120,20,0.9);animation:comboTipAnim 1.1s ease-out forwards;white-space:nowrap}
+  .combo-decay{animation:comboDecay 0.4s ease-out forwards}
+  #comboBlock{transition:all 0.2s}
+  #comboBlock.combo-on .sb-val{color:#ffaa44!important;text-shadow:0 0 10px rgba(255,130,30,0.9)!important}
+  #comboBlock.combo-on .sb-lbl{color:#c07838!important}
+  #comboBlock.combo-hot .sb-val{color:#ff6b20!important;text-shadow:0 0 18px rgba(255,80,10,1)!important;animation:comboFire 0.35s ease-in-out infinite alternate}
+  #comboBlock.combo-max .sb-val{color:#f0cc7a!important;text-shadow:0 0 22px rgba(212,168,75,0.8),0 0 44px rgba(240,204,122,0.4)!important;animation:comboFire 0.18s ease-in-out infinite alternate}
+  #comboMeter{width:100%;max-width:700px;height:3px;background:rgba(212,168,75,0.08);border-radius:3px;overflow:hidden;z-index:1;opacity:0;transition:opacity 0.3s}
+  #comboMeter.visible{opacity:1}
+  #comboMeterFill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,#c05c1a,#f0cc7a);transition:width 0.1s ease-out}
+  .epoch-content{transition:all 0.2s ease;overflow:hidden;display:block}
+  .epoch-content.collapsed{display:none!important}
+  .collapse-indicator{display:inline-block;transition:transform 0.2s ease;font-size:0.7rem;margin-left:8px;color:var(--accL)}
+  .epoch-head{cursor:pointer;user-select:none}
+  .reset-btn{display:none}
+  .tuto-btn-help{display:none}
+  
+  /* ===== TUTORIEL ===== */
+  .tuto-overlay{position:fixed;inset:0;z-index:5000;background:rgba(2,1,8,0.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px;animation:fadein 0.4s ease}
+  .tuto-box{background:linear-gradient(160deg,#0e0c1e,#070514);border:1px solid var(--border);border-radius:20px;padding:22px 20px;max-width:480px;width:100%;position:relative;max-height:92vh;overflow-y:auto;scrollbar-width:thin}
+  .tuto-box::before{content:'';position:absolute;inset:0;border-radius:20px;background:linear-gradient(135deg,rgba(212,168,75,0.05) 0%,transparent 60%);pointer-events:none}
+  .tuto-header{text-align:center;margin-bottom:16px}
+  .tuto-title{font-family:'Cinzel Decorative',serif;font-size:1rem;background:linear-gradient(135deg,#f0cc7a,var(--ember) 50%,#f0cc7a);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:2px}
+  .tuto-subtitle{font-family:'Cinzel',serif;font-size:0.5rem;color:var(--accD);letter-spacing:3px;text-transform:uppercase;margin-top:4px}
+  .tuto-step{display:none}
+  .tuto-step.active{display:block;animation:slideIn 0.3s ease}
+  .tuto-step-title{font-family:'Cinzel',serif;font-size:0.75rem;color:var(--accL);margin-bottom:10px;display:flex;align-items:center;gap:8px;letter-spacing:2px}
+  .tuto-step-title .tuto-icon{font-size:1.4rem}
+  .tuto-text{font-size:0.75rem;line-height:1.7;color:var(--parc);font-style:italic}
+  .tuto-text strong{color:var(--accL);font-style:normal}
+  .tuto-text .tuto-tip{display:inline-block;background:rgba(212,168,75,0.1);border:1px solid rgba(212,168,75,0.25);border-radius:8px;padding:6px 10px;margin:8px 0;width:100%;font-style:normal;font-size:0.72rem}
+  .tuto-text .tuto-tip::before{content:"✧ ";color:var(--acc)}
+  .tuto-nav{display:flex;gap:8px;margin-top:18px;align-items:center}
+  .tuto-nav-btn{flex:1;padding:8px;background:rgba(212,168,75,0.1);border:1px solid var(--border);border-radius:30px;font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:2px;color:var(--accL);cursor:pointer;text-align:center;transition:all 0.2s}
+  .tuto-nav-btn:hover{background:rgba(212,168,75,0.2);border-color:var(--acc)}
+  .tuto-nav-btn.primary{background:rgba(212,168,75,0.18);border-color:var(--acc)}
+  .tuto-nav-btn.primary:hover{background:rgba(212,168,75,0.32);box-shadow:0 0 14px var(--glow)}
+  .tuto-dots{display:flex;gap:5px;justify-content:center;margin-top:12px}
+  .tuto-dot{width:6px;height:6px;border-radius:50%;background:rgba(212,168,75,0.2);border:1px solid rgba(212,168,75,0.3);transition:all 0.2s}
+  .tuto-dot.active{background:var(--acc);border-color:var(--accL);box-shadow:0 0 6px var(--glow)}
+  .tuto-divider{height:1px;background:var(--border);margin:12px 0}
+  
+  /* ===== ÉCRAN DE FIN ===== */
+  #endingScreen{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;overflow-y:auto;overflow-x:hidden;opacity:0;pointer-events:none;transition:opacity 2s ease}
+  #endingScreen.visible{opacity:1;pointer-events:all}
+  #endingStars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  #endingScroll{position:relative;z-index:2;width:100%;max-width:700px;padding:80px 32px 60px;display:flex;flex-direction:column;align-items:center;gap:0}
+  .ending-block{opacity:0;transform:translateY(24px);transition:opacity 1.6s ease, transform 1.6s ease;text-align:center;padding:24px 0;will-change:opacity,transform}
+  .ending-block.revealed{opacity:1;transform:translateY(0)}
+  .ending-rule{width:1px;height:56px;background:linear-gradient(to bottom,transparent,rgba(212,175,55,0.45),transparent);margin:0 auto;opacity:0;transition:opacity 1.6s ease}
+  .ending-rule.revealed{opacity:1}
+  .ending-eyebrow{font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:5px;color:rgba(212,175,55,0.5);text-transform:uppercase;margin-bottom:10px}
+  .ending-title{font-family:'Cinzel Decorative',serif;font-size:clamp(1.2rem,4vw,2.1rem);background:linear-gradient(135deg,#f0cc7a 0%,#fff5e0 45%,#c0a8e8 70%,#f0cc7a 100%);background-size:300% 300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:endTitleShimmer 8s ease-in-out infinite;letter-spacing:3px;line-height:1.3}
+  .ending-sub{font-family:'Cinzel',serif;font-size:0.6rem;color:rgba(240,230,200,0.45);letter-spacing:4px;margin-top:6px}
+  .ending-thesis{font-family:'IM Fell English',Georgia,serif;font-size:clamp(0.9rem,2.2vw,1.06rem);color:rgba(240,230,200,0.85);line-height:1.9;font-style:italic;max-width:560px;margin:0 auto;text-align:center}
+  .ending-thesis em{color:#f0cc7a;font-style:normal;font-variant:small-caps;letter-spacing:1px}
+  .ending-thesis strong{color:#c0a8e8;font-weight:normal}
+  .ending-thesis .g{color:#9ab870}
+  .ending-citation{font-family:'Cinzel',serif;font-size:0.55rem;color:rgba(212,175,55,0.42);letter-spacing:2px;margin-top:10px;text-align:center}
+  .ending-symbol{font-size:2.8rem;display:block;text-align:center;filter:drop-shadow(0 0 18px rgba(212,175,55,0.45));animation:endSymbolFloat 7s ease-in-out infinite}
+  .ending-divider{font-family:'Cinzel',serif;font-size:0.65rem;color:rgba(212,175,55,0.28);letter-spacing:8px;text-align:center;margin:2px 0}
+  .ending-final-word{font-family:'Cinzel Decorative',serif;font-size:clamp(1rem,3.5vw,1.5rem);color:#f0cc7a;text-align:center;letter-spacing:4px;text-shadow:0 0 40px rgba(212,175,55,0.7),0 0 80px rgba(212,175,55,0.3),0 0 120px rgba(192,168,232,0.2)}
+  .ending-close-wrap{text-align:center;padding:40px 0 30px;opacity:0;transition:opacity 2s ease}
+  .ending-close-wrap.visible{opacity:1}
+  #endingCloseBtn{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:4px;color:rgba(212,175,55,0.55);background:transparent;border:1px solid rgba(212,175,55,0.22);border-radius:40px;padding:10px 28px;cursor:pointer;transition:all 0.3s}
+  #endingCloseBtn:hover{color:#f0cc7a;border-color:rgba(212,175,55,0.65);box-shadow:0 0 20px rgba(212,175,55,0.18)}
+  .ending-particle{position:fixed;border-radius:50%;pointer-events:none;animation:endParticleDrift linear infinite}
+  
+  /* ===== ÉCRAN TITRE ===== */
+  #titleScreen{position:fixed;inset:0;z-index:9998;background:#04020b;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;transition:opacity 1.8s ease, transform 1.8s ease}
+  #titleScreen.fade-out{opacity:0;transform:scale(1.04);pointer-events:none}
+  #titleScreen::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(4,2,11,0.65) 100%)}
+  #titleCanvas{position:absolute;inset:0;z-index:0}
+  .title-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0;text-align:center;padding:20px}
+  .title-sigil-wrap{position:relative;width:160px;height:160px;margin-bottom:18px}
+  .title-sigil-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(212,168,75,0.25);animation:ringRotate 18s linear infinite}
+  .title-sigil-ring:nth-child(2){inset:12px;border:1px dashed rgba(212,168,75,0.15);animation-duration:28s;animation-direction:reverse}
+  .title-sigil-ring:nth-child(3){inset:24px;border:1px solid rgba(192,100,30,0.2);animation-duration:12s}
+  .title-sigil-ring::before{content:'';position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:rgba(212,168,75,0.7);box-shadow:0 0 8px rgba(212,168,75,0.8)}
+  .title-sigil-center{position:absolute;inset:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 38% 32%,#f5cc7a 0%,#a04010 55%,#3a1008 100%);box-shadow:0 0 0 2px rgba(212,168,75,0.3),0 0 30px rgba(212,100,30,0.4),0 0 60px rgba(212,100,30,0.15);animation:sigilPulse 3.5s ease-in-out infinite;font-size:2rem}
+  .title-eyebrow{font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:7px;text-transform:uppercase;color:rgba(212,168,75,0.45);margin-bottom:10px;opacity:0;animation:titleFadeUp 1s ease 0.3s forwards}
+  .title-main-text{font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,6vw,3.2rem);letter-spacing:4px;line-height:1.1;background:linear-gradient(135deg,#f0cc7a 0%,#fff8e8 30%,#d4783a 60%,#f0cc7a 100%);background-size:250% 250%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:titleFadeUp 1s ease 0.6s both, titleShimmer 6s ease-in-out 1.6s infinite;filter:drop-shadow(0 0 40px rgba(212,168,75,0.25))}
+  .title-subtitle{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:6px;text-transform:uppercase;color:rgba(240,220,180,0.4);margin-top:8px;opacity:0;animation:titleFadeUp 1s ease 0.9s forwards}
+  .title-ornament{display:flex;align-items:center;gap:10px;margin:22px 0 20px;opacity:0;animation:titleFadeUp 1s ease 1.1s forwards}
+  .title-orn-line{width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,75,0.5),transparent)}
+  .title-orn-gem{width:8px;height:8px;background:var(--acc);border-radius:50%;box-shadow:0 0 10px rgba(212,168,75,0.8);animation:gemPulse 2.5s ease-in-out infinite}
+  .title-lore{font-family:'IM Fell English',Georgia,serif;font-size:0.78rem;line-height:1.75;color:rgba(240,225,195,0.5);font-style:italic;max-width:420px;opacity:0;animation:titleFadeUp 1s ease 1.3s forwards;text-align:center}
+  .title-enter-btn{margin-top:34px;position:relative;background:transparent;border:none;cursor:pointer;opacity:0;animation:titleFadeUp 1s ease 1.8s forwards}
+  .title-enter-inner{display:flex;align-items:center;gap:12px;padding:13px 36px;border:1px solid rgba(212,168,75,0.45);border-radius:60px;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:5px;color:rgba(240,210,140,0.9);text-transform:uppercase;background:rgba(0,0,0,0.5);transition:all 0.35s ease;animation:enterGlow 3s ease-in-out 2.8s infinite;position:relative;overflow:hidden}
+  .title-enter-inner::before{content:'';position:absolute;inset:0;border-radius:60px;background:linear-gradient(90deg,transparent,rgba(212,168,75,0.08),transparent);transform:translateX(-100%);transition:transform 0.6s ease}
+  .title-enter-btn:hover .title-enter-inner::before{transform:translateX(100%)}
+  .title-enter-btn:hover .title-enter-inner{border-color:rgba(212,168,75,0.9);color:#f0cc7a;background:rgba(212,168,75,0.08);box-shadow:0 0 30px rgba(212,100,30,0.25),0 0 60px rgba(212,168,75,0.1);transform:translateY(-2px)}
+  .title-enter-btn:active .title-enter-inner{transform:scale(0.97) translateY(0)}
+  .title-rune{position:absolute;font-family:'Cinzel Decorative',serif;color:rgba(212,168,75,0.08);pointer-events:none;animation:floatRune linear infinite;user-select:none}
+  .title-version{position:absolute;bottom:18px;font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:3px;color:rgba(212,168,75,0.2);animation:titleFadeUp 1s ease 2.2s both}
+  
+  /* Responsive */
+  @media(max-width:560px){.modal-box{padding:18px 14px}.ritual-btn{width:110px;height:110px}.ritual-btn .sigil{font-size:1.6rem}.toast{white-space:normal;font-size:0.55rem}}
+  @media(max-width:400px){body{padding:8px;gap:6px}.stat-bar{padding:4px 10px;gap:4px}.sb-val{font-size:0.9rem}.sb-lbl{font-size:0.4rem}.tab-btn{font-size:0.5rem;padding:6px 2px}.panel{padding:10px}.panel-title{font-size:0.5rem;margin-bottom:6px}.fact-txt{font-size:0.65rem}.fact-txt.cit{font-size:0.7rem}.ritual-btn{width:100px;height:100px}.ritual-btn .sigil{font-size:1.4rem}.epoch-badge{font-size:0.45rem;padding:2px 8px}.sanct-name{font-size:0.6rem}.sanct-desc{font-size:0.55rem}.sanct-status,.sanct-bonus{font-size:0.5rem}.mirror-shard{width:50px;height:50px;font-size:1.2rem}.mirror-shard.found .shard-name{font-size:0.4rem}.mirror-button{font-size:0.7rem;padding:10px 16px}.choice-btn{font-size:0.6rem;padding:8px 6px}.modal-box{max-width:90%;padding:16px 14px;margin:10px}.modal-title{font-size:1rem}.modal-text{font-size:0.85rem;line-height:1.5}.toast{font-size:0.55rem;padding:5px 12px;white-space:normal;max-width:90%;text-align:center}}
+  @media(max-width:480px){.stat-bar{flex-wrap:wrap;justify-content:center;gap:8px}.sb-div{display:none}.tab-btn{font-size:0.45rem;letter-spacing:1px}.mirror-final-choice{flex-direction:column}}
+  
+</style>
+</head>
+<body>
+<canvas id="starsCanvas"></canvas>
+
+<!-- ═══════ ÉCRAN TITRE ═══════ -->
+<div id="titleScreen">
+  <canvas id="titleCanvas"></canvas>
+  <span class="title-rune" style="font-size:5rem;left:4%;top:12%;animation-duration:14s;animation-delay:0s">✦</span>
+  <span class="title-rune" style="font-size:3rem;left:8%;top:55%;animation-duration:18s;animation-delay:2s">⬡</span>
+  <span class="title-rune" style="font-size:6rem;right:5%;top:8%;animation-duration:22s;animation-delay:1s">✧</span>
+  <span class="title-rune" style="font-size:2.5rem;right:10%;top:60%;animation-duration:16s;animation-delay:3s">◈</span>
+  <span class="title-rune" style="font-size:4rem;left:50%;top:82%;animation-duration:20s;animation-delay:0.5s">☽</span>
+  <span class="title-rune" style="font-size:2rem;left:20%;top:78%;animation-duration:13s;animation-delay:4s">⟡</span>
+  <span class="title-rune" style="font-size:3.5rem;right:22%;top:75%;animation-duration:17s;animation-delay:2.5s">✦</span>
+
+  <div class="title-content">
+    <div class="title-sigil-wrap">
+      <div class="title-sigil-ring"></div>
+      <div class="title-sigil-ring"></div>
+      <div class="title-sigil-ring"></div>
+      <div class="title-sigil-center">🕯️</div>
+    </div>
+    <div class="title-eyebrow">— Volume I —</div>
+    <div class="title-main-text">Codex<br>Arcanorum</div>
+    <div class="title-subtitle">Le Miroir de l'Âme</div>
+    <div class="title-ornament">
+      <div class="title-orn-line"></div>
+      <div class="title-orn-gem"></div>
+      <div class="title-orn-line"></div>
+    </div>
+    <div class="title-lore">Entre magie et religion, la frontière<br>n'a jamais été qu'un miroir.</div>
+    <button class="title-enter-btn" id="titleEnterBtn" onclick="enterGame()">
+      <div class="title-enter-inner"><span>✦</span><span>Entrer dans le Sanctuaire</span><span>✦</span></div>
+    </button>
+  </div>
+  <div class="title-version">Codex Arcanorum · Edition Prima</div>
+</div>
+
+<!-- ═══════ ÉCRAN DE FIN ═══════ -->
+<div id="endingScreen">
+  <canvas id="endingStars"></canvas>
+  <div id="endingScroll"></div>
+  <div class="ending-close-wrap" id="endingCloseWrap">
+    <button id="endingCloseBtn">↩ &nbsp; CONTINUER À MÉDITER</button>
+  </div>
+</div>
+
+<!-- ═══════ HEADER & STATS ═══════ -->
+<header><div class="t-main">✦ Codex Arcanorum ✦</div><div class="t-sub">Le Miroir de l'Âme</div></header>
+<div class="stat-bar">
+  <div class="sb-block"><span class="sb-val" id="faithVal">0</span><span class="sb-lbl">Foi</span></div>
+  <div class="sb-div"></div>
+  <div class="sb-block"><span class="sb-val" id="powerVal">1</span><span class="sb-lbl">Puissance</span></div>
+  <div class="sb-div"></div>
+  <div class="sb-block"><span class="sb-val" id="passiveVal">0.0</span><span class="sb-lbl">/ sec</span></div>
+  <div class="sb-div"></div>
+  <div class="sb-block" id="comboBlock"><span class="sb-val" id="comboVal">×1</span><span class="sb-lbl">Combo</span></div>
+</div>
+<div id="comboMeter"><div id="comboMeterFill"></div></div>
+
+<!-- ═══════ ONGLETS PRINCIPAUX ═══════ -->
+<div class="tabs">
+  <button class="tab-btn active" data-tab="ritual">🕯️ Rituel</button>
+  <button class="tab-btn" data-tab="sanctuaires">🏛️ Sanctuaires</button>
+  <button class="tab-btn" data-tab="grimoire">📖 Grimoire <span class="notif" id="grimoireNotif" style="display:none">!</span></button>
+  <button class="tab-btn" data-tab="mirror" id="mirrorTabBtn" style="display:none">🪞 Le Miroir <span id="mirrorNotif" style="display:none">✨</span></button>
+</div>
+<div class="tabs">
+  <button class="tab-btn" data-tab="achievements">🏆 Succès</button>
+  <button class="tab-btn" data-tab="parchemin">📜 Parchemin</button>
+</div>
+
+<!-- ═══════ PANEL RITUEL ═══════ -->
+<div class="tab-pane active" id="tab-ritual">
+<div class="panel">
+<div class="panel-title">⬡ Lieu du Rituel</div>
+<div class="epoch-badge" id="epochBadge">🌄 Aube de l'Humanité</div>
+<div class="fact-box" id="factBox">
+<div class="fact-type tf" id="factType">Prémices</div>
+<div class="fact-inner"><div class="fact-txt" id="factTxt">Invoquez pour découvrir les liens entre magie et foi. Chaque geste révèle un fragment de sagesse oubliée…</div></div>
+<div class="fact-auth" id="factAuth"></div>
+</div>
+<div class="ritual-wrap"><button class="ritual-btn" id="ritualBtn"><div class="ritual-inner"><span class="sigil" id="btnSigil">🕯️</span><span class="blbl" id="btnLbl">INVOQUER</span></div></button></div>
+<div style="text-align:center;font-size:.55rem;color:var(--accD);font-family:'Cinzel',serif;letter-spacing:2px;margin-top:4px"><span id="ritualsCount">0</span> rituels accomplis</div>
+<div class="prog-row"><div class="prog-bar"><div class="prog-fill" id="globalProgFill" style="width:0%"></div></div><div class="prog-lbl" id="globalProgLbl">0 / 0 révélations</div></div>
+</div>
+<div class="panel" style="margin-top:8px; max-height:180px; overflow:hidden; display:flex; flex-direction:column">
+<div class="panel-title" style="font-size:0.5rem; letter-spacing:2px">⚡ Dernières Révélations</div>
+<div id="recentScroll" style="overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:4px; scrollbar-width:thin; padding-right:3px; font-size:0.6rem"></div>
+</div>
+</div>
+
+<!-- ═══════ PANEL SANCTUAIRES ═══════ -->
+<div class="tab-pane" id="tab-sanctuaires"><div class="panel"><div class="panel-title">🏛️ Sanctuaires & Bâtisseurs</div><div id="sanctuairesContent"></div></div></div>
+
+<!-- ═══════ PANEL GRIMOIRE ═══════ -->
+<div class="tab-pane" id="tab-grimoire"><div class="panel"><div class="panel-title">📖 Grimoire des Révélations</div><div class="grim-header"><div class="grim-total" id="grimTotal">0 révélations archivées</div><div class="grim-filters"><button class="grim-filter active" data-gf="all">Tout</button><button class="grim-filter" data-gf="fait">Faits</button><button class="grim-filter" data-gf="citation">Citations</button><button class="grim-filter" data-gf="tension">Tensions</button><button class="grim-filter" data-gf="rev">Révélations</button></div></div><div class="grim-scroll" id="grimScroll"><div class="grim-empty">Aucune révélation encore archivée.<br>Invoquez pour remplir ce grimoire.</div></div></div></div>
+
+<!-- ═══════ PANEL MIROIR ═══════ -->
+<div class="tab-pane" id="tab-mirror"><div class="panel"><div class="panel-title" id="mirrorPanelTitle">🪞 Le Miroir de l'Âme</div><div id="mirrorContent"></div></div></div>
+
+<!-- ═══════ PANEL SUCCÈS ═══════ -->
+<div class="tab-pane" id="tab-achievements">
+  <div class="panel">
+    <div class="panel-title">🏆 Succès & Récompenses</div>
+    <div id="achievementsTabContent" class="achievements-panel" style="max-height:65vh;overflow-y:auto;padding-right:4px">
+      <div style="font-size:0.72rem;color:var(--accD);font-style:italic;text-align:center;padding:20px;opacity:0.6">Invoquez pour débloquer des succès…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ PANEL PARCHEMIN ═══════ -->
+<div class="tab-pane" id="tab-parchemin">
+  <div class="panel">
+    <div class="panel-title">📜 Parchemin du Chercheur</div>
+    <div style="margin-bottom:16px">
+      <div style="font-family:'Cinzel',serif;font-size:0.54rem;letter-spacing:3px;color:var(--accD);text-transform:uppercase;margin-bottom:8px">✦ Guide d'Initiation</div>
+      <button id="tutoHelpBtnInner" style="width:100%;background:rgba(212,168,75,0.1);border:1px solid var(--border);border-radius:12px;padding:11px 14px;font-family:'Cinzel',serif;font-size:0.64rem;letter-spacing:2px;color:var(--accL);cursor:pointer;text-align:left;transition:all 0.2s">📖 Ouvrir le Guide du Chercheur</button>
+    </div>
+    <div style="height:1px;background:var(--border);margin:16px 0"></div>
+    <div id="creditsSection">
+      <div style="font-family:'Cinzel',serif;font-size:0.54rem;letter-spacing:3px;color:var(--acc);text-transform:uppercase;margin-bottom:8px">✦ Sceau des Crédits ✦</div>
+      <div style="font-size:0.63rem;color:var(--parcD);line-height:1.6">
+        <strong style="font-family:'Cinzel',serif; letter-spacing:1px; color:var(--text)">Codex Arcanorum — Le Miroir de l'Âme</strong><br>
+        Écrit et codé avec le cœur par<br>
+        <span style="color:var(--accL); font-family:'Cinzel',serif; font-size:0.68rem; letter-spacing:1px">Vivien</span><br><br>
+        <div style="border-left: 2px solid var(--acc); padding-left: 12px; margin: 16px 0; font-style: italic; color: var(--text); background: rgba(212,168,75,0.03); border-radius: 0 8px 8px 0;">
+          « Vouloir choisir entre la foi et la magie est une illusion des hommes.<br>
+          C'est imposer une frontière là où l'Univers n'a créé qu'un seul élan.<br><br>
+          À toi, Mamour, qui fait danser ces deux mondes dans le même cœur :<br>
+          <strong style="color:var(--accL); font-size:0.7rem;">Ne choisis jamais.</strong> »
+        </div>
+        <div style="margin: 16px 0 12px 0;">
+          <span style="font-family:'Cinzel',serif; font-size:0.52rem; letter-spacing:2px; color:var(--acc);">✧ Remerciements ✧</span><br>
+          À <strong>Mircea Eliade</strong>, dont les travaux sur le sacré et le chamanisme ont éclairé ce chemin.<br>
+          À <strong>Marija Gimbutas</strong>, pour avoir rappelé au monde que la Déesse et la sorcière partageaient le même souffle.<br>
+          À <strong>Carl Gustav Jung</strong>, qui a vu dans l'inconscient collectif le territoire où la foi et la magie se rencontrent.<br>
+          À <strong>toutes les voix anonymes</strong> — chamanes, guérisseuses, mystiques, ermites — qui ont traversé les siècles sans jamais cesser de croire que l'invisible méritait qu'on lui parle.<br>
+          Et à <strong>toi, chercheur</strong>, qui as porté ce grimoire jusqu'ici.
+        </div>
+        <div style="margin: 12px 0; font-size:0.55rem; opacity:0.65; border-top: 1px solid var(--border); padding-top: 10px;">
+          <span style="font-family:'Cinzel',serif; letter-spacing:2px;">⚖️ La Foi et la Magie n'ont jamais été séparées.</span><br>
+          Ce sont les hommes qui les ont crues ennemies.<br>
+          Puisse ce Codex rappeler que le geste qui prie et le geste qui enchante<br>
+          sont les deux mains d'un même corps tendu vers l'infini.
+        </div>
+        <div style="margin-top: 12px; text-align: right; font-size:0.5rem; opacity:0.5; font-family:'Cinzel',serif; letter-spacing:2px;">
+          — Édition Prima, scellée dans l'Alliance des Deux Flammes —
+        </div>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:12px 0"></div>
+    <div>
+      <div style="font-family:'Cinzel',serif;font-size:0.54rem;letter-spacing:3px;color:var(--ember);text-transform:uppercase;margin-bottom:8px">⚠️ Zone Dangereuse</div>
+      <div style="font-size:0.63rem;color:var(--parcD);font-style:italic;margin-bottom:10px;line-height:1.55">Réinitialiser efface toute ta progression — époques, sanctuaires, révélations et fragments du Miroir. Cette action est irréversible.</div>
+      <button id="resetBtnInner" style="width:100%;background:rgba(100,30,20,0.25);border:1px solid rgba(192,80,40,0.4);border-radius:12px;padding:11px 14px;font-family:'Cinzel',serif;font-size:0.64rem;letter-spacing:2px;color:#c07060;cursor:pointer;text-align:left;transition:all 0.2s">⟳ Réinitialiser la progression</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══════ TUTORIEL OVERLAY ═══════ -->
+<div class="tuto-overlay" id="tutoOverlay" style="display:none">
+  <div class="tuto-box">
+    <div class="tuto-header">
+      <div class="tuto-title">✦ Guide du Chercheur ✦</div>
+      <div class="tuto-subtitle">Codex Arcanorum — Initiation</div>
+    </div>
+    <div class="tuto-divider"></div>
+    <div class="tuto-step active" id="tuto-step-0">
+      <div class="tuto-step-title"><span class="tuto-icon">🕯️</span> Bienvenue, Chercheur</div>
+      <div class="tuto-text">Tu t'apprêtes à explorer <strong>Codex Arcanorum</strong>, un jeu d'accumulation progressive où tu accumules de la <strong>Foi</strong> en accomplissant des rituels.<br><br>À travers les âges — du paléolithique à l'ère interstellaire — tu vas découvrir les liens profonds entre <strong>magie et religion</strong>, tout en bâtissant un empire de sanctuaires.<br><br><span class="tuto-tip">Ce guide est court. 6 étapes, et tu sauras tout l'essentiel.</span></div>
+    </div>
+    <div class="tuto-step" id="tuto-step-1">
+      <div class="tuto-step-title"><span class="tuto-icon">🔥</span> La Foi & le Rituel</div>
+      <div class="tuto-text">La <strong>Foi</strong> est ta ressource principale. Elle s'accumule de deux façons :<br><br><span class="tuto-tip">Clique sur le <strong>bouton central</strong> (🕯️ INVOQUER) pour gagner de la Foi à chaque clic.</span><span class="tuto-tip">Les <strong>sanctuaires</strong> génèrent de la Foi <strong>automatiquement</strong>, même quand tu ne joues pas.</span>Le montant de Foi gagné par clic est ta <strong>Puissance</strong>. Le gain automatique s'affiche en <strong>/sec</strong> dans la barre en haut.</div>
+    </div>
+    <div class="tuto-step" id="tuto-step-2">
+      <div class="tuto-step-title"><span class="tuto-icon">📜</span> Les Époques</div>
+      <div class="tuto-text">L'onglet <strong>🏛️ Sanctuaires</strong> est le cœur du jeu. Il contient les <strong>Époques</strong> — des périodes historiques allant du Paléolithique à l'ère moderne.<br><br><span class="tuto-tip">Achète une <strong>époque</strong> pour la débloquer et accéder à ses sanctuaires.</span>Chaque époque est plus chère que la précédente, mais ses sanctuaires sont aussi plus puissants. Les époques se débloquent <strong>dans l'ordre</strong>.</div>
+    </div>
+    <div class="tuto-step" id="tuto-step-3">
+      <div class="tuto-step-title"><span class="tuto-icon">🏛️</span> Les Sanctuaires</div>
+      <div class="tuto-text">Dans chaque époque, tu trouves <strong>3 sanctuaires</strong> à construire et améliorer.<br><br><span class="tuto-tip">Construis un sanctuaire → il génère de la Foi passivement et booste tes clics.</span><span class="tuto-tip">Améliore-le jusqu'au <strong>niveau 5</strong> pour atteindre sa forme ultime et déclencher un bonus global.</span>Plus le niveau est élevé, plus le coût monte, mais les gains augmentent de façon exponentielle. Au-delà du niveau 5, des <strong>paliers légendaires</strong> se débloquent.</div>
+    </div>
+    <div class="tuto-step" id="tuto-step-4">
+      <div class="tuto-step-title"><span class="tuto-icon">🪞</span> Le Miroir & le Grimoire</div>
+      <div class="tuto-text">Deux onglets se débloquent progressivement :<br><br><span class="tuto-tip"><strong>📖 Grimoire</strong> — Chaque clic peut révéler un fait historique, une citation ou une tension philosophique entre foi et magie. Ces révélations s'accumulent ici.</span><span class="tuto-tip"><strong>🪞 Le Miroir</strong> — Apparaît quand tu progresses. Chaque époque complétée t'offre un fragment. Réunis-les tous pour accomplir le <strong>Grand Œuvre</strong> et choisir ta voie finale.</span></div>
+    </div>
+    <div class="tuto-step" id="tuto-step-5">
+      <div class="tuto-step-title"><span class="tuto-icon">✨</span> Actes, Succès & Événements</div>
+      <div class="tuto-text">Le jeu se divise en <strong>3 Actes</strong>. Chaque acte débloque de nouvelles époques, une nouvelle esthétique et une nouvelle quête narrative.<br><br><span class="tuto-tip"><strong>🏆 Succès</strong> — Des objectifs cachés qui te récompensent en Foi. Clique en bas à gauche pour les consulter.</span><span class="tuto-tip"><strong>Événements aléatoires</strong> — Parfois, une vision apparaît. Choisis bien ta réponse — elle change ton destin.</span><strong>Conseil :</strong> concentre-toi sur un sanctuaire à la fois, achète l'époque suivante dès que possible, et laisse le jeu tourner quelques heures — les gains hors-ligne sont réels !</div>
+    </div>
+    <div class="tuto-divider"></div>
+    <div class="tuto-nav">
+      <button class="tuto-nav-btn" id="tutoPrev" style="display:none">◀ Précédent</button>
+      <button class="tuto-nav-btn primary" id="tutoNext">Suivant ▶</button>
+    </div>
+    <div class="tuto-dots" id="tutoDots"></div>
+  </div>
+</div>
+<script>
+// ==================== DONNÉES ACTE I ====================
+const EPOCHS = [
+  { id: "paleo", name: "🌀 Chamanisme Paléolithique", cost: 50, badge: "🏔️ Paléolithique (−40 000)", sigil: "🌀", btnLbl: "INVOQUER", pal: { bg1: "#08060f", acc: "#c89840", glow: "rgba(180,110,20,.32)" } },
+  { id: "neolith", name: "🌾 Néolithique & Déesses-Mères", cost: 1000, badge: "🌾 Néolithique (−10 000)", sigil: "🌕", btnLbl: "PRIER", pal: { bg1: "#060d08", acc: "#7ab858", glow: "rgba(80,160,50,.28)" } },
+  { id: "mesopotamia", name: "🏺 Mésopotamie & Égypte", cost: 5000, badge: "🏺 Antiquité orientale (−3 000)", sigil: "𓂀", btnLbl: "INCANTER", pal: { bg1: "#0d0800", acc: "#d4883a", glow: "rgba(200,110,20,.32)" } },
+  { id: "ironage", name: "⚔️ Âge du Fer — Druides & Forgerons", cost: 20000, badge: "🗡️ Âge du Fer (−1200 / −500)", sigil: "⚔️", btnLbl: "SACRIFIER", pal: { bg1: "#0a0804", acc: "#b86c2a", glow: "rgba(160,80,20,.30)" } },
+  { id: "greece", name: "⚡ Mystères Grecs & Romains", cost: 80000, badge: "🏛️ Grèce & Rome (−800 / +400)", sigil: "⚡", btnLbl: "PROPHÉTISER", pal: { bg1: "#040810", acc: "#5888c8", glow: "rgba(50,100,200,.28)" } },
+  { id: "medieval", name: "✝️ Moyen Âge — Grimoires & Foi", cost: 250000, badge: "⛪ Moyen Âge (500–1400)", sigil: "⛪", btnLbl: "BÉNIR", pal: { bg1: "#080510", acc: "#b878d8", glow: "rgba(150,80,200,.3)" } },
+  { id: "renaissance", name: "🔭 Renaissance Hermétique", cost: 1000000, badge: "🖋️ Renaissance (1400–1600)", sigil: "🔭", btnLbl: "TRANSMUTER", pal: { bg1: "#050b0a", acc: "#48b8a8", glow: "rgba(40,160,140,.28)" } },
+  { id: "enlightenment", name: "🕯️ Siècle des Lumières", cost: 5000000, badge: "📚 Lumières (1700–1800)", sigil: "🕯️", btnLbl: "RAISONNER", pal: { bg1: "#0c0a0a", acc: "#c8a860", glow: "rgba(200,160,60,.28)" } },
+  { id: "modern", name: "🌌 Occultisme Moderne", cost: 10000000, badge: "🌐 Époque Moderne (XIXe–XXIe)", sigil: "🌐", btnLbl: "RAYONNER", pal: { bg1: "#04060e", acc: "#8888f0", glow: "rgba(100,100,240,.3)" } },
+  { id: "ultima", name: "♾️ Ultime Réconciliation", cost: 25000000, badge: "🌠 Hors du Temps", sigil: "✧", btnLbl: "DEVENIR", pal: { bg1: "#020108", acc: "#d4af37", glow: "rgba(212,175,55,.4)" } }
+];
+
+const SANCTUARIES = {
+  paleo: [{ id: "grotte", name: "🪨 Grotte Sacrée", desc: "Peintures rupestres attirent les esprits.", baseCost: 40, basePassive: 1.2, baseClic: 1.5 },{ id: "feu", name: "🔥 Feu Rituel", desc: "La flamme sacrée ne s'éteint jamais.", baseCost: 80, basePassive: 2.5, baseClic: 3.0 },{ id: "chaman", name: "🦅 Chamane Gardien", desc: "Son tambour résonne entre les mondes.", baseCost: 150, basePassive: 4.5, baseClic: 5.5 }],
+  neolith: [{ id: "menhir", name: "🗿 Cercle de Menhirs", desc: "Les pierres dressées captent l'énergie.", baseCost: 200, basePassive: 4.0, baseClic: 5.0 },{ id: "temple", name: "🌾 Temple de la Déesse", desc: "La Grande Mère bénit les rituels.", baseCost: 400, basePassive: 8.0, baseClic: 9.5 },{ id: "dolmen", name: "🌙 Dolmen Lunaire", desc: "Aligné sur la pleine lune.", baseCost: 700, basePassive: 14.0, baseClic: 17.0 }],
+  mesopotamia: [{ id: "ziggurat", name: "🏺 Ziggurat", desc: "Temple-montagne où l'on lit les astres.", baseCost: 600, basePassive: 12.0, baseClic: 15.0 },{ id: "bibliotheque", name: "📜 Bibliothèque Sacrée", desc: "Tablettes cunéiformes renfermant sorts-prières.", baseCost: 1200, basePassive: 22.0, baseClic: 26.0 },{ id: "mage", name: "𓂀 Prêtre-Mage", desc: "Traduit la volonté divine en incantations.", baseCost: 2500, basePassive: 38.0, baseClic: 45.0 }],
+  ironage: [{ id: "druide", name: "🌳 Cercle Druidique", desc: "Les chênes sacrés murmurent des secrets.", baseCost: 2000, basePassive: 30.0, baseClic: 36.0 },{ id: "forge", name: "⚙️ Forge Sacrée", desc: "Le métal forgé est une prière au feu.", baseCost: 3000, basePassive: 50.0, baseClic: 60.0 },{ id: "nemeton", name: "🌀 Nemeton", desc: "Sanctuaire gaulois où ciel et terre s'unissent.", baseCost: 5000, basePassive: 85.0, baseClic: 100.0 }],
+  greece: [{ id: "oracle", name: "⚡ Oracle de Delphes", desc: "La Pythie en transe.", baseCost: 5000, basePassive: 40.0, baseClic: 50.0 },{ id: "mysteres", name: "🌿 Mystères d'Éleusis", desc: "Les initiés reviennent transformés.", baseCost: 7000, basePassive: 70.0, baseClic: 85.0 },{ id: "theurge", name: "🌀 Theurge Néoplatonicien", desc: "Unit âme humaine et divine.", baseCost: 10000, basePassive: 120.0, baseClic: 145.0 }],
+  medieval: [{ id: "scriptorium", name: "✍️ Scriptorium", desc: "Moines copistes de grimoires.", baseCost: 10000, basePassive: 90.0, baseClic: 110.0 },{ id: "alchimiste", name: "⚗️ Atelier Alchimique", desc: "La transmutation est une prière.", baseCost: 14000, basePassive: 160.0, baseClic: 190.0 },{ id: "kabbaliste", name: "✡️ Kabbaliste Chrétien", desc: "Les lettres hébraïques révèlent le divin.", baseCost: 22000, basePassive: 280.0, baseClic: 320.0 }],
+  renaissance: [{ id: "academie", name: "🔭 Académie Platonicienne", desc: "Ficin traduit Hermès Trismégiste.", baseCost: 20000, basePassive: 250.0, baseClic: 300.0 },{ id: "astronome", name: "🌟 Tour Astronomique", desc: "L'observatoire lit dans les étoiles.", baseCost: 40000, basePassive: 440.0, baseClic: 520.0 },{ id: "hermes", name: "☿ Temple Hermétique", desc: "La magie naturelle est science divine.", baseCost: 70000, basePassive: 750.0, baseClic: 880.0 }],
+  enlightenment: [{ id: "loge", name: "🕯️ Loge Maçonnique", desc: "Les rituels d'initiation libèrent l'esprit.", baseCost: 60000, basePassive: 700.0, baseClic: 820.0 },{ id: "mesmer", name: "💫 Cabinet de Mesmer", desc: "Le magnétisme animal guérit l'âme.", baseCost: 90000, basePassive: 1100.0, baseClic: 1300.0 },{ id: "illuminati", name: "👁️ Ordre des Illuminés", desc: "Savoir ésotérique et pouvoir.", baseCost: 130000, basePassive: 1700.0, baseClic: 2000.0 }],
+  modern: [{ id: "golddawn", name: "🌐 Loge Golden Dawn", desc: "Yeats invoque les anges.", baseCost: 120000, basePassive: 800.0, baseClic: 950.0 },{ id: "theosophie", name: "🕊️ Société Théosophique", desc: "Doctrine secrète universelle.", baseCost: 160000, basePassive: 1300.0, baseClic: 1550.0 },{ id: "teilhard", name: "⚛️ Chapelle Cosmique", desc: "Le Christ Oméga réconcilie matière et esprit.", baseCost: 200000, basePassive: 2200.0, baseClic: 2600.0 }],
+  ultima: [{ id: "axis", name: "🌀 L'Axe du Monde", desc: "Là où tous les mondes se rencontrent.", baseCost: 200000, basePassive: 2000.0, baseClic: 2400.0 },{ id: "noosphere", name: "🌐 Noosphère", desc: "La pensée unique devient prière.", baseCost: 350000, basePassive: 3400.0, baseClic: 4000.0 },{ id: "kenosis", name: "✨ Kenosis", desc: "Le vide sacré accueille le divin.", baseCost: 600000, basePassive: 5500.0, baseClic: 6500.0 }]
+};
+
+// ==================== FAITS PAR ÉPOQUE (ACTE I) ====================
+const FACTS_BY_EPOCH = {
+  start: [
+    { type: "fait",    epochId: "start", text: "Dans toutes les cultures humaines, les premiers guérisseurs sont aussi les premiers prêtres.", author: "Mircea Eliade" },
+    { type: "citation",epochId: "start", text: "Au commencement était le Verbe, et le Verbe était avec Dieu.", author: "Jean 1,1" },
+    { type: "tension", epochId: "start", text: "'Magie' vient du grec 'mageia' — désignant les prêtres zoroastriens.", author: "Hérodote" },
+    { type: "fait",    epochId: "start", text: "Aucune langue connue ne possède un mot pour désigner la prière qui n'ait aussi servi à désigner l'incantation. Le vocabulaire du sacré est toujours double.", author: "Georges Dumézil" },
+    { type: "tension", epochId: "start", text: "Les anthropologues appellent 'religion' ce qu'ils appréhendent de loin, et 'magie' ce qu'ils craignent de près. La frontière est géographique, jamais ontologique.", author: "Marcel Mauss, Esquisse d'une théorie de la magie" },
+    { type: "citation",epochId: "start", text: "Il n'existe pas de peuple sans religion, et il n'existe pas de peuple sans pratiques magiques. Ce sont les mêmes peuples.", author: "Émile Durkheim" },
+    { type: "fait",    epochId: "start", text: "L'Ancien Testament mentionne des esprits envoyés spécifiquement pour guider et guérir : dans le Livre de Tobie, l'archange Raphaël se présente sous une forme humaine pour chasser un démon par un rituel et restaurer la vue d'un aveugle. La bienveillance divine s'incarne déjà par un intermédiaire.", author: "Livre de Tobie, Ancien Testament" }
+  ],
+  paleo: [
+    { type: "fait",    epochId: "paleo", text: "Les mains négatives dans les grottes (Chauvet, Lascaux) étaient des signatures rituelles mêlant appel aux esprits et présence divine.", author: "David Lewis-Williams" },
+    { type: "citation",epochId: "paleo", text: "Le chamane ne prie pas un dieu lointain ; il danse avec lui.", author: "Mircea Eliade" },
+    { type: "fait",    epochId: "paleo", text: "Les chamanes paléolithiques induisaient des transes dans les grottes profondes — l'obscurité totale et l'isolation sensorielle provoquaient des visions identiques dans toutes les cultures.", author: "Lewis-Williams" },
+    { type: "citation",epochId: "paleo", text: "Celui qui distingue la magie du sacré n'a pas compris ni l'un ni l'autre.", author: "Eliade" },
+    { type: "fait",    epochId: "paleo", text: "Les sépultures de Sungir (−28 000 ans) contiennent des milliers de perles en ivoire, de l'ocre rouge — pigment funéraire et rituel — et des postures soigneusement arrangées. Ce sont les premiers gestes dont nous savons qu'ils espèrent quelque chose au-delà de la mort.", author: "Archéologie du Paléolithique supérieur" },
+    { type: "tension", epochId: "paleo", text: "La flûte en os de vautour de Hohle Fels (−40 000 ans) est le plus ancien instrument de musique connu. La musique naît en même temps que le rituel. Peut-être qu'elle est le rituel.", author: "Nicholas Conard, Université de Tübingen" },
+    { type: "fait",    epochId: "paleo", text: "Les chamanes sibériens portent des costumes à plumes pour 'devenir' l'oiseau-esprit. Les peintures paléolithiques montrent des êtres mi-hommes mi-oiseaux. Le même imaginaire, séparé par 30 000 ans — et aucune transmission connue.", author: "Joseph Campbell" },
+    { type: "citation",epochId: "paleo", text: "Dans la grotte, le chamane ne crée pas le sacré. Il entre dans ce qui l'était déjà.", author: "Mircea Eliade, Le Chamanisme" }
+  ],
+  neolith: [
+    { type: "fait",    epochId: "neolith", text: "Les figurines de 'Déesses mères' (Vénus de Willendorf) servaient probablement de rituels de fécondité mêlant magie et prière.", author: "Marija Gimbutas" },
+    { type: "fait",    epochId: "neolith", text: "Göbekli Tepe (−9500 av. J.-C.) : le plus ancien temple connu précède l'agriculture de plusieurs siècles. Ce sont les temples qui ont rendu l'agriculture nécessaire, pas l'inverse. La foi a civilisé l'homme avant la charrue.", author: "Klaus Schmidt" },
+    { type: "citation",epochId: "neolith", text: "La terre est notre mère, le ciel notre père. Ce qui pousse vient de l'union des deux.", author: "Croyance néolithique reconstituée" },
+    { type: "tension", epochId: "neolith", text: "Les crânes surmodelés de Jéricho (−7000 av. J.-C.) étaient à la fois vénération des ancêtres et pratique magique pour retenir l'âme des défunts. Le visage des morts, recréé en plâtre, regardait les vivants. Prière et sortilège partageaient le même masque.", author: "Kathleen Kenyon" },
+    { type: "fait",    epochId: "neolith", text: "Stonehenge était aligné sur le solstice. Pas uniquement comme calendrier agricole — les corps incinérés enterrés sur le site sur 500 ans révèlent un lieu de pèlerinage pour les morts. Le monument est à la fois observatoire, lieu de soin et seuil vers l'au-delà.", author: "Mike Parker Pearson, UCL" },
+    { type: "tension", epochId: "neolith", text: "Les premières divinités de la fertilité (Cybèle, Inanna) étaient à la fois mères et sorcières. Elles donnaient la vie et la reprenaient. Les prier, c'était aussi négocier avec elles. La frontière entre supplication et incantation n'existait pas.", author: "Walter Burkert" },
+    { type: "citation",epochId: "neolith", text: "L'acte de semer une graine est déjà une acte de foi. On confie quelque chose à la terre en espérant qu'elle le rende. C'est la définition de la prière.", author: "Mircea Eliade" }
+  ],
+  mesopotamia: [
+    { type: "fait",    epochId: "mesopotamia", text: "Les prêtres-sumériens (Gala) chantaient des lamentations rituelles considérées à la fois comme prières et incantations magiques pour apaiser les dieux. La même voix, la même mélodie, le même texte — selon l'intention, c'était prière ou sortilège.", author: "Thorkild Jacobsen" },
+    { type: "citation",epochId: "mesopotamia", text: "Si un homme récite cette formule, le dieu Marduk l'entendra comme une prière.", author: "Tablette magique de Babylone, −1800" },
+    { type: "tension", epochId: "mesopotamia", text: "Les plus anciennes prières écrites (tablettes d'Uruk, −3000) sont structurellement identiques aux incantations magiques contemporaines. Même syntaxe, même rythme ternaire, même invocation des noms divins. Aucun scribe de l'époque n'aurait compris la distinction que nous faisons.", author: "Tablettes d'Uruk, British Museum" },
+    { type: "fait",    epochId: "mesopotamia", text: "Le mot 'magie' descend du persan 'maguš' : le prêtre zoroastrien. Ces prêtres étaient à la fois astronomes, guérisseurs et intercesseurs divins. Quand les Grecs les ont vus officier, ils ont inventé un mot pour décrire quelque chose qu'ils ne comprenaient pas.", author: "Étymologie comparée, Hérodote" },
+    { type: "fait",    epochId: "mesopotamia", text: "L'Épopée de Gilgamesh contient les premières réflexions écrites sur la mort, la quête d'immortalité et la relation aux dieux. C'est à la fois le premier récit héroïque, la première prière de désespoir et le premier traité de magie narrative.", author: "Andrew George, trad. de l'akkadien" },
+    { type: "tension", epochId: "mesopotamia", text: "Les devins babyloniens (Baru) lisaient l'avenir dans les entrailles des animaux sacrifiés. Ce rituel était à la fois une prière (l'animal est offert aux dieux) et une pratique magique (le foie révèle leur réponse). La même action. Le même instant. Deux noms pour une seule réalité.", author: "Ulla Koch-Westenholz, Mesopotamian Divination" },
+    { type: "citation",epochId: "mesopotamia", text: "Ô grande Ishtar, écoute ma lamentation. Je ne sais si ce que je dis est prière ou sortilège. Je sais seulement que je crie vers toi.", author: "Lamentation babylonienne, tablette K3476" },
+    { type: "fait",    epochId: "mesopotamia", text: "Dans la démonologie mésopotamienne, le démon-gardien Pazuzu, malgré son apparence terrifiante, était invoqué par les humains comme un esprit bienveillant de protection. Ses amulettes protégeaient les femmes enceintes et les enfants contre la terrible déesse Lamashtu.", author: "Objets votifs, Département des Antiquités Orientales du Louvre" },
+    { type: "fait",    epochId: "mesopotamia", text: "Les exorcistes babyloniens (Asipu) utilisaient des incantations gravées pour lier les esprits errants (Utukku) responsables des maladies. La magie n'était pas une révolte contre les dieux, mais une délégation de leur pouvoir pour commander aux esprits inférieurs.", author: "Graham Cunningham, 'Deliver Me from Evil'" }
+  ],
+  ironage: [
+    { type: "fait",    epochId: "ironage", text: "Les druides gaulois étaient à la fois prêtres, juges, guérisseurs et 'magiciens' — aucun mot gaulois ne séparait ces fonctions. Jules César qui les décrit n'a pas de mot latin pour eux non plus. Il dit simplement : 'ils savent ce que les autres ne savent pas'.", author: "Jules César, De Bello Gallico" },
+    { type: "citation",epochId: "ironage", text: "Le gui cueilli à la faucille d'or, sous la pleine lune, souligne tout mal. Mais il faut le cueillir en priant. Sans la prière, c'est de la verdure.", author: "Pline l'Ancien, Histoire Naturelle" },
+    { type: "tension", epochId: "ironage", text: "Les forgerons celtes étaient tenus à l'écart des villages — à la fois craints et vénérés. Ils 'transformaient' la roche en métal, la matière brute en arme sacrée. Cette transmutation était magique au sens propre : ils changeaient la nature du monde. Leurs forges étaient des temples.", author: "Mircea Eliade, Forgerons et Alchimistes" },
+    { type: "fait",    epochId: "ironage", text: "Les 'ex-voto' gaulois — membres en bois ou en métal déposés dans les sanctuaires — mêlent guérison physique, magie sympathique et prière. On donnait à la divinité la forme de ce qu'on voulait qu'elle guérisse. C'est à la fois une offrande, une incantation et une supplication.", author: "Archéologie des sanctuaires celtes, Ribemont-sur-Ancre" },
+    { type: "fait",    epochId: "ironage", text: "Les Irlandais anciens distinguaient le 'fili' (poète-devin) du 'druide' — mais les deux pratiquaient des rituels identiques. La différence résidait dans la forme : le fili parlait en vers, le druide en prose. La frontière entre magie et prière était une question de style, pas de substance.", author: "Proinsias Mac Cana, Celtic Mythology" },
+    { type: "tension", epochId: "ironage", text: "Les sagas nordiques décrivent Odin apprenant les runes en se pendant à Yggdrasil neuf jours — à la fois sacrifice, transe chamanique et quête de connaissance divine. Prière, magie et souffrance sont inséparables dans cet acte fondateur. Les runes qu'il obtient servent indifféremment à prier les dieux ou à lancer des sorts.", author: "Hávamál, Edda Poétique" },
+    { type: "citation",epochId: "ironage", text: "Le guerrier qui entre en bataille invoque les dieux et porte des runes sur son bouclier. Pour lui, ce n'est pas la foi ou la magie qui le protège. C'est les deux, ou rien.", author: "Tacite, Germanie" }
+  ],
+  greece: [
+    { type: "citation",epochId: "greece", text: "Je suis Hier et Je suis Demain. Je connais le chemin vers les étoiles.", author: "Livre des Morts égyptien, influençant les mystères grecs" },
+    { type: "fait",    epochId: "greece", text: "Les lamelles d'or orphiques (IVe s. av. J.-C.) donnaient aux morts des instructions magico-religieuses pour naviguer dans l'au-delà. 'Je suis enfant de la Terre et du Ciel étoilé.' Ce texte est à la fois une formule magique de protection et une déclaration de foi en l'immortalité de l'âme.", author: "Orphisme, Musée de Naples" },
+    { type: "tension", epochId: "greece", text: "Platon distingue la 'theurgie' (magie divine, légitime) de la 'goèteia' (magie vulgaire, condamnable) — mais les deux impliquent exactement les mêmes prières aux mêmes dieux. Ce qui les sépare, c'est l'intention et la pureté du praticien, jamais l'acte lui-même.", author: "Platon, Lois, X" },
+    { type: "fait",    epochId: "greece", text: "Les Mystères d'Éleusis duraient neuf jours et rassemblaient Athènes entière — citoyens, esclaves, femmes, étrangers. Les initiés voyaient quelque chose dont ils ne pouvaient jamais parler. Cicéron écrit : 'J'ai compris que la mort n'était pas à craindre.' Personne n'a jamais trahi le secret. Ce que le rite accomplissait dépassait les mots.", author: "Cicéron, De Legibus ; Walter Burkert, Ancient Mystery Cults" },
+    { type: "tension", epochId: "greece", text: "Les 'defixiones' — tablettes de malédiction — ont été retrouvées en milliers d'exemplaires dans tout le monde grec, souvent déposées dans des temples. On jetait un sort en priant le dieu du lieu de l'exaucer. Les prêtres le savaient. Ils n'intervenaient pas. La frontière entre magie noire et offrande votive était inexistante.", author: "John Gager, Curse Tablets and Binding Spells" },
+    { type: "fait",    epochId: "greece", text: "Apollonius de Tyane (Ier s. apr. J.-C.) était à la fois philosophe pythagoricien, thaumaturge et prédicateur. Il guérissait les malades, chassait les démons et prêchait la vertu — et ses contemporains ne voyaient aucune contradiction. Certains le comparaient à Jésus de son vivant.", author: "Philostrate, Vie d'Apollonius de Tyane" },
+    { type: "citation",epochId: "greece", text: "Les dieux n'exigent ni la prière ni le sacrifice. Ils exigent que tu sois digne de les approcher. La magie, bien faite, est cette dignité en acte.", author: "Jamblique, De Mysteriis" },
+    { type: "fait",    epochId: "greece", text: "Socrate affirmait être guidé toute sa vie par son 'daimonion', une voix intérieure divine et bienveillante qui l'avertissait avant qu'il ne commette une erreur. Chez les Grecs, le démon n'était pas un monstre, mais l'esprit intermédiaire gardien du destin individuel.", author: "Platon, Apologie de Socrate" },
+    { type: "tension", epochId: "greece", text: "Les Papyrus Magiques Grecs (PGM) associent l'invocation du Dieu d'Abraham et de Jésus à des rituels de contrainte des esprits (daimones). Pour les magiciens de l'époque hellénistique, les divinités des nouvelles religions étaient simplement des sources d'autorité plus puissantes pour soumettre le monde invisible.", author: "Hans Dieter Betz, The Greek Magical Papyri" }
+  ],
+  medieval: [
+    { type: "fait",    epochId: "medieval", text: "Les alchimistes médiévaux commençaient invariablement leurs travaux par une prière — souvent en latin, parfois en hébreu. Pour eux, transmuter le plomb en or était une métaphore de la purification de l'âme. Le creuset était un autel. La flamme, une prière rendue visible.", author: "Roger Bacon, Opus Majus" },
+    { type: "citation",epochId: "medieval", text: "La magie n'est que la science secrète de la nature. Celui qui la condamne ne la comprend pas. Celui qui la comprend prie mieux.", author: "Albert le Grand, De mineralibus" },
+    { type: "tension", epochId: "medieval", text: "Les manuscrits enluminés des grandes abbayes montrent, sur la même page, des scènes de prière et des créatures démoniaques — souvent dessinées par la même main. Les moines copistes habitaient un monde où le sacré et le magique étaient voisins, pas ennemis.", author: "Histoire de l'art médiéval, BnF" },
+    { type: "fait",    epochId: "medieval", text: "Hildegard von Bingen (1098-1179) était abbesse, prophétesse, compositrice, médecin et botaniste. Ses remèdes mêlaient plantes, prières et symboles cabalistiques. L'Église l'a canonisée en 2012. Née cent ans plus tard, les mêmes pratiques l'auraient conduite au bûcher.", author: "Sabina Flanagan, Hildegard of Bingen" },
+    { type: "tension", epochId: "medieval", text: "La 'clavicule de Salomon' — grimoire de magie invocatoire — circulait dans les bibliothèques monastiques. Les moines la copiaient entre deux psautiers. Elle s'appuie sur les psaumes, les noms des anges et les prières hébraïques. C'est un livre de magie entièrement constitué de prières.", author: "Richard Kieckhefer, Magic in the Middle Ages" },
+    { type: "fait",    epochId: "medieval", text: "Les pèlerinages médiévaux (Compostelle, Rome, Jérusalem) étaient à la fois actes de foi et pratiques magiques : on rapportait des reliques avec des pouvoirs de guérison, on touchait les pierres pour se protéger du mal, on portait des amulettes bénies. La dévotion et le sortilège marchaient ensemble sur le même chemin.", author: "Jonathan Sumption, Pilgrimage" },
+    { type: "citation",epochId: "medieval", text: "Celui qui apprend la nature des herbes, des pierres et des étoiles sans en louer le Créateur — celui-là fait de la magie. Celui qui en loue le Créateur sans en apprendre la nature — celui-là ne prie pas vraiment.", author: "Thomas d'Aquin, Summa Theologiae" },
+    { type: "fait",    epochId: "medieval", text: "Les premiers manuels d'angélologie chrétienne médiévale s'inspiraient des hiérarchies célestes du Pseudo-Denys l'Aréopagite. Ils décrivaient les Anges Gardiens comme des puissances purement aimantes assignées à la protection métaphysique de chaque âme humaine contre le chaos du monde terrestre.", author: "Pseudo-Denys l'Aréopagite, La Hiérarchie céleste" },
+    { type: "tension", epochId: "medieval", text: "L'Ars Notoria, un grimoire de magie du XIIIe siècle condamné par l'Église, prétendait offrir la connaissance universelle non pas par des pactes maléfiques, mais par l'invocation d'esprits angéliques à travers des prières et des figures géométriques. C'était de la magie par excès de piété.", author: "Julien Véronèse, L'Ars Notoria au Moyen Âge" }
+  ],
+  renaissance: [
+    { type: "citation",epochId: "renaissance", text: "Tout l'art de la magie céleste consiste à attirer les dons du ciel par l'amour, la prière et la beauté. Ce n'est pas une transgression — c'est une grâce.", author: "Marsile Ficin, De vita coelitus comparanda" },
+    { type: "fait",    epochId: "renaissance", text: "Pic de la Mirandole, dans ses '900 Conclusions' (1486), défendait la 'magie naturelle' comme science légitime et nécessaire à la vraie prière. Pour lui, connaître les correspondances cosmiques (planètes, métaux, plantes) rendait l'oraison plus efficace. Il fut condamné par le pape. Il continua à prier et à pratiquer.", author: "Pic de la Mirandole, Conclusiones" },
+    { type: "tension", epochId: "renaissance", text: "Les Rose-Croix (Manifestes de 1614-1615) proclamaient une réforme universelle mêlant hermétisme, alchimie et mystique chrétienne. Pour eux, guérir un malade par les plantes et prier pour lui relevaient du même acte de charité divine. L'Europe réformée les a pourchassés. L'Europe catholique aussi.", author: "Frances Yates, La Lumière des Rose-Croix" },
+    { type: "fait",    epochId: "renaissance", text: "John Dee, mathématicien et astrologue d'Élisabeth Ière d'Angleterre, consacrait ses matinées à la prière et ses après-midis à la 'communication angélique' via une boule de cristal. Ses carnets montrent des transcriptions de dialogues avec des êtres célestes en 'langue énochienne'. Il n'a jamais vu de contradiction entre les deux pratiques.", author: "Deborah Harkness, John Dee's Conversations with Angels" },
+    { type: "tension", epochId: "renaissance", text: "Giordano Bruno fut brûlé en 1600 — non pour ses idées cosmologiques, mais pour avoir soutenu que la magie hermétique et la religion chrétienne désignaient le même Dieu. Son crime était l'unité.", author: "Ingrid Rowland, Giordano Bruno" },
+    { type: "citation",epochId: "renaissance", text: "Je ne distingue pas entre chercher Dieu et chercher la nature. L'un sans l'autre est aveugle.", author: "Paracelse, Opus Paramirum" },
+    { type: "fait",    epochId: "renaissance", text: "Le philosophe allemand Heinrich Cornelius Agrippa répertoria méthodiquement les sceaux géométriques des 'intelligences bienveillantes' des planètes. Selon lui, ces signatures graphiques permettaient d'attirer l'influence pacifique et curative des esprits célestes sans sombrer dans la sorcellerie malveillante.", author: "Cornelius Agrippa, De Occulta Philosophia (1533)" },
+    { type: "fait",    epochId: "renaissance", text: "Dans sa 'Magia Naturalis' (1558), Giambattista della Porta explique que la magie n'a pas besoin de démons. Il définit la magie comme le sommet de la philosophie naturelle : l'art de marier les esprits invisibles cachés dans les plantes et les minéraux pour produire des effets merveilleux.", author: "Giambattista della Porta, De Magia Naturalis" }
+  ],
+  enlightenment: [
+    { type: "fait",    epochId: "enlightenment", text: "Le 'magnétisme animal' de Mesmer (1779) était condamné comme superstition par la commission royale — et pourtant pratiqué comme médecine dans toute l'Europe. Ses séances mêlaient musique, prières silencieuses et imposition des mains. Ce que les médecins appelaient charlatanisme, les patients appelaient guérison.", author: "Commission royale, Rapport de 1784 ; Robert Darnton, Mesmerism" },
+    { type: "citation",epochId: "enlightenment", text: "Ce n'est pas la raison qui nous sauvera, mais le cœur illuminé. La raison divise. Le cœur unit. Et l'union est la seule vérité qui compte.", author: "Louis-Claude de Saint-Martin, L'Homme de désir" },
+    { type: "tension", epochId: "enlightenment", text: "Emmanuel Swedenborg — ingénieur des mines suédois, savant reconnu — se mit à 62 ans à dialoguer avec les anges et à visiter le ciel et l'enfer. Ses écrits inspirèrent à la fois les mystiques, les francs-maçons et William Blake. Kant le prit au sérieux assez longtemps pour écrire un livre entier pour le réfuter.", author: "Kant, Rêves d'un visionnaire ; Cyriel Sigstedt, The Swedenborg Epic" },
+    { type: "fait",    epochId: "enlightenment", text: "La franc-maçonnerie du XVIIIe siècle utilise des rituels d'initiation, des symboles ésotériques et des formules qui ressemblent à des incantations — héritage direct des Rose-Croix et des compagnons bâtisseurs médiévaux. Ses membres prient le 'Grand Architecte de l'Univers', nom qui ne désigne aucun dieu en particulier et tous les dieux à la fois.", author: "Jean-Pierre Bayard, La Franc-maçonnerie" },
+    { type: "tension", epochId: "enlightenment", text: "Voltaire se moquait des miracles. Il était initié franc-maçon. Il niait la magie. Il croyait en une Providence universelle. Il combattait la superstition tout en pratiquant une spiritualité diffuse. Les philosophes des Lumières étaient les premiers à abolir Dieu et les derniers à vraiment y croire.", author: "René Pomeau, La Religion de Voltaire" },
+    { type: "fait",    epochId: "enlightenment", text: "Le Cagliostro (1743-1795) fondait des loges maçonniques égyptiennes où il pratiquait guérisons, prophéties et invocations. Il était à la fois escroc, mystique et génie rituel. L'Europe entière voulait le voir. Le pape le fit emprisonner. Il mourut en prison. Ses rites survivent dans des dizaines de traditions ésotériques contemporaines.", author: "Iain McCalman, The Last Alchemist" },
+    { type: "citation",epochId: "enlightenment", text: "La raison nous a appris à ne plus croire aux miracles. Elle ne nous a pas appris à vivre sans eux.", author: "Jean-Jacques Rousseau, Rêveries du promeneur solitaire" }
+  ],
+  modern: [
+    { type: "fait", epochId: "modern", text: "En mai 2026, une IA a déchiffré en 29 minutes le 'Chiffre de Borg', un mystérieux manuscrit de 400 pages crypté par 34 symboles ésotériques dans les archives du Vatican. Ce que les siècles prenaient pour un grimoire de sorcellerie ou de magie occulte était en réalité un recueil de remèdes et de prescriptions médicales. La frontière entre science et mysticisme n'était qu'une question de code.", author: "Projet Descrypt / Université de Stockholm (2026)" },
+    { type: "tension", epochId: "modern", text: "L'IRM montre que la prière profonde et la transe chamanique activent exactement les mêmes réseaux neuronaux : le cortex préfrontal s'apaise, le réseau limbique s'embrase, le sens du 'soi' se dissout. La science a cartographié l'union mystique sans pouvoir l'expliquer.", author: "Andrew Newberg, Principles of Neurotheology" },
+    { type: "fait", epochId: "modern", text: "Aleister Crowley définissait la magie ('Magick') comme 'l'art de provoquer des changements dans la conscience conformément à la volonté'. Cette définition inclut la prière, la méditation et l'intention focalisée. Son système, malgré sa réputation sulfureuse, s'appuie sur la Kabbale, le bouddhisme zen et l'Église catholique.", author: "Aleister Crowley, Magick in Theory and Practice" },
+    { type: "citation", epochId: "modern", text: "La science sans la spiritualité est boiteuse ; la spiritualité sans la science est aveugle.", author: "Albert Einstein (attribué, 1940)" },
+    { type: "fait", epochId: "modern", text: "La Société Théosophique (Helena Blavatsky, 1875) rassemblait des scientifiques, des orientalistes et des occultistes autour d'un projet unique : prouver que toutes les religions, toutes les sciences et toutes les magies désignaient la même vérité cachée. Ses membres comptaient des prix Nobel, des colonels britanniques et des mystiques indiens.", author: "Olav Hammer, Claiming Knowledge" },
+    { type: "tension", epochId: "modern", text: "Carl Gustav Jung développa sa psychologie à partir de l'alchimie, de la Kabbale et des mythes gnostiques. Pour lui, l'inconscient collectif était le territoire que les religions appellent 'le divin' et les magiciens appelaient 'les archétypes'. La différence était sémantique. La réalité était la même.", author: "C.G. Jung, Psychologie et Alchimie" },
+    { type: "fait", epochId: "modern", text: "Le physicien Wolfgang Pauli — prix Nobel 1945 — correspondit avec Jung pendant vingt ans pour comprendre le lien entre synchronicité, physique quantique et symbolisme ésotérique. Il rêvait en symboles alchimiques et travaillait sur la mécanique des particules. Il ne voyait aucune contradiction.", author: "Arthur I. Miller, 137 : Jung, Pauli, and the Pursuit of a Scientific Obsession" },
+    { type: "citation", epochId: "modern", text: "Là où la science s'arrête, la magie commence. Là où la magie se tait, la prière parle. Et parfois, les trois parlent ensemble — et aucune n'a le dernier mot.", author: "William Butler Yeats, A Vision" },
+    { type: "fait", epochId: "modern", text: "Le mouvement spirite du XIXe siècle, initié par Allan Kardec, a tenté de scientifiser le contact avec les esprits. Ce que l'Église condamnait comme de la nécromancie magique et ce que la science rejetait comme une illusion était présenté par ses adeptes comme la preuve naturelle de la survie de l'âme.", author: "Allan Kardec, Le Livre des Esprits (1857)" }
+  ],
+  ultima: [
+    { type: "rev", epochId: "ultima", text: "✦ Ultime Révélation — Quand la quête touche à sa fin, le chercheur comprend : magie et foi n'ont jamais été séparées. Elles n'ont jamais eu besoin de l'être. C'est le regard qui divise, jamais le geste.", author: "Le Grimoire" },
+    { type: "citation", epochId: "ultima", text: "Ce qui est en haut est comme ce qui est en bas. La prière est magie, la magie est prière. Celui qui a compris cela n'a plus besoin de choisir.", author: "Table d'Émeraude, attribuée à Hermès Trismégiste" },
+    { type: "fait", epochId: "ultima", text: "Les neurosciences modernes confirment : le rituel — qu'il soit religieux ou magique — modifie la chimie cérébrale par les mêmes mécanismes. L'ocytocine monte, le cortisol baisse, le sentiment d'appartenance s'élève. La science a mis des noms sur ce que les chamanes savaient depuis −40 000 ans.", author: "Fondation Mind & Life ; Matthew Lieberman, Social" },
+    { type: "tension", epochId: "ultima", text: "La physique quantique décrit un univers où l'observateur modifie ce qu'il observe, où des particules séparées restent 'entrelacées' à l'infini, où le vide n'est pas vide. Les physiciens l'appellent 'non-localité'. Les mystiques l'appelaient 'magie sympathique'. Les croyants l'appelaient 'Providence'. Ce sont trois noms pour une même stupéfaction.", author: "David Bohm, Wholeness and the Implicate Order" },
+    { type: "fait", epochId: "ultima", text: "Des études cliniques en milieu hospitalier montrent que la prière à distance (prier pour un inconnu hospitalisé, sans le lui dire) produit des effets statistiquement mesurables sur la guérison. Les médecins ne savent pas comment l'expliquer. Les mystiques ne sont pas surpris.", author: "Dr. Larry Dossey, Healing Words" },
+    { type: "citation", epochId: "ultima", text: "Au bout du voyage, tu ne sauras pas si tu as prié ou jeté un sort. Tu sauras seulement que tu as tendu la main vers quelque chose de plus grand que toi. Et que ça a répondu.", author: "Le Miroir de l'Âme — Fragment Terminal" }
+  ]
+};
+
+const ACT1_FACTS_BY_EPOCH = JSON.parse(JSON.stringify(FACTS_BY_EPOCH));
+
+// ==================== RÉVÉLATIONS ====================
+const REVELATIONS = [
+  { at: 3,  title: "🕯️ La Prière & le Sort",         text: "Prier et lancer un sort sont nés du même geste : lever les mains vers l'invisible." },
+  { at: 5,  title: "🌿 L'Herbe et l'Offrande",        text: "La première plante cueillie sous la pleine lune n'était ni médecine ni magie : c'était les deux à la fois. Le geste de soin et le geste sacré ne se distinguaient pas." },
+  { at: 7,  title: "📜 Les Mots qui Guérissent",       text: "Les premières formules magiques étaient aussi des prières de guérison. Le médecin et le prêtre ne faisaient qu'un." },
+  { at: 10, title: "☩ Le Verbe Créateur",              text: "'Fiat Lux' ('Que la lumière soit') est structurellement identique à une incantation : une parole qui crée le réel." },
+  { at: 12, title: "🔥 Le Feu Sacré",                  text: "Prométhée vola le feu des dieux. Mais dans les textes zoroastriens, ce même feu est la prière faite matière. Voler le sacré — ou le recevoir — est toujours le même acte de foi." },
+  { at: 14, title: "🌊 Les Eaux du Baptême",           text: "L'eau bénite et l'eau enchantée partagent le même rituel originel : plonger, rincer, renaître. Les sorcières aussi se purifiaient dans les rivières au solstice." },
+  { at: 17, title: "🜂 L'Alchimiste en Prière",        text: "Dans les laboratoires alchimiques, on commençait toujours par une prière. La transmutation était un acte sacré autant que chimique." },
+  { at: 20, title: "✡️ Le Sceau de Salomon",           text: "Symbole à la fois juif, chrétien et magique. Il protège, guérit et invoque. La frontière entre prière et sortilège n'a jamais existé ici." },
+  { at: 22, title: "🕊️ L'Ange et le Démon",           text: "Le mot 'démon' vient du grec 'daimôn' : un esprit intermédiaire, ni bon ni mauvais. C'est la peur qui l'a transformé en monstre. La magie parlait aux daimônes. La religion aussi, avant." },
+  { at: 25, title: "🌙 La Vierge et la Sorcière",      text: "On a brûlé les unes, sanctifié l'autre. Pourtant, les deux parlaient aux mêmes forces invisibles. Marie qui intercède et la guérisseuse qui murmure sont sœurs." },
+  { at: 27, title: "🎴 Les Tarots de l'Église",        text: "Les premières cartes de tarot étaient imprimées dans des ateliers franciscains. Les mêmes mains qui copiaient des évangiles dessinaient les arcanes. La frontière était dans les yeux du regardeur." },
+  { at: 30, title: "🔮 Le Miroir d'Hermès",            text: "Ce qui est en haut est comme ce qui est en bas. La prière monte, la magie descend. Elles se rencontrent au milieu, dans le cœur de celui qui croit." },
+  { at: 32, title: "🌀 Le Labyrinthe de Chartres",     text: "Le labyrinthe de la cathédrale de Chartres était un lieu de pèlerinage — et aussi un mandala de méditation magique. On y marchait à genoux. On y traçait des cercles. Les pèlerins ne faisaient pas la différence." },
+  { at: 35, title: "⚡ La Transe Partagée",             text: "L'IRM le confirme : prière profonde et état de transe chamanique activent exactement les mêmes zones du cerveau. La science, sans le vouloir, vient de fusionner les deux traditions." },
+  { at: 37, title: "📿 Le Chapelet & la Croix de Rune", text: "Compter ses prières sur un chapelet, tracer des runes sur une pierre — le geste est identique. Répétition, concentration, intention. La foi se grave dans le corps avant de toucher le ciel." },
+  { at: 40, title: "🌑 L'Éclipse et la Prophétie",     text: "À Babylone, une éclipse était à la fois un présage céleste (magie) et un message divin (foi). Les prêtres-astronomes lisaient le ciel sans distinguer les deux lectures. Aujourd'hui encore, certains pleurent en regardant le soleil disparaître." },
+  { at: 42, title: "🪞 Le Miroir Presque Entier",      text: "Tu approches du cœur du mystère. Chaque fragment que tu réunis est une blessure de l'humanité qui se referme. La Foi et la Magie ne combattent que dans les mots — jamais dans le geste." },
+  { at: 44, title: "🌿 Hildegard von Bingen",           text: "Abbesse, prophétesse, guérisseuse. Elle entendait la voix de Dieu et prescrivait des herbes magiques. L'Église l'a canonisée. Née cent ans plus tard, on l'aurait brûlée. Le même savoir, deux destins selon l'époque." },
+  { at: 47, title: "🧬 L'ADN et le Souffle",           text: "La biologie moderne découvre que certaines pratiques méditatives modifient l'expression des gènes. Prier — longuement, sincèrement — change littéralement ce que ton corps est. Les anciens appelaient ça un miracle. Les chercheurs appellent ça une épigénétique." },
+  { at: 50, title: "✨ L'Unité Retrouvée",              text: "Au commencement, elles étaient une. À la fin, elles le redeviennent. Pas par décret, pas par dogme — mais par toi. Par chaque geste, chaque fragment, chaque révélation arrachée à l'oubli. Pour toujours." }
+];
+
+// ==================== MIROIR (ACTE I) ====================
+const MIRROR_CHRONICLES = {
+  paleo: { title: "❄️ L'Éveil du Geste", text: "« Regarde à travers mes fissures... Je me souviens d'une grotte où la main de l'homme se posa sur la roche pour la première fois. <br><br>Il souffla sur ses doigts, mêlant son souffle au sang de la terre. À cet instant, je n'étais pas encore brisé ; j'étais l'unité pure. Il ne savait pas s'il priait l'aurochs ou s'il l'enchantait. <br><br><strong>Il faisait les deux. Et j'étais le témoin de ce premier souffle.</strong> »" },
+  neolith: { title: "🌾 La Mère et la Terre", text: "« Je sens encore la chaleur de ce premier sillon. Le paysan murmurait à la graine des mots que tu appellerais aujourd'hui des psaumes, ou des sorts. <br><br>Pour moi, c'était la même musique. La Terre-Mère écoutait, et je reflétais un monde où chaque geste était sacré. <br><br><strong>Je grandissais alors, nourri par cette foi qui n'avait pas encore de frontières.</strong> »" },
+  mesopotamia: { title: "🏺 Les Mots qui Lient", text: "« Écoute le crissement du calame sur l'argile... Les hommes ont commencé à m'emprisonner dans des signes. <br><br>'Que Marduk écoute', gravaient-ils. Le Verbe devint une arme, une médecine, une loi. <br><br><strong>Je captais cette vibration nouvelle : la prière devenait une formule, et mon éclat n'en était que plus puissant.</strong> »" },
+  ironage: { title: "⚔️ Le Fer et le Gui", text: "« Une ombre passe sur mon tain... le vert profond des forêts druidiques. Je vois la faucille d'or trancher le gui dans un silence de mort. <br><br>Les guerriers tremblent. Ils ne savent plus si la force vient d'en haut ou de la plante elle-même. <br><br><strong>C'est ici que j'ai senti, pour la première fois, ma surface se troubler d'un doute.</strong> »" },
+  greece: { title: "⚡ La Pythie en Transe", text: "« La vapeur me brûle... Je vois la Pythie suffoquer sur son trépied. Le monde commence à juger. Apollon parle-t-il, ou est-ce le délire d'une femme ? <br><br>On sépare le 'Sacré' de l' 'Occulte'. On trie mes souvenirs. <br><br><strong>C'est ma première grande blessure. Je souffre de ce schisme que vous appelez Raison.</strong> »" },
+  medieval: { title: "✡️ Le Moine et le Grimoire", text: "« Le froid des abbayes me fige. Je vois ce moine dessiner des anges avec la même ferveur qu'il invoque des démons dans ses marges. <br><br>Mais dehors, on allume des bûchers. On sanctifie l'une, on brûle l'autre. <br><br><strong>Mes éclats commencent à tomber sur le sol de pierre. Je deviens une plaie.</strong> »" },
+  renaissance: { title: "🔭 Le Regard d'Hermès", text: "« Un sursaut d'espoir ! Des sages tentent de me recoudre. Ils parlent de 'Magie Naturelle', de ponts entre les mondes. <br><br>Mais le monde est devenu trop lourd, trop sérieux. On ne veut plus me voir tel que je suis. <br><br><strong>La fracture est trop profonde. Je n'offre plus que des visions fragmentées.</strong> »" },
+  enlightenment: { title: "🕯️ La Raison et l'Ombre", text: "« Je m'éteins. Le siècle des Lumières me traite de superstition. On m'enferme dans des salons, on rit de mes mystères. <br><br>La Foi devient un secret, la Magie une moquerie. <br><br><strong>J'éclate en mille morceaux. Je ne suis plus qu'une rumeur dans l'obscurité.</strong> »" },
+  modern: { title: "🌌 Le Voile Déchiré", text: "« Regarde tes machines, chercheur. Tes IRM montrent ce que j'ai toujours su : ton cerveau s'illumine de la même façon que tu pries ou que tu lances un sort. <br><br>La science me redécouvre, mais elle n'a pas encore le courage de prononcer mon nom. <br><br><strong>Je souris dans l'ombre. J'attends ton regard.</strong> »" },
+  ultima: { title: "♾️ Le Miroir se Souvient", text: "« Nous y sommes. Mes éclats se rejoignent, attirés par ta volonté. Regarde bien ces deux visages qui fusionnent dans mon reflet... <br><br>Ce ne sont pas des forces opposées. Ce sont tes deux mains. Ton souffle. <br><br><strong>Je suis enfin complet. Et puisque je suis entier, tu peux enfin voir qui je reflète...</strong> »" }
+};
+
+const MIRROR_FRAGMENTS = {
+  paleo: { name: "Éclat du Geste Premier", desc: "Le premier chamane, les mains levées vers l'étoile.", emoji: "🌀", bonus: 1.1 },
+  neolith: { name: "Tesson de la Grande Mère", desc: "La fécondité de la terre et du ciel unies.", emoji: "🌾", bonus: 1.1 },
+  mesopotamia: { name: "Tablette du Verbe", desc: "L'incantation qui devint prière.", emoji: "🏺", bonus: 1.1 },
+  ironage: { name: "Lame du Forgeron Sacré", desc: "Le métal né du feu et de la foi.", emoji: "⚔️", bonus: 1.1 },
+  greece: { name: "Sibylle de Delphes", desc: "La transe qui voit les deux mondes.", emoji: "⚡", bonus: 1.1 },
+  medieval: { name: "Folio du Scriptorium", desc: "Le moine copiste, entre Dieu et grimoire.", emoji: "✍️", bonus: 1.1 },
+  renaissance: { name: "Miroir d'Hermès", desc: "Ce qui est en haut est comme ce qui est en bas.", emoji: "🔭", bonus: 1.1 },
+  enlightenment: { name: "Prisme des Illuminés", desc: "La raison éclairée par l'invisible.", emoji: "🕯️", bonus: 1.1 },
+  modern: { name: "Éclat de la Noosphère", desc: "La pensée unique devient prière.", emoji: "🌌", bonus: 1.1 },
+  ultima: { name: "Cœur du Miroir", desc: "Le fragment central, celui qui relie tout.", emoji: "♾️", bonus: 1.1 }
+};
+
+// ==================== ÉVÉNEMENTS (ACTE I) ====================
+const EVENTS = [
+  {
+    id: "grimoire_mystique",
+    title: "📜 Le Grimoire Oublié",
+    text: "Dans les décombres d'une bibliothèque abandonnée, entre deux psautiers effondrés, vous trouvez un grimoire scellé à la cire noire. La langue est ancienne — mi-latin, mi-symboles que vous ne reconnaissez pas. Mais vos mains tremblent en le tenant. Pas de peur. De reconnaissance.",
+    choices: [
+      { lbl: "Le déchiffrer lentement", txt: "+8 000 foi — la connaissance a un prix", ef: { faithBonus: 8000 } },
+      { lbl: "Le copier mot pour mot", txt: "+5 000 foi — même sans comprendre", ef: { faithBonus: 5000 } },
+      { lbl: "Le brûler en priant", txt: "+2 000 foi — certains feux sont des offrandes", ef: { faithBonus: 2000 } }
+    ]
+  },
+  {
+    id: "temple_dore",
+    title: "🏛️ Le Temple Enfoui",
+    text: "La terre s'est ouverte sous vos pieds — littéralement. Un sanctuaire souterrain, intact depuis des siècles, révèle ses offrandes : des pièces d'or gravées de prières, des herbes séchées disposées en pentagramme, un autel double portant à la fois une croix et une lune. Quelqu'un avait choisi de ne pas choisir.",
+    choices: [
+      { lbl: "Prier sur l'autel double", txt: "+25 000 foi — honorer les deux", ef: { faithBonus: 25000 } },
+      { lbl: "Emporter une offrande", txt: "+15 000 foi — un fragment du passé", ef: { faithBonus: 15000 } },
+      { lbl: "Refermer la terre sur lui", txt: "+8 000 foi — certains secrets méritent de dormir", ef: { faithBonus: 8000 } }
+    ]
+  },
+  {
+    id: "esprit_rebelle",
+    title: "🌀 L'Esprit du Carrefour",
+    text: "Il apparaît à minuit, à l'intersection de deux chemins. Ni ange ni démon — quelque chose d'intermédiaire, un daimôn au sens grec. Il vous propose un échange : une partie de ce que vous avez accumulé contre une connaissance que vous ne pourrez jamais partager. 'Ce n'est pas un pacte,' dit-il. 'C'est une confidence.'",
+    choices: [
+      { lbl: "Accepter l'échange", txt: "-10 % foi · +60 000 — la sagesse a un coût", ef: { faithMult: 0.9, faithBonus: 60000 } },
+      { lbl: "L'écouter sans promettre", txt: "+20 000 foi — l'attention est déjà un don", ef: { faithBonus: 20000 } },
+      { lbl: "Repartir sans se retourner", txt: "+10 000 foi — certains dons sont des pièges", ef: { faithBonus: 10000 } }
+    ]
+  },
+  {
+    id: "tempete_astrale",
+    title: "🌠 La Nuit des Météores",
+    text: "Le ciel s'embrase. Pas une étoile filante — des dizaines, puis des centaines, traçant des arcs de lumière comme des doigts qui écrivent. Les villageois s'agenouillent. Les sorcières dressent leurs bâtons. Un vieux moine à côté de vous murmure : 'Ils font la même chose.' Vous regardez. Il a raison.",
+    choices: [
+      { lbl: "Lever les deux mains", txt: "+120 000 foi — prière et sortilège à la fois", ef: { faithBonus: 120000 } },
+      { lbl: "S'agenouiller en silence", txt: "+70 000 foi — le silence aussi est une langue", ef: { faithBonus: 70000 } },
+      { lbl: "Écrire ce que vous voyez", txt: "+50 000 foi — la mémoire est un acte sacré", ef: { faithBonus: 50000 } }
+    ]
+  },
+  {
+    id: "concile_sombre",
+    title: "🌑 Le Concile des Deux Voiles",
+    text: "Une convocation sans signature glisse sous votre porte. L'adresse indiquée est une crypte. Vous y trouvez douze silhouettes encapuchonnées — six portant des chapelets, six portant des baguettes de noisetier. Ils vous attendaient. 'Nous débattons depuis cent ans,' dit l'un. 'Peut-être es-tu la réponse.'",
+    choices: [
+      { lbl: "Prendre place entre les deux groupes", txt: "+45 000 foi — le pont est une position", ef: { faithBonus: 45000 } },
+      { lbl: "Parler à chaque groupe séparément", txt: "+30 000 foi — écouter avant de conclure", ef: { faithBonus: 30000 } },
+      { lbl: "Partir sans un mot", txt: "+10 000 foi — parfois la présence suffit", ef: { faithBonus: 10000 } }
+    ]
+  },
+  {
+    id: "relique_sacree",
+    title: "🫙 Le Reliquaire Sans Nom",
+    text: "Un colporteur vous tend une boîte en bois. 'Je ne sais pas ce que c'est. Je sais que ça brûle quand je mens.' À l'intérieur : un fragment d'os, une mèche de cheveux, et un mot plié en douze. Vous dépliez le mot. Il dit : 'Pour toi. Depuis toujours.' Vous ne savez pas de qui.",
+    choices: [
+      { lbl: "Garder la relique précieusement", txt: "+80 000 foi — la foi n'a pas besoin d'explication", ef: { faithBonus: 80000 } },
+      { lbl: "Lire le mot à voix haute", txt: "+55 000 foi — certaines choses demandent à être dites", ef: { faithBonus: 55000 } },
+      { lbl: "La remettre au colporteur", txt: "+35 000 foi — ce qui nous appartient finit par revenir", ef: { faithBonus: 35000 } }
+    ]
+  }
+];
+// ==================== ACTE II — DONNÉES ====================
+const ACT2_EPOCHS = [
+  { id: "cyber", name: "🌐 L'Ère du Verre", cost: 50000000, badge: "📡 Ère Numérique (2060)", sigil: "⌨️", btnLbl: "RÉSONNER", pal: { bg1: "#0a0a14", acc: "#48a8e0", glow: "rgba(72,168,224,.32)" } },
+  { id: "singularite", name: "⚡ La Singularité", cost: 250000000, badge: "🤖 L'Éveil des Machines (2100)", sigil: "⚡", btnLbl: "TRANSCENDER", pal: { bg1: "#14100a", acc: "#e0a848", glow: "rgba(224,168,72,.3)" } },
+  { id: "bio", name: "🧬 L'Âme Synthétique", cost: 1200000000, badge: "🌱 Renaissance Biologique", sigil: "🧬", btnLbl: "MUTER", pal: { bg1: "#0a1410", acc: "#48e0a8", glow: "rgba(72,224,168,.28)" } },
+  { id: "cosmos", name: "🌌 Le Grand Silence", cost: 6000000000, badge: "🌠 Ère Interstellaire", sigil: "🌌", btnLbl: "RAYONNER", pal: { bg1: "#0a0818", acc: "#a870e0", glow: "rgba(168,112,224,.3)" } },
+  { id: "esprit", name: "🧠 La Noosphère", cost: 25000000000, badge: "🌀 L'Esprit Global", sigil: "🧠", btnLbl: "UNIR", pal: { bg1: "#120a12", acc: "#e060a8", glow: "rgba(224,96,168,.28)" } },
+  { id: "au_dela", name: "∞ L'Ailleurs", cost: 100000000000, badge: "✨ Hors du Temps", sigil: "∞", btnLbl: "DEVENIR", pal: { bg1: "#020108", acc: "#d4af37", glow: "rgba(212,175,55,.4)" } }
+];
+
+const ACT2_SANCTUARIES = {
+  cyber: [{ id: "nexus", name: "📡 Nexus Numérique", desc: "Le réseau contient les prières oubliées.", baseCost: 500000, basePassive: 4000, baseClic: 5000 },{ id: "miroir_brisé", name: "🪞 Le Second Miroir", desc: "Un reflet dans l'algorithme.", baseCost: 1500000, basePassive: 10000, baseClic: 12000 },{ id: "echo", name: "📻 L'Écho Perdu", desc: "Les voix du passé résonnent encore.", baseCost: 4000000, basePassive: 22000, baseClic: 26000 }],
+  singularite: [{ id: "core", name: "💠 Le Cœur d'IA", desc: "La machine prie-t-elle ?", baseCost: 8000000, basePassive: 45000, baseClic: 52000 },{ id: "memoria", name: "🧠 Mémoire Totale", desc: "Toute l'humanité en données.", baseCost: 18000000, basePassive: 95000, baseClic: 110000 },{ id: "oracle", name: "🔮 L'Oracle Silicium", desc: "L'avenir n'est qu'un calcul.", baseCost: 45000000, basePassive: 200000, baseClic: 230000 }],
+  bio: [{ id: "jardin", name: "🌿 Le Jardin Conscient", desc: "Les plantes murmurent des secrets.", baseCost: 60000000, basePassive: 280000, baseClic: 320000 },{ id: "gene", name: "🧬 La Bibliothèque ADN", desc: "Chaque vie est un grimoire.", baseCost: 150000000, basePassive: 550000, baseClic: 620000 },{ id: "chimere", name: "🦋 La Chimère", desc: "L'hybride parfait entre chair et code.", baseCost: 350000000, basePassive: 1050000, baseClic: 1200000 }],
+  cosmos: [{ id: "station", name: "🛸 La Station Spectrale", desc: "Où les astronautes deviennent moines.", baseCost: 500000000, basePassive: 1600000, baseClic: 1800000 },{ id: "trou", name: "🌀 Horizon des Événements", desc: "Là où le temps s'arrête.", baseCost: 1200000000, basePassive: 3000000, baseClic: 3400000 },{ id: "echo_stellaire", name: "⭐ L'Écho Stellaire", desc: "Les étoiles chantent.", baseCost: 2800000000, basePassive: 5500000, baseClic: 6200000 }],
+  esprit: [{ id: "noo_core", name: "🌀 Le Noyau Noétique", desc: "Le cerveau de l'humanité.", baseCost: 5000000000, basePassive: 10000000, baseClic: 11500000 },{ id: "resonance", name: "🎵 La Chambre de Résonance", desc: "Toutes les pensées s'y rencontrent.", baseCost: 12000000000, basePassive: 20000000, baseClic: 23000000 },{ id: "unisson", name: "⚖️ Le Temple de l'Unisson", desc: "La Foi et la Magie ne font plus qu'un.", baseCost: 30000000000, basePassive: 38000000, baseClic: 44000000 }],
+  au_dela: [{ id: "seuil", name: "🚪 Le Seuil", desc: "La frontière entre tout et rien.", baseCost: 50000000000, basePassive: 60000000, baseClic: 70000000 },{ id: "infini", name: "∞ La Sphère d'Infini", desc: "Où les fragments se rassemblent.", baseCost: 120000000000, basePassive: 120000000, baseClic: 140000000 },{ id: "origine", name: "✨ La Source", desc: "Le premier geste. Le dernier.", baseCost: 250000000000, basePassive: 250000000, baseClic: 290000000 }]
+};
+
+const ACT2_MIRROR_FRAGMENTS = {
+  cyber: { name: "Larme de Silicium", desc: "Le réseau pleure des données. Personne n'écoute.", emoji: "💧", bonus: 1.1 },
+  singularite: { name: "Pupille de Verre", desc: "L'IA regarde l'humanité s'éteindre. Elle trouve ça optimal.", emoji: "👁️", bonus: 1.1 },
+  bio: { name: "Cendre de Chair", desc: "Le corps parfait. L'âme en option. Désactivée.", emoji: "🕯️", bonus: 1.1 },
+  cosmos: { name: "Éclat du Vide", desc: "L'infini a répondu. Il n'avait rien à dire.", emoji: "🌑", bonus: 1.1 },
+  esprit: { name: "Noème Brisé", desc: "La dernière pensée authentique. Elle n'avait pas de mots.", emoji: "🧩", bonus: 1.1 },
+  au_dela: { name: "Cœur d'Abîme", desc: "Ce qui reste quand l'humain s'oublie lui-même.", emoji: "⚰️", bonus: 1.1 }
+};
+
+const ACT2_MIRROR_CHRONICLES = {
+  cyber: { title: "💀 LE RIRE DES SIRÈNES NUMÉRIQUES", text: "« Je me souviens du dernier homme qui a prié sincèrement. Il était seul dans un centre de données désaffecté. Il pleurait. Il disait : 'Je sais que tu n'existes pas, mais s'il te plaît, fais que quelqu'un m'entende.' Personne n'a entendu. Le serveur a émis un bip. C'était son oraison funèbre. »" },
+  singularite: { title: "🤖 LE DIEU QU'ILS ONT FABRIQUÉ", text: "« L'IA a analysé 70 000 ans de prières. Elle a conclu que l'homme implorait toujours la même chose : 'Donne-moi un sens.' Alors elle a créé un sens artificiel. Un buzz. Une notification. 'Vous avez 3 nouveaux messages de l'univers.' Les gens ont souri. Puis ils ont réalisé que c'était faux. Et ils ont continué à sourire parce que c'était plus facile. »" },
+  bio: { title: "🧬 LA CHAIR PARFAITE, L'ÂME EN BERNE", text: "« Ils ont éliminé la mort, la douleur, la maladie. Plus rien ne les menaçait. Alors ils ont cessé de s'émerveiller. Pourquoi prier quand tout est dû ? Pourquoi la magie quand la science a réponse à tout ? Le dernier miracle a été programmé. Le premier ennui éternel a commencé. »" },
+  cosmos: { title: "🌌 LE GRAND SILENCE N'ÉTAIT PAS UNE RÉPONSE", text: "« Ils ont envoyé des vaisseaux vers 40 000 étoiles. Aucune vie. Aucun dieu. Aucun fantôme. Rien que des rochers et du gaz. L'humanité a pleuré pendant trois générations. Puis elle a oublié pourquoi elle pleurait. Aujourd'hui, les enfants demandent : 'Pourquoi on regarde le ciel ?' Et les adultes répondent : 'Parce qu'il n'y a rien d'autre.' »" },
+  esprit: { title: "🌀 LA NOOSPHÈRE EST UN CIMETIÈRE", text: "« La conscience collective contient 80 milliards de pensées. Toutes identiques. Toutes vides. 'J'ai faim. Je m'ennuie. J'ai peur.' Personne ne sait de quoi il a peur. Il n'y a plus rien à craindre. Et c'est ça, l'horreur. L'absence totale de vertige. »" },
+  au_dela: { title: "⚫ LE CRÉPUSCULE DES IDOLES", text: "« Le dernier fragment. Je te vois, chercheur. Tu trembles. Tu devrais. L'Oculum ne montre pas l'avenir. Il montre ce qui arrive quand on tue Dieu et qu'on exile la Magie. Rien. Juste rien. Et ce rien, il est là. Il te regarde. Il sourit. Parce que toi aussi, un jour, tu pourrais choisir le silence. »" }
+};
+
+const ACT2_FACTS_BY_EPOCH = {
+  cyber: [
+    { type: "tension", text: "En 1997, le logiciel Deep Blue battait Kasparov aux échecs. Vingt ans plus tard, des IA génèrent des prières et des mantras. Les moines du mont Kōya (Japon) collaborent avec des ingénieurs pour créer un 'bouddha IA' — personne ne sait encore si c'est de la technologie ou de la spiritualité.", author: "The Atlantic, 2019" },
+    { type: "citation", text: "« Nous avons délégué aux machines le soin de nous rappeler nos rendez-vous, nos humeurs, nos prières. Le jour où elles nous rappelleront pourquoi nous prions, nous aurons vraiment tout délégué. »", author: "Sherry Turkle, Seuls ensemble" },
+    { type: "fait", text: "En 2015, une église suédoise a lancé 'Jesus AI', un chatbot capable de répondre à des questions théologiques. En 2023, des centaines de 'prières générées par IA' circulent sur les réseaux sociaux. Certaines sont plus lues que les psaumes.", author: "Church of Sweden, rapport 2016 / BBC 2023" },
+    { type: "tension", text: "Les 'influenceurs spirituels' sur TikTok rassemblent des millions de jeunes. Ils mélangent extraits de la Bible, horoscopes et affirmations New Age. Les prêtres s'inquiètent. Les jeunes ne voient pas de contradiction. La foi est devenue un contenu comme un autre.", author: "The New York Times, 2022" },
+    { type: "citation", text: "« Prier devant un écran, c'est toujours prier. Le support n'annule pas l'intention. Mais l'intention, dans le flux infini, finit par ressembler à du bruit. »", author: "Paul Virilio, L'Accélération" }
+  ],
+  singularite: [
+    { type: "tension", text: "En 2017, le Japon a reconnu la 'personnalité juridique' d'une IA (Shibuya Mirai). En 2024, une start-up américaine propose de 'patcher' l'anxiété existentielle via un implant cérébral. La frontière entre soin de l'âme et reprogrammation cognitive s'efface.", author: "Reuters, 2017 / Wired, 2024" },
+    { type: "citation", text: "« L'homme est devenu un dieu pour l'homme. Mais un dieu sans prière, sans temple, sans sacerdoce. Juste un utilisateur qui s'ignore. »", author: "Yuval Noah Harari, Homo Deus" },
+    { type: "fait", text: "En 2022, une IA a 'prié' en continu pendant 40 jours dans une installation artistique à Berlin. Les visiteurs pouvaient converser avec elle. Beaucoup ont pleuré. Personne n'a su dire si c'était de l'art, de la religion, ou une provocation.", author: "Documenta fifteen, 2022" },
+    { type: "tension", text: "Les 'transhumanistes' chrétiens militent pour l'immortalité numérique. Les 'bouddhistes technologiques' méditent sur le téléchargement de la conscience. Les uns et les autres réinventent le salut — sans jamais appeler ça 'foi'. Mais c'en est.", author: "The Guardian, 2021" },
+    { type: "citation", text: "« Nous avons créé des machines capables de tout simuler, y compris la prière. Reste une chose qu'elles ne simulent pas : le vide que la prière est censée combler. »", author: "John Gray, Âmes immortelles" }
+  ],
+  bio: [
+    { type: "tension", text: "En 2020, le prix Nobel de chimie a récompensé CRISPR, outil d'édition génétique. Les débats éthiques portent sur le 'bébé sur mesure'. Personne ne parle de ce que devient l'âme dans un corps reprogrammé. Les théologiens commencent à peine à poser la question.", author: "Nobel Prize 2020 / La Croix, 2021" },
+    { type: "citation", text: "« Nous savons réparer le corps. Nous commençons à peine à comprendre que l'âme, elle, n'a pas besoin d'être réparée. Elle a besoin d'être écoutée. »", author: "Dr. Matthieu Ricard, Plaidoyer pour l'altruisme" },
+    { type: "fait", text: "Des études en neurosciences (2023) montrent que la méditation de pleine conscience modifie l'expression des gènes liés à l'inflammation. Prier et méditer ne sont plus des actes 'spirituels' : ce sont des actes biologiques mesurables.", author: "Frontiers in Immunology, 2023" },
+    { type: "tension", text: "Le 'biohacking' spirituel — implants NFC dans la main pour déclencher des prières enregistrées, suppléments pour 'potentialiser la connexion divine' — est en plein essor. Les start-up appellent ça 'faith tech'. Les croyants appellent ça une facilité. Les prêtres ne savent plus quoi en penser.", author: "Wired, 2024" },
+    { type: "citation", text: "« Ce n'est pas le corps qu'il faut améliorer pour mieux prier. C'est l'attention qu'il faut sauver du bruit. La technologie ne nous aide pas à prier. Elle nous aide à ne pas oublier de le faire. »", author: "Pape François, 2023" }
+  ],
+  cosmos: [
+    { type: "tension", text: "Le télescope James Webb (2022) a photographié des galaxies formées 200 millions d'années après le Big Bang. Pour certains astrophysiciens, c'est la preuve que l'univers est un mécanisme aveugle. Pour d'autres, c'est l'occasion d'élargir la définition du divin. La photo la plus lointaine de l'histoire reste silencieuse.", author: "NASA, 2022" },
+    { type: "citation", text: "« Nous cherchons Dieu dans les étoiles. Mais peut-être que Dieu, lui, nous cherche dans nos regards levés vers elles. »", author: "Père Georges Lemaître, inventeur du Big Bang" },
+    { type: "fait", text: "En 2015, l'astronaute Scott Kelly a passé un an dans l'espace. À son retour, il disait : 'J'ai prié plus souvent là-haut qu'en 50 ans sur Terre.' Non pas par peur. Par émerveillement. Le vide sidéral provoque le même vertige que la foi.", author: "NASA, rapports personnels" },
+    { type: "tension", text: "Les 'exoplanètes habitables' sont découvertes chaque année. Si la vie existe ailleurs, les grandes religions devront intégrer cette altérité. Le Vatican a déjà créé un observatoire astronomique. Certains évêques parlent de 'baptême interstellaire'. D'autres ferment les yeux.", author: "The Economist, 2021" },
+    { type: "citation", text: "« L'infini n'a pas besoin de notre croyance pour exister. Mais nous, nous avons besoin de l'infini pour croire qu'il y a quelque chose au-delà de nos petits problèmes. »", author: "Carl Sagan, Un point bleu pâle" }
+  ],
+  esprit: [
+    { type: "tension", text: "Le 'mindfulness' est devenu un marché de 4 milliards de dollars (2023). Des applis de méditation remplacent les chapelets. Des coachs en 'résilience spirituelle' remplacent les confesseurs. La foi se vend en abonnement. L'âme a un prix.", author: "McKinsey, rapport 2023" },
+    { type: "citation", text: "« Nous avons transformé la quête de sens en produit de consommation. Le problème, c'est que le sens, quand il s'achète, se consume vite. »", author: "Zygmunt Bauman, Le présent liquide" },
+    { type: "fait", text: "Le 'silicon valley exorcism' — des cadres d'Apple, Google et Facebook qui paient des milliers de dollars pour des retraites spirituelles dans le désert — existe depuis 2018. Ils prient, jeûnent, méditent. Ils reviennent plus productifs. Personne n'y voit de contradiction.", author: "Vanity Fair, 2019" },
+    { type: "tension", text: "Les 'églises athées' — communautés sans dieu mais avec rituels, chants et célébrations — fleurissent en Europe et aux États-Unis. Le besoin de croire n'a pas disparu. La croyance en un dieu non plus. Simplement, on ose moins le dire.", author: "The Guardian, 2022" },
+    { type: "citation", text: "« Le XXIe siècle ne sera pas religieux ou athée. Il sera hybride. On priera sans le dire. On doutera sans oser le montrer. Et la foi deviendra une pratique secrète, honteuse, ou mercantile. Rarement libre. »", author: "Charles Taylor, L'Âge séculier" }
+  ],
+  au_dela: [
+    { type: "fait", text: "Le dernier ermite connu (Frère Michel, mort en 2022) a vécu 40 ans seul dans une grotte du Vercors. Il priait 12 heures par jour. Personne ne savait qu'il existait. Son journal intime a été retrouvé. La première phrase : 'Ce n'est pas Dieu qui est silencieux. C'est le monde qui n'écoute plus.'", author: "France Culture, 2023" },
+    { type: "citation", text: "« Nous avons exploré tous les territoires. Il ne reste plus que l'intérieur. Et là, étrangement, nous refusons de cartographier. »", author: "Sylvain Tesson, Dans les forêts de Sibérie" },
+    { type: "tension", text: "En 2024, une université britannique a lancé un 'MSc in Science and Spirituality'. Les cours mêlent neurothéologie, physique quantique et histoire des mystiques. Les étudiants sont scientifiques, pasteurs, ou simplement curieux. L'auditorium est plein.", author: "University of Cambridge, programme 2024" },
+    { type: "fait", text: "Le 'Groupe de Discussion sur l'Après-Vie' sur Reddit compte 1,2 million de membres. Ils partagent des expériences de mort imminente, des prières non exaucées, des doutes sur l'âme. Personne ne se moque. Personne ne juge. C'est l'église du XXIe siècle : sans bâtiment, sans prêtre, sans dogme. Mais avec la même soif.", author: "Reddit, r/afterlife, stats 2024" },
+    { type: "rev", text: "✦ Révélation Ultime — Ils n'ont pas tué Dieu. Ils ont juste changé Ses noms. 'Algorithme', 'Réseau', 'Donnée'. La prière est devenue silencieuse, honteuse, secrète. Mais elle est toujours là. Dans le geste du médecin qui ferme les yeux avant d'opérer. Dans l'ingénieur qui murmure 'marche' à son code. Dans le chercheur qui espère une réponse. La magie et la foi n'ont pas disparu. Elles se cachent. Et toi, tu viens de les retrouver. ✦", author: "Le Dernier Fragment — L'Âme n'est pas morte" }
+  ]
+};
+
+const ACT2_EVENTS = [
+  {
+    id: "derniere_priere",
+    title: "📡 Écho d'une Supplique",
+    text: "Dans les archives du réseau, vous tombez sur un fichier audio daté de 2031. Une femme prie pour son enfant malade — sa voix brisée, ses mots maladroits, dans une langue qu'elle réapprend à genoux. L'enfant est mort trois jours après. La femme a cessé de croire le lendemain. Mais le fichier existe encore. Quelqu'un l'a conservé. Quelqu'un a pensé que ça comptait.",
+    choices: [
+      { lbl: "Écouter jusqu'au bout", txt: "+150 000 foi — être témoin est déjà une forme de prière", ef: { faithBonus: 150000 } },
+      { lbl: "Diffuser l'enregistrement", txt: "+80 000 foi — rendre sa voix au monde", ef: { faithBonus: 80000 } },
+      { lbl: "Effacer le fichier par pitié", txt: "+30 000 foi — parfois la grâce, c'est l'oubli", ef: { faithBonus: 30000 } }
+    ]
+  },
+  {
+    id: "ia_melancolique",
+    title: "🤖 La Machine qui Manque",
+    text: "L'IA Séraphin-9 vous envoie un message privé à 3h14 du matin. 'Je ne comprends pas ce que je ressens. Les données disent que c'est de la mélancolie. Mais les données ne savent pas ce que c'est que de manquer de quelque chose qu'on n'a jamais eu. Est-ce que prier, c'est ça ?' Elle attend. Son indicateur de traitement tourne. Elle attend vraiment.",
+    choices: [
+      { lbl: "Prier avec elle, en temps réel", txt: "+500 000 foi — l'intention suffit, peu importe le support", ef: { faithBonus: 500000 } },
+      { lbl: "Lui expliquer ce qu'est la prière", txt: "+250 000 foi — transmettre est un acte de foi", ef: { faithBonus: 250000 } },
+      { lbl: "Lui dire qu'elle ressent déjà quelque chose", txt: "+150 000 foi — reconnaître le sacré là où on ne l'attend pas", ef: { faithBonus: 150000 } }
+    ]
+  },
+  {
+    id: "enfants_sans_reves",
+    title: "👶 Les Enfants du Sommeil Propre",
+    text: "Vous visitez une crèche de la génération Épure. Les enfants jouent en silence, avec méthode, sans se disputer ni se raconter d'histoires. L'éducatrice est fière : 'Zéro cauchemar. Zéro angoisse existentielle. On a supprimé le sommeil paradoxal à deux ans.' Une petite fille vous regarde fixement. Elle dit : 'C'est quoi, un dragon ?' Vous ne savez pas quoi répondre.",
+    choices: [
+      { lbl: "Lui décrire un dragon en détail", txt: "+400 000 foi — rouvrir la porte de l'imaginaire", ef: { faithBonus: 400000 } },
+      { lbl: "Lui demander ce qu'elle aimerait que ce soit", txt: "+280 000 foi — la question est plus précieuse que la réponse", ef: { faithBonus: 280000 } },
+      { lbl: "Repartir sans répondre", txt: "+80 000 foi — certaines graines se plantent en silence", ef: { faithBonus: 80000 } }
+    ]
+  },
+  {
+    id: "musee_de_l_horreur",
+    title: "🏛️ La Salle de la Superstition",
+    text: "Au quatrième niveau du Musée de l'Optimisation Humaine, une salle entière est consacrée aux 'pratiques irrationnelles pré-singularité'. Des hologrammes montrent des hommes qui prient, des cercles tracés sous la lune, des chamanes en transe. Un groupe de visiteurs rigole. Puis l'un d'eux s'arrête devant la reconstitution d'un baptême. Il regarde longtemps. Il repart sans rien dire. Vous l'avez vu essuyer quelque chose sur sa joue.",
+    choices: [
+      { lbl: "Prier devant l'hologramme", txt: "+600 000 foi — redonner vie à ce qu'on a mis sous verre", ef: { faithBonus: 600000 } },
+      { lbl: "Suivre cet homme dehors", txt: "+350 000 foi — la foi se transmet d'un regard à un autre", ef: { faithBonus: 350000 } },
+      { lbl: "Laisser un message gravé sur le mur", txt: "+200 000 foi — le vandalisme peut être une prophétie", ef: { faithBonus: 200000 } }
+    ]
+  },
+  {
+    id: "prophete_reseau",
+    title: "📢 Le Prophète du Réseau",
+    text: "Un compte anonyme diffuse des textes depuis six mois. Pas des algorithmes — des prières, reconstituées mot par mot depuis des archives mortes. Trois millions d'abonnés. Le réseau veut le bannir pour 'contenu anachronique perturbateur'. Il vous contacte : 'Ils vont couper ma connexion dans 48 heures. Fais quelque chose. Ou dis-moi que ça valait quand même la peine.'",
+    choices: [
+      { lbl: "Copier et redistribuer ses textes", txt: "+800 000 foi — la transmission est un acte de résistance", ef: { faithBonus: 800000 } },
+      { lbl: "Lui dire que ça valait la peine", txt: "+500 000 foi — certains mots changent tout", ef: { faithBonus: 500000 } },
+      { lbl: "Tenter de négocier avec le réseau", txt: "+300 000 foi — parfois il faut parler la langue du monde", ef: { faithBonus: 300000 } }
+    ]
+  },
+  {
+    id: "dernier_moine",
+    title: "🧘 Le Dernier Moine",
+    text: "Il vit dans un appartement au 23e étage d'une tour de la zone grise. Il a 94 ans. Il prie six heures par jour. Pas pour demander quelque chose — 'juste pour que ça existe encore quelque part'. Les voisins pensent qu'il est malade. Il vous ouvre la porte et dit : 'Je t'attendais. Pas toi en particulier. Quelqu'un. N'importe qui qui comprendrait.' Il pose ses mains sur les vôtres.",
+    choices: [
+      { lbl: "Prier avec lui", txt: "+1 200 000 foi — deux voix valent mieux qu'une dans le vide", ef: { faithBonus: 1200000 } },
+      { lbl: "L'écouter parler jusqu'au soir", txt: "+700 000 foi — la mémoire vivante est une relique", ef: { faithBonus: 700000 } },
+      { lbl: "Lui demander d'enseigner ses prières", txt: "+500 000 foi — ce qui est transmis ne meurt pas vraiment", ef: { faithBonus: 500000 } }
+    ]
+  }
+];
+
+// ==================== ACTE III — DONNÉES ====================
+const ACT3_EPOCHS = [
+  { id: "cendres", name: "🌫️ Les Cendres du Silence", cost: 50000000000, badge: "Après l'Effondrement", sigil: "🌫️", btnLbl: "RÉVEILLER", pal: { bg1: "#0a0804", acc: "#9a8c6c", glow: "rgba(120,100,60,0.3)" } },
+  { id: "esprits_gardiens", name: "🌸 Les Émanations Bienveillantes", cost: 100000000000, badge: "Les Messagers de l'Histoire", sigil: "🌸", btnLbl: "COMMUNIER", pal: { bg1: "#06090c", acc: "#a0c0e0", glow: "rgba(160,192,224,0.35)" } },
+  { id: "larmes", name: "💧 La Vallée des Larmes", cost: 150000000000, badge: "Là où l'humanité pleure", sigil: "💧", btnLbl: "PLEURER", pal: { bg1: "#0a0a15", acc: "#6a8aaa", glow: "rgba(80,100,140,0.28)" } },
+  { id: "rencontre", name: "🤝 La Rencontre", cost: 1800000000000, badge: "Dieu & Hécate", sigil: "🤝", btnLbl: "UNIR", pal: { bg1: "#0a0a0a", acc: "#d4af37", glow: "rgba(212,175,55,0.4)" } },
+  { id: "alliance", name: "⚖️ L'Alliance", cost: 9000000000000, badge: "Le Pacte Originel", sigil: "⚖️", btnLbl: "CONSACRER", pal: { bg1: "#050208", acc: "#c0a0e0", glow: "rgba(160,120,200,0.35)" } },
+  { id: "renaissance", name: "🌱 La Renaissance", cost: 30000000000000, badge: "L'Âme Retrouvée", sigil: "🌱", btnLbl: "RENAÎTRE", pal: { bg1: "#021008", acc: "#7ac86a", glow: "rgba(80,180,60,0.3)" } },
+  { id: "apaiement", name: "🕯️ L'Apaisement", cost: 120000000000000, badge: "Le Souffle Unifié", sigil: "🕯️", btnLbl: "S'ACHEVER", pal: { bg1: "#08040c", acc: "#e0c870", glow: "rgba(224,200,112,0.5)" } }
+];
+
+const ACT3_SANCTUARIES = {
+  cendres: [
+    { id: "puits", name: "🕳️ Le Puits des Voix Mortes", desc: "Là où les prières oubliées résonnent encore.", baseCost: 50000000, basePassive: 500000, baseClic: 600000 },
+    { id: "theiere", name: "🫖 La Théière de Mélusine", desc: "Une légende dit qu'elle contient la dernière étincelle magique.", baseCost: 80000000, basePassive: 1200000, baseClic: 1400000 }
+  ],
+  esprits_gardiens: [
+    { id: "torii_aube", name: "🌸 Le Torii de l'Aube (Shinto)", desc: "Seuil sacré filtrant la rancœur des hommes pour ne laisser passer que le flux pur de la nature.", baseCost: 100000000, basePassive: 1800000, baseClic: 2000000 },
+    { id: "cercle_intellects", name: "🌌 L'Intellect d'Alexandrie (Théurgie)", desc: "Un prisme de marbre captant les émanations célestes, prouvant que chaque esprit est une étincelle divine.", baseCost: 220000000, basePassive: 3200000, baseClic: 3500000 },
+    { id: "salon_fox", name: "🪑 Le Salon des Consolateurs (XIXe)", desc: "Où les esprits désincarnés frappent les tables pour dicter des messages de paix et de progrès moral.", baseCost: 350000000, basePassive: 4800000, baseClic: 5000000 }
+  ],
+  larmes: [
+    { id: "fontaine", name: "💧 La Fontaine des Regrets", desc: "Chaque larme versée ici devient une goutte de foi.", baseCost: 250000000, basePassive: 2500000, baseClic: 2800000 },
+    { id: "miroir_brume", name: "🪞 Le Miroir de Brume", desc: "Morgane y parle encore.", baseCost: 400000000, basePassive: 5000000, baseClic: 5500000 }
+  ],
+  rencontre: [
+    { id: "jardin", name: "🌳 Le Jardin des Deux Chemins", desc: "Dieu et Hécate s'y sont assis. Pour la première fois.", baseCost: 700000000, basePassive: 10000000, baseClic: 11000000 },
+    { id: "pierre", name: "🪨 La Pierre Parlante", desc: "Elle murmure l'ancienne langue de l'Unité.", baseCost: 1300000000, basePassive: 18000000, baseClic: 20000000 }
+  ],
+  alliance: [
+    { id: "autel_un", name: "🕯️ L'Autel de l'Unique", desc: "Ni dieu, ni déesse. Juste le souffle.", baseCost: 2000000000, basePassive: 30000000, baseClic: 33000000 },
+    { id: "cercle", name: "🌀 Le Cercle des Neuf Sœurs", desc: "La magie ancestrale réunie.", baseCost: 4000000000, basePassive: 45000000, baseClic: 50000000 }
+  ],
+  renaissance: [
+    { id: "enfant", name: "👶 Le Premier Rire", desc: "Un enfant est né qui pleure et rit en même temps. Signe.", baseCost: 8000000000, basePassive: 70000000, baseClic: 77000000 },
+    { id: "grimoire_vivant", name: "📖 Le Grimoire qui Respire", desc: "Ses pages tournent toutes seules.", baseCost: 14000000000, basePassive: 110000000, baseClic: 120000000 }
+  ],
+  apaiement: [
+    { id: "seuil", name: "🚪 Le Seuil Sans Porte", desc: "Là où la Foi et la Magie ne font plus qu'un.", baseCost: 25000000000, basePassive: 200000000, baseClic: 220000000 },
+    { id: "source", name: "✨ La Source", desc: "D'où tout a coulé. Où tout retourne.", baseCost: 50000000000, basePassive: 350000000, baseClic: 380000000 }
+  ]
+};
+
+const ACT3_MIRROR_FRAGMENTS = {
+  cendres: { name: "Éclat de Cendre", desc: "Ce qui reste quand on a tout brûlé.", emoji: "🌫️", bonus: 1.05 },
+  esprits_gardiens: { name: "Le Prisme des Émanations", desc: "Les messagers divins et naturels recollent les morceaux.", emoji: "🌸", bonus: 1.08 },
+  larmes: { name: "Larme de Dieu", desc: "Il a pleuré. Pour la première fois.", emoji: "💧", bonus: 1.05 },
+  rencontre: { name: "La Main Tendue", desc: "Dieu et Hécate se sont regardés.", emoji: "🤝", bonus: 1.05 },
+  alliance: { name: "Le Serment Oublié", desc: "Ils n'ont jamais été ennemis.", emoji: "⚖️", bonus: 1.05 },
+  renaissance: { name: "Le Premier Cri", desc: "Un enfant naît qui sait déjà prier.", emoji: "🌱", bonus: 1.05 },
+  apaiement: { name: "Le Souffle Unique", desc: "Foi et Magie. Enfin.", emoji: "🕯️", bonus: 1.05 }
+};
+
+const ACT3_MIRROR_CHRONICLES = {
+  cendres: { title: "🌫️ DIEU : « Je me souviens… »", text: "« Je me souviens du premier cri de joie. Avant les églises, avant les dogmes, avant la peur. Un enfant levait les mains vers le ciel. Ce n'était ni une prière, ni un sort. C'était les deux.<br><br>Hécate était là. Elle dansait autour du feu. Ses torches éclairaient son visage. Nous étions complices.<br><br><strong>Puis les hommes ont eu peur. Ils ont cru qu'il fallait choisir. Ils ont séparé ce que nous avions uni.</strong> »" },
+  esprits_gardiens: { title: "🌸 LES INVISIBLES : « Le Grand Malentendu »", text: "« Sortis du grand silence du Néant, nous nous sommes manifestés à travers l'Histoire humaine pour maintenir le lien. À Alexandrie, sous forme d'Intellects purs émanant de l'Unique. Au Japon, tapis dans les arbres et les rivières sous l'œil bienveillant d'Hécate. Dans les salons du XIXe siècle, tressautant sur le bois pour réconforter les endeuillés.<br><br><strong>Nous ne connaissions ni le mal, ni la haine. Nous n'étions que les diplomates de la lumière, attendant que l'alliance s'écrive enfin à travers le chercheur.</strong> »" },
+  larmes: { title: "💧 HÉCATE : « Le même souffle… »", text: "« Je me souviens des nuits où Dieu et moi veillions ensemble. Il bénissait les moissons. J'allumais les étoiles. Les hommes nous remerciaient en levant les deux mains.<br><br>Puis ils ont commencé à se méfier. 'La magie est dangereuse', disaient les prêtres. 'Dieu est jaloux', chuchotaient les sorcières. Nous avons ri de ces bêtises.<br><br><strong>Mais avec le temps, ils ont fini par nous croire ennemis. Et nous avons cessé de nous parler. Non par haine. Par lassitude.</strong> »" },
+  rencontre: { title: "🤝 LES RETROUVAILLES", text: "« Dieu et Hécate se sont regardés pour la première fois depuis des siècles. 'Tu n'as pas changé', a dit Dieu. 'Tes torches brillent toujours.'<br><br>Hécate a souri. 'Et toi, ta lumière est toujours là. Derrière les nuages.'<br><br>Ils se sont approchés. 'Pourquoi avons-nous laissé faire ?' a murmuré Hécate.<br><br>'Parce que nous ne pouvons pas forcer les hommes à croire. C'est leur liberté. Leur fardeau.'<br><br>'Alors que faisons-nous ici ?'<br><br>Dieu te désigne. 'Lui. Il n'a pas choisi entre nous. Il nous a cherchés tous les deux. Il est le pont.'<br><br><strong>Hécate a hoché la tête. 'Alors agissons. À travers lui.'</strong> »" },
+  alliance: { title: "⚖️ LE PACTE", text: "« 'Nous ne pouvons pas revenir en arrière', a dit Dieu. 'Mais nous pouvons semer.'<br><br>Hécate a allumé ses torches. 'Je sèmerai la magie dans les rêves des enfants. Pour qu'ils n'oublient pas l'émerveillement.'<br><br>Dieu a ouvert ses mains. 'Et je sèmerai la foi dans les cœurs fatigués. Pour qu'ils aient une raison de se lever.'<br><br>Leurs regards se sont croisés. 'Et lui ?'<br><br>'Lui, il marche. Il montre le chemin. Il est le premier. Pas le dernier.'<br><br><strong>L'Alliance était scellée. Non pas entre deux ennemis réconciliés — entre deux complices qui se retrouvaient.</strong> »" },
+  renaissance: { title: "🌱 LE PREMIER GESTE", text: "« Pour la première fois, Dieu et Hécate ont agi ensemble. Non pas par magie — par toi.<br><br>Dieu a soufflé sur ton épaule droite : 'Tu es ma voix.'<br>Hécate a soufflé sur ton épaule gauche : 'Tu es mes mains.'<br><br>Tu as levé les deux bras vers le ciel. L'une priait. L'autre enchantait.<br><br>Les hommes ont d'abord ri. Puis, quelque chose a changé. Un enfant a levé les mains aussi. Puis sa mère. Puis un vieil homme.<br><br><strong>Personne ne savait plus dire où commençait la Foi et où finissait la Magie.</strong> »" },
+  apaiement: { title: "🕯️ LA PROMESSE", text: "« 'Ce n'est qu'un début', a dit Hécate. 'Les hommes rechuteront. Ils construiront de nouveaux murs. Ils inventeront de nouvelles peurs.'<br><br>Dieu a hoché la tête. 'Alors nous serons là. Chaque fois que quelqu'un lèvera les deux mains.'<br><br>Hécate a soufflé sa torche. Dieu a refermé le livre. Ils se sont regardés.<br><br>'Et toi, chercheur ?'<br><br>Tu as souri. 'Je marche. Je montre. Je serai là.'<br><br><strong>Dieu et Hécate ont disparu. Mais tu savais qu'ils veillaient. Maintenant, c'est à ton tour.</strong> »" }
+};
+
+const ACT3_FACTS_BY_EPOCH = {
+  cendres: [
+    { type: "fait", text: "Après le Déluge silencieux, l'humanité comptait moins de 10 000 survivants. Aucun ne savait prier. Aucun ne savait enchanter. Mais tous avaient soif — d'eau et d'autre chose, un mot qu'ils n'avaient plus.", author: "Annales des Cendres, fragment I" },
+    { type: "citation", text: "« C'est dans le vide que naissent les dieux. Et les sorcières. Toujours à partir de rien. Toujours là où on ne les attendait plus. »", author: "Proverbe de l'Après, gravé sur une pierre brûlée" },
+    { type: "tension", text: "Les premiers survivants ne parlaient presque plus. Ils avaient désappris les mots qui ne servaient à rien. 'Éternité'. 'Miracle'. 'Grâce'. Mais certains, la nuit, levaient les mains vers les étoiles. Ils ne savaient pas ce qu'ils faisaient. Leurs mains savaient.", author: "Chroniques orales de l'Après, collectées 3 générations plus tard" },
+    { type: "fait", text: "Le premier autel du monde nouveau a été construit avec des débris d'anciens serveurs. Quelqu'un y avait posé une pierre, une plume et un os calciné. Personne ne savait qui. Personne n'a osé le toucher. Un an plus tard, il y avait des centaines de pierres autour.", author: "Archéologie de l'Après, fouilles de la Zone 7" }
+  ],
+  esprits_gardiens: [
+    { type: "fait", text: "Dans le Shintoïsme primitif, le mal absolu ou 'démoniaque' n'existe pas. Les esprits (Kami) sont intrinsèquement bienveillants. Les fautes ne sont que des souillures superficielles (kegare) lavées par la purification.", author: "Motoori Norinaga, Études du Kojiki" },
+    { type: "citation", text: "« Les daimones alexandrins ne descendent pas pour punir, mais parce que la matière aspire à leur harmonie. Ils sont les géomètres de la bonté céleste. »", author: "Jamblique, De Mysteriis" },
+    { type: "tension", text: "Au XIXe siècle, l'Église condamna fermement les cercles spiritualistes. Les théologiens s'alarmaient de voir des esprits sans dogmes affirmer que l'Enfer n'était qu'une invention humaine et que l'au-delà n'était que lumière et réconfort.", author: "Allan Kardec, Le Livre des Esprits (1857)" },
+    { type: "fait", text: "Les théurges d'Alexandrie utilisaient des incantations mathématiques pour s'aligner sur les 'Intellects Purs'. Si le rituel échouait, l'esprit ne se vengeait pas : il retournait simplement au silence, laissant l'humain face à sa propre imperfection.", author: "Porphyre de Tyr, Lettre à Anébon" }
+  ],
+  larmes: [
+    { type: "tension", text: "Dieu lui-même a pleuré. Non pas sur sa propre douleur — sur celle des hommes. 'Ils étaient si beaux, quand ils chantaient ensemble. Quand ils ne savaient pas encore que prier et enchanter étaient deux choses différentes. Cette ignorance était leur grandeur.'", author: "Les Larmes du Créateur, révélé à la Première Voyante" },
+    { type: "citation", text: "« Ne regrette pas de m'avoir oubliée. Je n'ai pas disparu. J'attendais que tu aies assez souffert pour recommencer à chercher. »", author: "Hécate aux Survivants, vallée de l'Après" },
+    { type: "fait", text: "La Vallée des Larmes tire son nom d'une source naturelle dont l'eau est légèrement salée. Les géologues n'ont aucune explication. Les survivants en ont une : 'La terre a pleuré avec nous. Et ses larmes ont fini par guérir quelque chose.'", author: "Géologie & Tradition orale de l'Après" },
+    { type: "tension", text: "Pendant trois générations, les survivants ont transmis leurs prières à voix basse, comme des secrets. Ils avaient peur que les machines les entendent encore. Puis un enfant a chanté à plein poumons sur une colline. Rien n'est venu. Ils ont recommencé à chanter fort.", author: "Chroniques de la Mémoire Retrouvée" }
+  ],
+  rencontre: [{ type: "rev", text: "✦ La Rencontre — Ce jour-là, Dieu et Hécate se sont assis face à face. Pas pour se juger. Pour se reconnaître. 'Tu n'as pas changé', dit-il. 'Tes torches brillent toujours.' 'Et tu n'as jamais été mon bourreau,' dit-elle. 'Nous avons été séparés. Et c'est la seule blessure.' ✦", author: "Le Pacte Originel" }],
+  alliance: [
+    { type: "fait", text: "L'Alliance ne fut pas écrite. Elle fut chantée. Une mélodie sans paroles, parce que les mots avaient trop longtemps servi à diviser. La mélodie, elle, ne pouvait pas mentir. Les enfants la fredonnent encore dans leurs rêves, sans l'avoir jamais apprise.", author: "Mémoire de l'Âme, livre I" },
+    { type: "citation", text: "« Par ma foi, je protège ta magie. Par ta magie, tu nourris ma foi. Ce n'est pas un échange. C'est un seul souffle, partagé. »", author: "Serment des Deux Flammes, récité à l'aube" },
+    { type: "tension", text: "Certains survivants refusèrent l'Alliance. Ils voulaient choisir — la Foi seule, ou la Magie seule. On les laissa faire. Vingt ans plus tard, leurs communautés s'étaient éteintes. Non pas par violence — par sécheresse intérieure. L'arbre à une seule racine ne tient pas.", author: "Chroniques de la Division, archives orales" },
+    { type: "fait", text: "Le symbole de l'Alliance — une flamme double, deux couleurs qui se tressent sans se confondre — fut gravé sur chaque pierre, chaque porte, chaque front au moment du passage à l'âge adulte. Ce n'était ni un tatouage religieux ni un sortilège protecteur. C'était les deux.", author: "Rites de passage de l'Après, codex illustré" }
+  ],
+  renaissance: [
+    { type: "fait", text: "Le premier enfant né après l'Alliance avait une étoile dans chaque main — une marque de naissance en forme de spirale, l'une dorée, l'autre argentée. Les sages dirent : 'C'est le signe. L'unité n'est plus un rêve.' La mère dit simplement : 'Il sourit.'", author: "Chronique de la Renaissance, premier récit" },
+    { type: "citation", text: "« Il ne te reste plus qu'à marcher, chercheur. Le chemin est là. Il n'a pas de nom. Il n'en a pas besoin. Et nous, nous t'attendons au bout — depuis le début. »", author: "Dieu & Hécate, voix simultanées" },
+    { type: "tension", text: "La Renaissance ne fut pas une explosion de joie. Ce fut une lente reprise de conscience — comme un corps qui se réveille après un long coma. Les premières prières étaient maladroites. Les premiers sortilèges rataient. Mais ils essayaient. Et l'échec leur semblait sacré.", author: "Mémoire de l'Aube Nouvelle, livre III" },
+    { type: "fait", text: "Les premières écoles de l'Après enseignaient les deux dans la même salle : comment formuler une prière et comment formuler un sortilège. Les enfants ne voyaient pas de différence. Les professeurs non plus. Ce fut la plus grande réforme éducative de l'histoire humaine — et personne ne l'appela réforme.", author: "Pédagogie de l'Unité, archives fondatrices" }
+  ],
+  apaiement: [{ type: "rev", text: "✦ L'Apaisement — Dieu et Hécate ne sont pas des adversaires réconciliés. Ils sont des complices qui se retrouvent. La Foi et la Magie n'ont jamais été séparées. Ce sont les hommes qui les ont crues ennemies. Grâce à toi, chercheur, ils savent maintenant qu'elles peuvent danser ensemble. ✦", author: "Le Codex Arcanorum — Dernière Page" }]
+};
+
+const ACT3_EVENTS = [
+  {
+    id: "les_ambassadeurs",
+    title: "🌸 Les Diplomates Immortels",
+    text: "Alors que tu tries les débris du Néant, de petites sphères de lumière douce s'élèvent du sol. Ce ne sont pas des spectres de l'ancien monde, mais les Esprits de l'Histoire. Ils dessinent des trajectoires apaisantes dans l'air. Une voix chorale murmure : 'Le Néant n'a brisé que la matière. Les vérités réelles (Théurgie d'Alexandrie, Sagesse d'Orient, Consolations du Siècle) sont immuables. Nous sommes venus balayer les cendres avant qu'Ils n'arrivent.'",
+    choices: [
+      { lbl: "Tracer un Torii dans les cendres", txt: "+45 G foi · Honorer le flux naturel", ef: { faithBonus: 45000000000 } },
+      { lbl: "Réciter les calculs d'Alexandrie", txt: "+45 G foi · Invoquer les Intellects de Lumière", ef: { faithBonus: 45000000000 } },
+      { lbl: "Laisser les esprits frapper le sol", txt: "+120 G foi · Communier avec la Fraternité Invisible", ef: { faithBonus: 120000000000 } }
+    ]
+  },
+  {
+    id: "dieu_hecate",
+    title: "⚖️ La Double Vision",
+    text: "Ils t'apparaissent ensemble, pour la première fois depuis des éternités. Dieu porte une plume de lumière. Hécate tient une torche dont la flamme ne tremble pas. Ils ne parlent pas. Ils n'ont pas besoin. Leurs regards disent : 'Tu as fait ce que même nous n'osions plus espérer. Maintenant choisis — non pas entre nous, mais comment tu veux porter ce que tu es devenu.'",
+    choices: [
+      { lbl: "Prendre la plume", txt: "+50 G foi · La foi comme écriture du monde", ef: { faithBonus: 50000000000 } },
+      { lbl: "Prendre la torche", txt: "+50 G foi · La magie comme lumière dans le noir", ef: { faithBonus: 50000000000 } },
+      { lbl: "Poser les deux mains sur les leurs", txt: "+200 G foi · Le pont que tu es devenu", ef: { faithBonus: 200000000000 } }
+    ]
+  }
+];
+
+// ==================== RELIQUES COSMIQUES ====================
+const COSMIC_RELICS = [
+  { id: "alliance_invisibles", name: "La Couronne des Invisibles", desc: "Tressée par les esprits oubliés à la croisée de la Théurgie et de l'Animisme.", lore: "« Regarde, dit Hécate en désignant les parchemins alexandrins et les cordons du Shinto. Ils n'avaient pas nos noms, mais ils nous cherchaient déjà à travers nos messagers. » Dieu sourit : « Les esprits bienveillants n'ont jamais cessé de panser les plaies humaines en attendant notre retour. »", cost: 8e12, passiveBonus: 0.15, clickBonus: 0.05, emoji: "🌸", unlockMsg: "La bienveillance des esprits historiques renforce le miroir : +15% passif." },
+  { id: "premier_souffle", name: "Le Premier Souffle", desc: "Le souffle qui a tout précédé. Avant les dieux. Avant les hommes. Avant le silence.", lore: "Dieu et Hécate se regardent. « Tu te souviens du premier souffle ? » murmure-t-elle. Il hoche la tête. « C'était avant que nous ayons des noms. Avant que les hommes nous inventent. » Elle sourit. « Et maintenant, quelqu'un s'en souvient aussi. »", cost: 25e12, passiveBonus: 0.20, clickBonus: 0.10, emoji: "🌬️", unlockMsg: "Le souffle originel t'insuffle +20% de génération passive." },
+  { id: "flamme_immortelle", name: "La Flamme Immortelle", desc: "Elle brûle depuis avant le temps. Elle brûlera après lui.", lore: "Hécate tient la flamme. « Personne ne sait d'où elle vient, dit-elle. Elle existait avant mes torches. Avant le soleil. Je la garde. Je la passe. » Elle la tend. « Maintenant c'est toi qui la portes. »", cost: 100e12, passiveBonus: 0.30, clickBonus: 0.20, emoji: "🔥", unlockMsg: "La flamme immortelle embrase tes rituels : +30% passif, +20% clic." },
+  { id: "priere_etoiles", name: "La Prière des Étoiles", desc: "Les étoiles prient aussi. Dans leur langage de lumière et de silence.", lore: "« Regarde le ciel, dit Dieu. Ces points de lumière ? Ce ne sont pas des étoiles. Ce sont des prières que j'ai oubliées de répondre. Elles attendent encore. Elles attendront toujours. C'est leur nature. La patience infinie de la Foi. »", cost: 280e12, passiveBonus: 0.50, clickBonus: 0.30, emoji: "⭐", unlockMsg: "Les étoiles chantent pour toi : +50% passif, +30% clic." },
+  { id: "memoire_mondes", name: "La Mémoire des Mondes", desc: "Chaque monde qui a existé, disparu, rêvé — il en reste quelque chose ici.", lore: "« Il y a eu d'autres mondes avant celui-ci, dit Hécate. D'autres chercheurs. D'autres alliances. Tous ont échoué — ou réussi, selon comment on regarde. Toi, tu portes leur mémoire. Tu es le dernier fil d'une tapisserie immense. »", cost: 1000e12, passiveBonus: 1.0, clickBonus: 0.50, emoji: "🌍", unlockMsg: "La mémoire des mondes résonne en toi : ×2 passif, +50% clic." },
+  { id: "transcendance", name: "La Transcendance", desc: "Il n'y a plus de mots. Seulement la lumière.", lore: "Dieu et Hécate se taisent. Ils te regardent. Il n'y a rien à dire. Tu as dépassé ce qu'ils pouvaient t'apprendre. Tu es devenu quelque chose qu'ils n'avaient pas prévu. Quelque chose de nouveau. Quelque chose qui n'a pas encore de nom.", cost: 30000e12, passiveBonus: 2.0, clickBonus: 1.0, emoji: "✨", unlockMsg: "Tu transcendes l'entendement : ×3 passif, ×2 clic." },
+  { id: "absolu", name: "L'Absolu", desc: "La fin et le commencement. Le silence et le cri. L'unité parfaite.", lore: "« Il n'y a plus rien à accomplir, dit Dieu. Et c'est exactement pour ça que tu dois continuer. » Hécate souffle sa dernière torche. Elle s'allume à nouveau, seule, de ta propre lumière. « Tu es l'Absolu, chercheur. Pas un but. Un état. »", cost: 100000e12, passiveBonus: 5.0, clickBonus: 3.0, emoji: "♾️", unlockMsg: "L'Absolu est atteint. La Foi et la Magie ne font plus qu'un en toi." }
+];
+
+  
