@@ -1757,7 +1757,22 @@ const ACHIEVEMENTS = {
   first_event: { name: "🍀 Chanceux", desc: "Déclencher un événement aléatoire.", reward: "+1000 foi", check: () => triggeredEvents.size >= 1 },
   cosmic_first: { name: "🌬️ Premier Souffle Cosmique", desc: "Acquérir la première Relique Cosmique.", reward: "+10000000000000 foi", check: () => ownedCosmicRelics.size >= 1 },
   cosmic_three: { name: "⭐ Porteur d'Étoiles", desc: "Acquérir 3 Reliques Cosmiques.", reward: "+100000000000000 foi", check: () => ownedCosmicRelics.size >= 3 },
-  cosmic_all: { name: "♾️ L'Absolu", desc: "Acquérir toutes les Reliques Cosmiques.", reward: "La Foi et la Magie ne font plus qu'un en toi.", check: () => ownedCosmicRelics.size >= COSMIC_RELICS.length }
+  cosmic_all: { name: "♾️ L'Absolu", desc: "Acquérir toutes les Reliques Cosmiques.", reward: "La Foi et la Magie ne font plus qu'un en toi.", check: () => ownedCosmicRelics.size >= COSMIC_RELICS.length },
+ two_epochs: { name: "🌱 Novice des Époques", desc: "Débloquer 2 époques.", reward: "+200 foi", check: () => ownedEpochs.size >= 2 },
+  three_epochs: { name: "🌍 Explorateur", desc: "Débloquer 3 époques.", reward: "+500 foi", check: () => ownedEpochs.size >= 3 },
+  three_sanctuaries: { name: "🏗️ Maçon", desc: "Construire 3 sanctuaires.", reward: "+1000 foi", check: () => Object.keys(sanctuaryLevels).length >= 3 },
+  sanctuary_lvl3: { name: "🔨 Artisan", desc: "Améliorer un sanctuaire au niveau 3.", reward: "+2000 foi", check: () => Object.values(sanctuaryLevels).some(lvl => lvl >= 3) },
+  five_sanctuaries_lvl2: { name: "📿 Collectionneur", desc: "Posséder 5 sanctuaires de niveau 2.", reward: "+3000 foi", check: () => Object.values(sanctuaryLevels).filter(lvl => lvl >= 2).length >= 5 },
+  two_fragments: { name: "🌟 Éclaireur", desc: "Trouver 2 fragments du Miroir.", reward: "+5000 foi", check: () => mirrorFragments.size >= 2 },
+  twenty_revelations: { name: "📜 Érudit", desc: "Débloquer 20 révélations.", reward: "+10000 foi", check: () => (discoveredFacts.size + revealedSet.size) >= 20 },
+  three_events: { name: "🎲 Aventurier", desc: "Déclencher 3 événements aléatoires.", reward: "+15000 foi", check: () => triggeredEvents.size >= 3 },
+  five_thousand_rituals: { name: "🏆 Champion des Rituels", desc: "Accomplir 5 000 rituels.", reward: "+25000 foi", check: () => totalRituals >= 5000 },
+  seven_epochs: { name: "🌌 Voyageur Temporel", desc: "Débloquer 7 époques.", reward: "+50000 foi", check: () => ownedEpochs.size >= 7 },
+  three_sanctuaries_lvl4: { name: "💎 Joyau des Sanctuaires", desc: "Améliorer 3 sanctuaires au niveau 4.", reward: "+100000 foi", check: () => Object.values(sanctuaryLevels).filter(lvl => lvl >= 4).length >= 3 },
+  ten_fragments: { name: "🔮 Visionnaire", desc: "Trouver 10 fragments du Miroir.", reward: "+200000 foi", check: () => mirrorFragments.size >= 10 },
+  hundred_revelations: { name: "📚 Maître des Connaissances", desc: "Débloquer 100 révélations.", reward: "+500000 foi", check: () => (discoveredFacts.size + revealedSet.size) >= 100 },
+  two_cosmic_relics: { name: "🌠 Gardien des Reliques", desc: "Acquérir 2 Reliques Cosmiques.", reward: "+1000000000000 foi", check: () => ownedCosmicRelics.size >= 2 },
+  five_sanctuaries_lvl3: { name: "🌿 Harmonie", desc: "Avoir 5 sanctuaires de niveau 3.", reward: "+1000000 foi", check: () => Object.values(sanctuaryLevels).filter(lvl => lvl >= 3).length >= 5 }
 };
     function isAllSanctuariesMax() {
   for (let ep of EPOCHS) {
